@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record forcecreate="True" id="create_automated_task" model="ir.cron">
+            <field name="name">Transtech Automated Tasks</field>
+            <field eval="True" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'atm.surverys.management'" name="model"/>
+            <field eval="'create_task'" name="function"/>
+            <field  eval="'()'" name="args"/>
+        </record>
+		
+		<record forcecreate="True" id="counting_done_tasks" model="ir.cron">
+            <field name="name">Count Tasks</field>
+            <field eval="True" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'atm.info'" name="model"/>
+            <field eval="'count_tasks'" name="function"/>
+            <field  eval="'()'" name="args"/>
+        </record>
+
+        <record forcecreate="True" id="changing_tasks_status" model="ir.cron">
+            <field name="name">Tasks Status Change</field>
+            <field eval="True" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+            <field eval="'atm.surverys.management'" name="model"/>
+            <field eval="'change_task_status'" name="function"/>
+            <field  eval="'()'" name="args"/>
+        </record>
+
+</data>
+</openerp>

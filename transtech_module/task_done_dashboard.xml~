@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<record id="view_task_done_dashboard_tree" model="ir.ui.view">
+            <field name="name">atm.task.done.tree</field>
+            <field name="model">atm.surverys.management</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="ATM Task Tree">
+                    <field name="name"/>
+		    <field name="task_month" />
+                    <field name="customer"/>
+                    <field name="atm"/>
+                    <field name="country"/>
+                    <field name="state" />
+                    <field name="surveyor" />
+                    <field name="visit_time"/>
+                    <field name="additional_info"/>
+                    <field name="assigned_by"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+        
+
+        <record id="my_open_atm_tasks_done_action" model="ir.actions.act_window">
+            <field name="name">Tasks Completed/Cancelled</field>
+            <field name="res_model">atm.surverys.management</field>
+            <field name="view_type">form</field>
+	    <field name="limit">80</field>
+            <field name="view_mode">tree,form</field>
+           <field name="domain">['|',('surveyor','=',uid),('assigned_by','=',uid),('status','in',('cancel','done'))]</field>
+            <field name="view_id" ref="view_task_done_dashboard_tree"/>
+        </record>
+
+        <record id="board_task_done_form" model="ir.ui.view">
+            <field name="name">board.atm.form1</field>
+            <field name="model">board.board</field>
+            <field name="arch" type="xml">
+                <form string="My" version="7.0">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(my_open_atm_tasks_done_action)d" string="Old Tasks"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_board_atm_old_task" model="ir.actions.act_window">
+            <field name="name">Tasks Completed/Cancelled</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+	    <field name="limit">80</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="board_task_done_form"/>
+        </record>
+
+
+         <menuitem id="menu_atm_task_done_dashboard"  parent="atm_dashbord_menu" sequence='3' action="open_board_atm_old_task"/>
+	
+	
+
+    </data>
+</openerp>

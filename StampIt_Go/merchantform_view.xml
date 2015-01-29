@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<menuitem id="merchant_mainmenuid" name="StampIt Go"/>
+		<menuitem id="merchant_submenuid" name="Merchant" parent="merchant_mainmenuid"/>
+		<!-- my company Tree View -->
+		<record id="merchant_tree_view" model="ir.ui.view">
+			<field name="name">merchant.tree.view</field>
+			<field name="model">stamp.merchant</field>
+			<field name="arch" type="xml">
+				<tree string="Merchant">
+					<field name="name_organization"/>
+					<field name="category_details"/>
+					<field name="sub_category"/>
+					<field name="locality"/>
+					<field name="email_id1"/>
+					<field name="phone_no"/>
+					<field name="point_contact_name"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- my company form view -->
+		<record id="merchant_form_view" model="ir.ui.view">
+			<field name="name">merchant.form.view</field>
+			<field name="model">stamp.merchant</field>
+			<field name="arch" type="xml">
+				<form string="Merchant Sign-Up Form" version="7.0">
+					<!-- <header >
+						<button string="Print Report" name="print_report" type="object"/>
+						<button string="Testing methods" name="testing" type="object"/>
+						<button string="Convert to stage" name="change_stage" type="object" colspan="2" icon="gtk-ok" attrs="{'invisible':[('states','=','middle_state')]}"/>
+						<button string="Done" name="done_stage" type="object" colspan="2" attrs="{'invisible':[('states','=','first_state','final_state')]}"/>
+						<field name="states" widget="statusbar" statusbar_visible="first_state,middle_state,final_state" statusbar_colors='{"middle_state":"red","final_state":"blue"}'/> 
+					</header> -->
+					<sheet>
+						<group>
+							
+						</group>
+						<group>
+							<field name="name_organization" style="width:80%%"/>
+							<field name="org_description" style="width:80%%"/>
+							<field name="category_details" style="width:80%%"/>
+							<field name="sub_category" style="width:80%%"/>
+							<field name="address" style="width:80%%"/>
+							<field name="locality" style="width:80%%"/>
+							<field name="email_id1" style="width:80%%"/>
+							<field name="email_id2" style="width:80%%"/>
+							<field name="phone_no" style="width:80%%"/>
+							<field name="mobile_no" style="width:80%%"/>
+						</group>
+						<group string="Store Information">
+							<field name="point_contact_name" style="width:80%%"/>
+							<field name="store_address" style="width:80%%"/>
+							<field name="store_phone" style="width:80%%"/>
+							<field name="store_emailid" style="width:80%%"/>
+							<field name="stamp_value" style="width:80%%"/>
+						</group>
+						<group >
+							<!-- <field name="expenditure1" style="width:60%%" on_change="total_exp(expenditure1,expenditure2)"/>
+							<field name="expenditure2"  style="width:60%%" on_change="total_exp(expenditure1,expenditure2)"/>
+							<field name="totalexpenditure" style="width:60%%" /> -->
+						</group>
+						<group >
+							<field name="upload" />
+							<field name="lead_mngnt"  style="width:30%%" />
+							<field name="lead_mngnt_desc" attrs="{'invisible':[('lead_mngnt', '!=', 'yes')]}" />
+						</group>
+						<notebook>
+							<!-- Total Offers -->
+							<page string="Offers">
+								<field name="offer_id">
+									<form string="Offer Info" version="7.0">
+										<group>
+											<field name="stamp_no" style="width:60%%"/>
+											<field name="reward_name" style="width:60%%"/>
+											<field name="desc_reward"/> 
+											<field name="savings" style="width:60%%"/>
+										</group>
+									</form>
+									<tree string="offers info">
+										<field name="stamp_no" style="width:60%%"/>
+										<field name="reward_name" style="width:60%%"/>
+										<field name="savings" style="width:60%%"/>
+									</tree>
+								</field>
+							</page>
+							<!-- Current offers -->
+							<page string="Current Offers">
+								<field name="current_offer_id">
+									<form string="Current Offer Info" version="7.0">
+										<group>
+											<field name="stamp_no" style="width:60%%"/>
+											<field name="current_reward_name" style="width:60%%"/>
+											<!-- <field name="reward_des"/> -->
+											<field name="desc_reward" style="width:60%%"/>
+										</group>
+									</form>
+									<tree string="Current offers info">
+										<field name="stamp_no" style="width:60%%"/>
+										<field name="current_reward_name" style="width:60%%"/>
+										<!-- <field name="savings" style="width:60%%"/> -->
+									</tree>
+								</field>
+							</page>
+							<!-- Bday /Anniversary offers -->
+							<page string="BDay/Anniversary Offers">
+								<field name="offer_bday_anniversary">
+									<form string="BirthDay/Anniversary Offer Info" version="7.0">
+										<group>
+											<field name="birthday_reward_name" style="width:60%%"/>
+											<field name="birthday_reward_description" style="width:60%%"/>
+											<!-- <field name="birth_day_stamp_no" style="width:60%%"/> -->
+										</group>
+									</form>
+									<tree string="Current offers info">
+										<field name="birthday_reward_name" style="width:60%%"/>
+											<!-- <field name="birth_day_stamp_no" style="width:60%%"/> -->
+									</tree>
+								</field>
+							</page>
+
+							<!-- Promo code offers -->
+
+							<page string="Promo Offers">
+								<field name="promocode_offer_id">
+									<form string="Promo Code Offer Info" version="7.0">
+										<group>
+											<!-- <field name="stamp_no" style="width:60%%"/> -->
+											<field name="promo_reward_name" style="width:60%%"/>
+											<field name="promo_desc_reward" style="width:60%%"/>
+										</group>
+									</form>
+									<tree string="Promo offers">
+										<!-- <field name="stamp_no" style="width:60%%"/> -->
+										<field name="promo_reward_name" style="width:60%%"/>
+									</tree>
+								</field>
+							</page>
+
+							<page string="Details for marketing materials">
+									<form string="Details for marketing materials" version="7.0">
+										<sheet>
+										<group>
+											<field name="total_table_count" style="width:60%%"/>
+											<field name="preferred_language" style="width:60%%"/>
+										</group>
+									</sheet>
+									</form>
+							</page>
+
+							<page string="Membership Category for Customers">
+									<form string="Membership Category for Customers" version="7.0">
+									<sheet>
+										<group>
+											<field name="silver_card" style="width:60%%"/>
+											<field name="gold_card" style="width:60%%"/>
+											<field name="platinum_card" style="width:60%%"/>
+										</group>
+									</sheet>
+									</form>
+							</page>
+
+							<page string="Terms and Conditions">
+								<field name="tc_id">
+									<form string="Terms  conditions" version="7.0">
+										<group>
+											<field name="loyalty_card_no" style="width:60%%"/>
+											<field name="terms_condition" style="width:60%%"/>
+										</group>
+									</form>
+									<tree string="Terms and conditions">
+										<field name="loyalty_card_no" style="width:60%%"/>
+									</tree>
+								</field>
+							</page>
+
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- kanbann view -->
+		<record model="ir.ui.view" id="resource_kanban_view">
+		    <field name="name">Merchant Sign Up Form</field>
+		    <field name="model">stamp.merchant</field>
+		    <field name="type">kanban</field>
+		    <field name="arch" type="xml">
+		        <kanban>
+		            <templates>
+		                <t t-name="kanban-box">
+		                    <div class="oe_resource_vignette">
+		                        <div class="oe_resource_image">
+		                            <a type="edit"><img t-att-src="kanban_image('object.name', 'photo', record.id.value)" class="oe_resource_picture"/></a>
+		                        </div>
+		                        <div class="oe_resource_details">
+		                            <ul>
+		<!--Here you have to write the object's field name which you want to display in kanban view -->
+		                               <li><field name="name_organization"/></li>
+		                               <!-- <li><field name="company_city"/></li>
+		                               <li><field name="pincode"/></li> -->
+		                               <!-- <li><field name="available_copy"/> </li> -->                                   
+		                             </ul>
+		                        </div>
+		                    </div>                       
+		                </t>
+		            </templates>
+		        </kanban>
+		    </field>
+		</record>
+
+		<!-- Action for my company -->
+		<record id="action_merchant" model="ir.actions.act_window">
+			<field name="name">StampIt Go Merchant</field>
+			<field name="res_model">stamp.merchant</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="merchant_childmenuid" name="Merchant Sign-Up Form" parent="merchant_submenuid" action="action_merchant"/> 
+	</data>
+</openerp>

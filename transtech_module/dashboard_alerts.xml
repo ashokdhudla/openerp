@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_alerts_dashbd_tree" model="ir.ui.view">
+            <field name="name">alert.tree</field>
+            <field name="model">internal.alerts</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="ATM Task Tree">
+                    <field name="name"/>
+                    <field name="customer"/>
+                    <field name="atm_id"/>
+                    <field name="country_id"/>
+                    <field name="state_id" />
+                    <field name="assign_to"/>
+                    <field name="description"/>
+                    <field name="summary"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="my_open_atm_alerts_action" model="ir.actions.act_window">
+            <field name="name">Alerts for You</field>
+            <field name="res_model">internal.alerts</field>
+            <field name="view_type">form</field>
+	    <field name="limit">80</field>
+            <field name="view_mode">tree,form</field>
+         	<field name="domain">['|','|',('assign_to','=',uid),('user','=',uid),('status','not in',('resolved','closed'))]</field>
+		<!-- <field name="domain">[('status','not in',('resolved','closed'))]</field> -->
+            <field name="view_id" ref="view_alerts_dashbd_tree"/>
+        </record>
+
+        <record id="board_alerts_done_form" model="ir.ui.view">
+            <field name="name">board.alert.form</field>
+            <field name="model">board.board</field>
+            <field name="arch" type="xml">
+                <form string="My Board ATM" version="7.0">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(my_open_atm_alerts_action)d" string="New Alerts"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_board_atm_alerts_queue" model="ir.actions.act_window">
+            <field name="name">Alerts for You</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+	    <field name="limit">80</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="board_alerts_done_form"/>
+        </record>
+
+
+         <menuitem id="menu_atm_alert_dashboard"  parent="atm_dashbord_menu" sequence='2' action="open_board_atm_alerts_queue"/>
+	
+	
+
+    </data>
+</openerp>

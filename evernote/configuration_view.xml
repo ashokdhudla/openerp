@@ -1,0 +1,43 @@
+<openerp>
+  <data noupdate="1">
+
+    <record id="view_evernote_configuration" model="ir.ui.view">
+      <field name="name">evernote.configuration.view</field>
+      <field name="model">evernote.configuration</field>
+      <field name="arch" type="xml">
+            <form  version="7.0" string="Evernote Configuration">
+            	<group>
+	            	<field name="name" />
+	            	<field name="username" />
+	            	<field name="passwd" />
+	            	<field name="auth_token" />
+	           	</group>
+           
+	            <footer>
+	                <button  name="add_connection" string="ADD" class="oe_link"/>
+	                or
+	                <button special="cancel" string="Close" class="oe_link"/>
+            </footer>
+             </form>
+      </field>
+    </record>
+
+    <record id="action_evernote_configuration" model="ir.actions.act_window">
+      <field name="name">Evernote Configuration</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">evernote.configuration</field>
+      <field name="view_id" ref="view_evernote_configuration"/>
+      <field name="view_type">form</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+    </record>
+
+    <record id="evernote_configuration_todo" model="ir.actions.todo">
+        <field name="action_id" ref="action_evernote_configuration"/>
+        <field name="restart">always</field>
+        <field name="sequence">3</field>
+        <field name="type">automatic</field>
+    </record>
+
+  </data>
+</openerp>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<menuitem action="view_alert_info_action" id="menu_alert_info" parent="menu_alert_details" groups="group_atm_customer"/>
+
+	<record id="view_internal_alert_info_form" model="ir.ui.view">
+			<field name="name">internal Alerts Information</field>
+			<field name="model">internal.alerts</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="Alert Details Internal" version="7.0">
+					<header>
+					<button name="status_resolve" type="object" String="Resolve" groups="transtech_module.group_atm_manager, transtech_module.group_atm_user" attrs="{'invisible': [('status','in',('resolved','closed'))]}" class="oe_highlight"/>
+					<button name="status_close" type="object" String="Close" groups="transtech_module.group_atm_manager, transtech_module.group_atm_user" attrs="{'invisible': [('status','in',('assigned','closed'))]}" class="oe_highlight"/>
+					<field name="status" widget="statusbar" statusbar_visible="assigned,resolved,closed"/> 
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="customer" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="user" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="atm_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="category" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="priority" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="country_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="state_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="assign_to" attrs="{'readonly':[('status','!=','assigned')]}"/>
+							</group>
+							<group string="Alert Categorization Details">
+								<field name="reason_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="reason_disc" attrs="{'readonly':[('status','!=','assigned')]}"/>
+							</group>
+							<group string="Summary &amp; Description">
+								<field name="summary" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="description" attrs="{'readonly':[('status','!=','assigned')]}"/>
+							</group>
+					</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+	<record id="view_internel_alert_info_tree" model="ir.ui.view">
+			<field name="name">internal Alert Tree</field>
+			<field name="model">internal.alerts</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Alert Information">
+							<field name="name"/>
+							<field name="customer"/>
+							<field name="atm_id"/>
+							<field name="priority"/>
+							<field name="summary"/>
+							<field name="status"/>
+							<field name="assign_to"/>
+							<field name="category"/>
+				</tree>
+			</field>
+		</record>
+
+
+
+		<record id="view_internal_alert_info_action1" model="ir.actions.act_window">
+		  	<field name="name">Internal Alerts</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">internal.alerts</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_internel_alert_info_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Alerts......
+              		</p>
+               		</field>
+		</record>
+
+<menuitem action="view_internal_alert_info_action1" id="menu_internal_alert_info1" parent="menu_alert_details" groups="group_atm_user"/>
+
+
+
+<record model="ir.ui.view" id="view_atm_internal_alerts_filter">
+            <field name="name">view_atm_internal_alerts_filter</field>
+            <field name="model">internal.alerts</field>
+            <field name="arch" type="xml">
+                <search string="atm alerts search">
+			
+			<filter icon="terp-check" string="Complants"  domain="[('category','=','complaint')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Issue"  domain="[('category','=','issue')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Low Priority Alerts"  domain="[('priority','=','low')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Medium Priority Alerts"  domain="[('priority','=','medium')]"/>
+			<separator/>
+			<filter icon="terp-check" string="High Priority Alerts"  domain="[('priority','=','high')]"/>
+                     <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer'}"/>
+			<separator/>
+                       <filter string="Assigned To" icon="terp-folder" domain="[]" context="{'group_by':'assign_to'}"/>
+			<separator/>
+                        <filter string="Category" icon="terp-go-month" domain="[]" context="{'group_by':'category'}"/>
+			<separator/>
+			                   
+			</group>
+            </search>
+            </field>
+            </record>
+
+
+</data>
+</openerp>

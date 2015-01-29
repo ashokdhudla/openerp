@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+    <!-- Sequences for Nuplas Packaging --> 
+        <record id="seq_type_booking_code" model="ir.sequence.type">
+            <field name="name">Booking type</field>
+            <field name="code">booking.yachts</field>
+        </record>
+
+        <record id="seq_booking_code" model="ir.sequence">
+            <field name="name">Booking Code</field>
+            <field name="code">booking.yachts</field>
+            <field name="prefix">BOOK</field>
+            <field name="padding">3</field>
+        </record>
+
+        <!-- Sequences for Royal Yacht --> 
+        <record id="seq_type_yacht_service" model="ir.sequence.type">
+            <field name="name">Yacht Service</field>
+            <field name="code">yacht.services</field>
+        </record>
+
+        <record id="seq_yacht_service" model="ir.sequence">
+            <field name="name">Yacht service</field>
+            <field name="code">yacht.services</field>
+            <field name="prefix">SER</field>
+            <field name="padding">3</field>
+        </record>
+
+    </data>
+</openerp>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+    	<!-- Remove taxes fields from sales -->
+	<record model="ir.ui.view" id="view_order_form_extend">
+    		<field name="name">sale.order.form.inherit1</field>
+    		<field name="model">sale.order</field>
+   			<field name="inherit_id" ref="sale.view_order_form"/>
+    		<field name="arch" type="xml">
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+    		</field>
+	</record>
+
+	 <!-- Remove taxes fieds from purchase  -->
+	<record model="ir.ui.view" id="purchase_order_line_extend_new">
+    		<field name="name">Form</field>
+    		<field name="model">purchase.order</field>
+	   		<field name="inherit_id" ref="purchase.purchase_order_form"/>
+			<field name="arch" type="xml">
+
+				<xpath expr="//page//field[@name='amount_tax']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+			</field>
+	   </record>
+<!-- Removes taxes fields from Accounting 
+<record model="ir.ui.view" id="view_invoice_form_extend_new">
+    		<field name="name">acount.invoice.form.inherit1</field>
+    		<field name="model">account.invoice</field>
+   			<field name="inherit_id" ref="account.invoice_form"/>
+    		<field name="arch" type="xml">
+
+    			<field name="invoice_line_tax_id" position="replace"/>
+
+    			<xpath expr="/form/sheet/group/group/field[@name='fiscal_position']" position="attributes">
+    				<attribute name="invisible">1</attribute>
+    			</xpath>
+		       
+    		</field>
+	</record>-->
+
+	<record model="ir.ui.view" id="view_supplier_invoice_form_extend_new">
+    		<field name="name">acount.invoice.form.inherit2</field>
+    		<field name="model">account.invoice</field>
+   			<field name="inherit_id" ref="account.invoice_supplier_form"/>
+    		<field name="arch" type="xml">
+
+    			     <xpath expr="//field[@name='fiscal_position']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+    		</field>
+	</record>
+
+	<!-- Remove Taxes From Product -->
+
+	<record model="ir.ui.view" id="view_invoice_form_extend_new">
+    		<field name="name">product.form.inherit</field>
+    		<field name="model">product.product</field>
+   			<field name="inherit_id" ref="product.product_normal_form_view"/>
+    		<field name="arch" type="xml">
+
+    			<field name="taxes_id" position="replace"/>
+    	
+		        <field name="supplier_taxes_id" position="replace"/>
+    		</field>
+	</record>
+
+    
+    <!-- Delete Taxes menuitems -->
+
+	<delete id="account.menu_action_tax_code_tree" model="ir.ui.menu"/>
+	<delete id="account.menu_action_tax_code_list" model="ir.ui.menu"/>
+	<delete id="account.menu_action_tax_form" model="ir.ui.menu"/>
+	<delete id="account.menu_action_account_fiscal_position_form" model="ir.ui.menu"/>
+    <!-- <delete id="account.menu_tax_report" model="ir.ui.menu"/> -->
+	<delete id="account.menu_account_vat_declaration" model="ir.ui.menu"/>
+    <delete id="account.menu_action_account_tax_template_form" model="ir.ui.menu"/>
+    <delete id="account.menu_action_account_tax_code_template_form" model="ir.ui.menu"/>
+    <delete id="account.menu_action_account_fiscal_position_form_template" model="ir.ui.menu"/>
+    <delete id="product.menu_product_uom_categ_form_action" model="ir.ui.menu"/>
+    <delete id="product.menu_product_uom_form_action" model="ir.ui.menu"/>
+
+    <delete id="purchase.menu_purchase_unit_measure_purchase" model="ir.ui.menu"/>
+    <delete id="purchase.menu_purchase_uom_categ_form_action" model="ir.ui.menu"/>
+    <delete id="purchase.product_uom_form_action" model="ir.ui.menu"/>
+    
+    <delete id="product.next_id_16" model="ir.ui.menu"/>
+    <!-- <delete id="product.product_uom_form_action" model="ir.ui.menu"/> -->
+    <!-- stock -->
+
+
+
+</data>
+</openerp>

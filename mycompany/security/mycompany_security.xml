@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    
+<record model="ir.module.category" id="base.module_category_name_test">
+    <field name="name">Management</field>
+    <field name="description">Company Management</field>
+    <field name="sequence">16</field>
+</record>
+
+<record id="group_test_user" model="res.groups">
+    <field name="name">User</field>
+    <field name="category_id" ref="base.module_category_name_test"/>
+    <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+</record>
+
+<record id="group_test_manager" model="res.groups">
+    <field name="name">Manager</field>
+    <field name="category_id" ref="base.module_category_name_test"/>
+    <field name="implied_ids" eval="[(4, ref('group_test_user'))]"/>
+    <field name="users" eval="[(4, ref('base.user_root'))]"/>
+</record>
+
+<record model="ir.ui.menu" id="base.menu_definitions">
+        <field name="groups_id" eval="[(6,0,[ref('group_test_manager')])]"/>
+    </record>
+</data>
+<data noupdate="1">
+	<record model="ir.rule" id="company_manager_rule">
+		<field name="model_id" ref="model_my_company"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4,ref('group_test_manager'))]"/>
+	</record>
+
+	<record id="portal_employees_rule" model="ir.rule">
+            <field name="name">Customer: read access his docs</field>
+            <field name="model_id" ref="model_my_company"/>
+            <field name="domain_force">[('employees', '=', user.name)]</field>
+            <field name="groups" eval="[(4, ref('group_test_user'))]"/>
+        </record>
+</data>
+</openerp>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="report_yacht_details" model="yatch.config" name="yatch.config"
+                rml="ry_booking/report/yacht_details.rml" string="Yacht Details"
+                usage="default"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- <menuitem id="merchant_mainmenuid" name="Merchant Sign-Up"/>
+		<menuitem id="merchant_submenuid" name="Company" parent="mycompany_mainmenuid"/> -->
+		<menuitem id="mycompany_mainmenuid" name="Mycompnay"/>
+		<menuitem id="mycompany_submenuid" name="Company" parent="mycompany_mainmenuid"/>
+		<!-- my company Tree View -->
+		<record id="mycompany_tree_view" model="ir.ui.view">
+			<field name="name">mycompany.tree.view</field>
+			<field name="model">my.company</field>
+			<field name="arch" type="xml">
+				<tree string="Company">
+					<field name="company_config" widget="url"/>
+					<field name="company_street" widget="links"/>
+					<field name="company_city"/>
+					<field name="tag_line_company"/>
+					<field name="turnover"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- my company form view -->
+		<record id="mycompany_form_view" model="ir.ui.view">
+			<field name="name">mycompany.form.view</field>
+			<field name="model">my.company</field>
+			<field name="arch" type="xml">
+				<form string="My company details" version="7.0">
+					<header >
+						<button string="Print Report" name="print_report" type="object"/>
+						<button string="Testing methods" name="testing" type="object"/>
+						<button string="Convert to stage" name="change_stage" type="object" colspan="2" icon="gtk-ok" attrs="{'invisible':[('states','=','middle_state')]}"/>
+						<button string="Done" name="done_stage" type="object" colspan="2" attrs="{'invisible':[('states','=','first_state','final_state')]}"/>
+						<button string="My wizard" type="action" name="%(action_view_my_wizard)d" class="oe_highlight"/>
+						<field name="states" widget="statusbar" statusbar_visible="first_state,middle_state,final_state" statusbar_colors='{"middle_state":"red","final_state":"blue"}'/> 
+					</header>
+					<sheet>
+						<group>
+							<field name="image" widget="image" class="oe_avatar oe_left"/>
+							<field name="name_company" widget="url"/>
+							<field name="company_config" style="width:60%%"/>
+							<field name="tag_line_company" style="width:60%%"/>
+							<field name="company_city" widget="links" style="width:60%%"/>
+							<field name="company_street" style="width:60%%"/>
+							<field name="pincode" style="width:60%%"/>
+							<field name="state" style="width:60%%"/>
+							<field name="employees" style="width:60%%"/>
+							<field name="country" style="width:60%%"/>
+							<field name="button_hide" style="width:60%%"/>
+							<!-- <field name="employee"/> -->
+							<field name="turnover" style="width:60%%"/>
+						</group>
+						<group string="Type of company services">
+							<field name="development" style="width:60%%"/>
+							<field name="service" style="width:60%%"/>
+						</group>
+						<group string="Type of company">
+							<field name="publtd" style="width:60%%" on_change="company_change(publtd,privateltd)"/>
+							<field name="privateltd" style="width:60%%" on_change="company_change1(publtd,privateltd)"/>
+						</group>
+						<group string="Calculation of Expenditures">
+							<field name="expenditure1" style="width:60%%" on_change="total_exp(expenditure1,expenditure2)"/>
+							<field name="expenditure2"  style="width:60%%" on_change="total_exp(expenditure1,expenditure2)"/>
+							<field name="totalexpenditure" style="width:60%%" />
+						</group>
+						<group string="Total Calulation">
+							<field name="exp3" style="width:60%%" />
+							<field name="exp4" style="width:60%%" />
+							<field name="total" style="width:60%%"/>
+						</group>
+						<notebook>
+							<page string="Employee Details">
+								<field name="emp_id">
+									<form string="Employee Info" version="7.0">
+										<group>
+											<field name="empname" style="width:60%%"/>
+											<field name="empdept" style="width:60%%"/>
+											<field name="empsalary" style="width:60%%"/>
+										</group>
+									</form>
+									<tree string="Employee info">
+										<field name="empname"/>
+										<field name="empdept"/>
+										<field name="empsalary"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- kanbann view -->
+		<record model="ir.ui.view" id="resource_kanban_view">
+		    <field name="name">My company</field>
+		    <field name="model">my.company</field>
+		    <field name="type">kanban</field>
+		    <field name="arch" type="xml">
+		        <kanban>
+		            <templates>
+		                <t t-name="kanban-box">
+		                    <div class="oe_resource_vignette">
+		                        <div class="oe_resource_image">
+		                            <a type="edit"><img t-att-src="kanban_image('object.name', 'photo', record.id.value)" class="oe_resource_picture"/></a>
+		                        </div>
+		                        <div class="oe_resource_details">
+		                            <ul>
+		<!--Here you have to write the object's field name which you want to display in kanban view -->
+		                               <li><field name="name_company"/></li>
+		                               <li><field name="company_city"/></li>
+		                               <li><field name="pincode"/></li>
+		                               <!-- <li><field name="available_copy"/> </li> -->                                   
+		                             </ul>
+		                        </div>
+		                    </div>                       
+		                </t>
+		            </templates>
+		        </kanban>
+		    </field>
+		</record>
+
+		<!-- Action for my company -->
+		<record id="action_mycompany" model="ir.actions.act_window">
+			<field name="name">My Company</field>
+			<field name="res_model">my.company</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="mycompany_childmenuid" name="company" parent="mycompany_submenuid" action="action_mycompany"/> 
+
+
+	</data>
+</openerp>

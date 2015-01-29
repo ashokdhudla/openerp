@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="wkf_mycompany" model="workflow">
+			<field name="name">mycompany.workflow</field>
+			<field name="osv">my.company</field>
+			<field name="on_create">True</field>
+	    </record> 
+	    <!-- Activity -->
+	    <record id="act_draft_mycmp" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_mycompany"/>
+            <field name="flow_start">True</field>
+            <field name="name">draft</field>
+        </record>
+
+        <record id="act_start_mycmp" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_mycompany"/>
+            <field name="name">Start</field>
+            <field name="kind">function</field>
+            <field name="action">write({'states':'first_state'})</field>
+        </record>
+
+        <record id="act_process_mycmp" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_mycompany"/>
+            <field name="name">Process</field>
+            <field name="kind">function</field>
+            <field name="action">action_wait()</field>
+            <field name="split_mode">OR</field>
+        </record>
+
+        <record id="act_done_mycmp" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_mycompany"/>
+            <field name="name">done</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">function</field>
+            <field name="action">action_done()</field>
+            <field name="join_mode">AND</field>
+        </record>
+
+        <record id="act_cancel_mycmp" model="workflow.activity">
+            <field name="wkf_id" ref="wkf_mycompany"/>
+            <field name="name">cancel</field>
+            <field name="flow_stop">True</field>
+            <field name="kind">stopall</field>
+            <field name="action">action_cancel()</field>
+        </record>
+
+        <!-- Transistion -->
+
+        <record id="trans_process_sent" model="workflow.transition">
+            <field name="act_from" ref="act_start_mycmp"/>
+            <field name="act_to" ref="act_process_mycmp"/>
+            <field name="signal">quotation_sent</field>
+        </record>
+
+        <record id="trans_draft_sent" model="workflow.transition">
+            <field name="act_from" ref="act_start_mycmp"/>
+            <field name="act_to" ref="act_draft_mycmp"/>
+            <field name="signal">quotation_draft</field>
+        </record>
+
+        <record id="trans_draft_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_draft_mycmp"/>
+            <field name="act_to" ref="act_cancel_mycmp"/>
+            <field name="signal">cancel</field>
+        </record>
+
+        <record id="trans_process_done" model="workflow.transition">
+            <field name="act_from" ref="act_process_mycmp"/>
+            <field name="act_to" ref="act_done_mycmp"/>
+            <field name="signal">Done</field>
+        </record>
+
+        <record id="trans_draft_process" model="workflow.transition">
+            <field name="act_from" ref="act_draft_mycmp"/>
+            <field name="act_to" ref="act_process_mycmp"/>
+            <field name="signal">draft to process</field>
+        </record>
+
+        <record id="trans_process_cancel" model="workflow.transition">
+            <field name="act_from" ref="act_process_mycmp"/>
+            <field name="act_to" ref="act_cancel_mycmp"/>
+            <field name="signal">ProtoCancel</field>
+        </record>
+
+	</data>
+</openerp>

@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	<!-- Suisse Client General information Tree View -->
+ <record id="investment_risk_profile_tree" model="ir.ui.view">
+            <field name="name">client.investment.risk.profile.tree</field>
+            <field name="model">client.investment.risk.profile</field>
+     <field name="type">tree</field> 
+            <field name="arch" type="xml">
+                <tree string="Investment Risk Profile">
+   <field name="relationship_title" string="CIN Number"/>
+   <field name="investment_client_one" string="First Applicant"/>
+   <field name="investment_client_two" string="Second Applicant"/>
+   <field name="risk_profile_mode_two1"/>
+   <field name="risk_profile_mode_name_staff"/>
+   
+   
+  </tree>
+            </field>
+        </record>
+  
+  <!-- Suisse Client General information Form View -->
+
+	 <record id="client_investment_risk_form_view" model="ir.ui.view">
+			<field name="name">client.investment.risk.profile.form</field>
+			<field name="model">client.investment.risk.profile</field>
+			<field name="arch" type="xml">
+				<form string="Investment Risk Profile" version="7.0">
+				<sheet>
+				<group style="width: 43%%;">
+				<field name="relationship_title" on_change="onchange_relationship_title(relationship_title)"/>
+				</group>
+				<group style="float: left;margin-left: 46%%;margin-top: -4%%;width: 24%%;">
+				<field name="investment_client_one" nolabel="1"/>
+				</group>
+				<group style="float: left;margin-left: 77%%;margin-top: -4%%;width: 24%%;">
+				<field name="investment_client_two" nolabel="1" />
+				<!--<field name="value" nolabel="1"/>-->
+				</group>
+				<notebook>
+				<page string="Financial Information">
+				
+				<div><b><p>Q1. What Is your employment Status?.</p></b></div>
+				<group>
+				 	<field name="question_one_one"/>
+					<field name="question_one_two"/>
+					<field name="question_one_three"/>
+					<field name="question_one_four"/>
+					<field name="question_one_five"/>
+				</group>
+				<div><b><p>Q2. What Is your age?.</p></b></div>
+				<group>
+					<group>
+				 	<field name="question_two_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+					<field name="question_two_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+					<field name="question_two_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+					</group>
+					<group>
+					<p style="margin-top:2px;"><b>(IP6)</b></p>
+					<p style="margin-top:13%%;margin-left:-108%%;margin-bottom:-4%%;"><b>(IP5)</b></p>
+					<p><b>(IP4)</b></p>
+					</group>
+				</group>
+				<div><b><p>Q3. What is the overall time horizon that you have in mind for your account(s) in this relationship?</p></b></div>
+				<group>
+					<group>
+						<field name="question_three_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+						<field name="question_three_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+						<field name="question_three_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+					</group>
+					<group>
+					<p><b>(IP4)</b></p>
+					<p style="margin-top:18%%;margin-left:-108%%;margin-bottom:-4%%;"><b>(IP5)</b></p>
+					<p><b>(IP6)</b></p>
+					</group>
+				</group>
+				<div><b><p>Q4. What percentage of your liquid net worth are you Investing  through your accounts In this relationship? Your liquid net worth   id defined as the sum of (a) Your investment assets(Include current accounts, savings and Investments held within or outside Suisse Capital but exclude your home(s) and businesses that you own)minus(b)Your total of any loans that you have?.</p></b></div>
+				<group>
+					<group>
+						<field name="question_four_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+						<field name="question_four_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+						<field name="question_four_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"/>
+					</group>
+					<group>
+					<p><b>(IP6)</b></p>
+					<p style="margin-top:18%%;margin-left:-108%%;margin-bottom:-4%%;"><b>(IP5)</b></p>
+					<p><b>(IP4)</b></p>
+					</group>
+				</group>
+				<div><b><p>Q5. Considering your expected regular income and your annual appending, to what extent do you expect to reply on your account(s) in this relationship to fund your spending this year?.</p></b></div>
+				
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Not at all. I expect to have adequate Income generated from other sources e.g. employment,business, etc.- to cover my expected spending this year.</b></p>
+						</group>
+						<group>
+						<field name="question_five_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)" nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-16%%;margin-right:-90%%;"><b>(IP6)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I am relying on 25%% or more of my invested capital to fund my expected spending this year.</b></p>
+						</group>
+						<group>
+						<field name="question_five_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP4)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I am relying on 50%% or more of my invested capital to fund my expected spending this year.</b></p>
+						</group>
+						<group>
+						<field name="question_five_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP3)</b></p>
+					</group>
+				
+				</page>
+				<page string="Risk Attitude">
+				<div><b><p>Q6. Which of the following statements best describes your investment objectives for the account(s) in this relationship?.</p></b></div>
+				<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Safety- My primary objective is the protection of my capital and I expect interest income in line with short-term money market rates.</b></p>
+						</group>
+						<group>
+						<field name="question_six_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP1)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Defensive- I seek to maintain the value of my portfolio over the medium term and generate regular income returns above short-term money market rates.</b></p>
+						</group>
+						<group>
+						<field name="question_six_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP2)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Income Oriented- I seek primarily a regular stream of income returns and also some capital appreciation as a secondary consideration.</b></p>
+						</group>
+						<group>
+						<field name="question_six_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP2)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Growth and Income- I seek a balance of regular income returns and capital appreciation.</b></p>
+						</group>
+						<group>
+						<field name="question_six_four" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP3)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Growth Oriented- I seek predominately capital growth over time and also some regular income returns as a secondary consideration.</b></p>
+						</group>
+						<group>
+						<field name="question_six_five" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP4)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Growth- I seek only capital appreciation over time and  I do not seek any regular income from my investments.</b></p>
+						</group>
+						<group>
+						<field name="question_six_six" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP4)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Specialist Investments- I seek to invest in specialist investments that may be subject to substantial fluctuations in the capital value, uncertain, pricing, limited liquidity and/or lack of redemption rights. Examples of specialist investment include Margin FX, Hedge Funds,  Private Equity.</b></p>
+						</group>
+						<group>
+						<field name="question_six_seven" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-11%%;margin-right: -90%%;"><b>(IP6)</b></p>
+					</group>
+			<div><b><p>Q7. Which of the following statements best describes your ability to tolerate different types of risk with your investments in the account(s) in this relationship?.</p></b></div>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I prefer Investments with no or negligible price movements, that can be sold at short notice(less than a week in normal circumstances) or which promise to repay what I invested within a year.</b></p>
+						</group>
+						<group>
+						<field name="question_seven_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-16%%;margin-right: -90%%;"><b>(IP1)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I can tolerate limited negative price movements on my investments and prefer investments that I can sell at short notice (less than a week in normal circumstances) for a price that is certain and close to the recent market average.</b></p>
+						</group>
+						<group>
+						<field name="question_seven_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-20%%;margin-right: -90%%;"><b>(IP2)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I can tolerate moderate negative price movements on my investments and prefer investments that I can sell at short notice(less than a week in normal circumstances) for a price that is certain and close to the recent market average.</b></p>
+						</group>
+						<group>
+						<field name="question_seven_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-20%%;margin-right: -90%%;"><b>(IP3)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I can tolerate investments that may suffer substantial negative price movements, and/or have a small risk of losing their entire value, and/or may be difficult to sell have an uncertain price at any given time, such that I may only be able to sell at a price below the recent market average</b></p>
+						</group>
+						<group>
+						<field name="question_seven_four" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-20%%;margin-right: -90%%;"><b>(IP4)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I can tolerate investments or financial contracts that may suffer substantial negative price movements, and/or have a significant risk of losing their entire value, and/or may be difficult to sell or have an uncertain value at any given time, or do not allow me to sell my investment over an extended period.</b></p>
+						</group>
+						<group>
+						<field name="question_seven_five" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-24%%;margin-right: -90%%;"><b>(IP5)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>I can tolerate investments or financial contracts that may have a risk of losing their entire value or may even lose more than my initial investment, and/or may be very difficult to sell or have a highly uncertain value at any given time, or do not allow me to sell my investment over an extended period.</b></p>
+						</group>
+						<group>
+						<field name="question_seven_six" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float: right;margin-top:-24%%;margin-right: -90%%;"><b>(IP6)</b></p>
+					</group>
+				</page>
+				<page string="Risk Attitude(continue)">
+				<div><b><p>Q8. Your investment knowledge and experience is best described as follow:</p></b></div>
+				        <group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Limited – I have little or no knowledge of investment products outside of traditional bank savings accounts or time-deposits.</b></p>
+						</group>
+						<group>
+						<field name="question_eight_one" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float:right;margin-top:-16%%;margin-right:-90%%;"><b>(IP3)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Moderate – I have general knowledge and understanding of investment products, which are not traditional bank savings accounts or time-deposits and related risks.</b></p>
+						</group>
+						<group>
+						<field name="question_eight_two" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float:right;margin-top:-16%%;margin-right:-90%%;"><b>(IP4)</b></p>
+					</group>
+					<group>
+						<group>
+						<p style="margin-top:-1%%;"><b>Extensive – I have extensive knowledge and understanding of investment products generally and am an active and experienced investor comfortable making my own investment decisions.</b></p>
+						</group>
+						<group>
+						<field name="question_eight_three" on_change="risk_attitude(question_two_one,question_three_three,question_two_two,question_two_three,question_three_one,question_three_two,question_four_one,question_four_two,question_four_three,question_five_one,question_five_two,question_five_three,question_six_one,question_six_two,question_six_three,question_six_four,question_six_five,question_six_six,question_six_seven,question_seven_one,question_seven_two,question_seven_three,question_seven_four,question_seven_five,question_seven_six,question_eight_one,question_eight_two,question_eight_three)"  nolabel="1"/>
+						</group>
+						<p style="float:right;margin-top:-16%%;margin-right:-90%%;"><b>(IP6)</b></p>
+					</group>
+		<div><b><p>Please indicate which of the following products you have knowledge of and / or experience in:
+</p></b></div>
+				<group>
+					<group style="width:50%%;">
+					</group>
+					<group>
+					 	<div style="width:46%%;margin-left: 17%%;"><b><p>Self-Learning</p></b></div>
+					</group>
+					<group>
+						<div style="float:right;margin-top:-39%%;width:36%%;margin-right:-104%%;"><b><p style="margin-top:70%%;">Handled by Relationship Manager</p></b></div>
+					</group>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Structured Products (structured Notes, Structured Deposits, Equity- linked Notes)</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_four_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-15%%;margin-right:-84%%;">
+					<field name="question_eight_four_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Hedge Funds</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_five_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_five_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Private Equity</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_six_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_six_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Derivatives (Futures, Options, Swaps)</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_seven_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_seven_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Margin/ Leverage Trading/ Portfolio Finance</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_eight_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_eight_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Mutual Funds</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_nine_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_nine_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Bonds and Notes</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_ten_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_ten_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Gold Account</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_eleven_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_eleven_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Hybrid Securities (Preferred Stock,Perpetuals,convertibles)</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_twelve_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_twelve_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Equities/Stocks and Shares</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_thirteen_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_thirteen_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Physical Commodities</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_fourteen_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_fourteen_two"  nolabel="1"/>
+					</div>
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Premium Accounts</b></p>
+					</group>
+					<div style="margin-left: 27%%;">
+					<field name="question_eight_fifteen_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_fifteen_two"  nolabel="1"/>
+					</div> 
+				</group>
+				<group>
+					<group>
+					<p style="margin-top:-1%%;"><b>Money Markets</b></p>
+					</group>
+					<div style="margin-left:27%%;">
+					<field name="question_eight_sixteen_one"  nolabel="1"/>
+					</div>
+					<div style="float:right;margin-top:-10%%;margin-right:-84%%;">
+					<field name="question_eight_sixteen_two"  nolabel="1"/>
+					</div>
+				</group>
+			
+				</page>
+				<page string="Risk Profile">
+				<div><b><p>Based on the reponses you have provided above,your long term investment and treasury profile has been evaluated as:</p></b></div>
+				<group>
+				<field name="risk_profile_one"/>
+				<field name="risk_profile_two"/>
+				<field name="risk_profile_three"/>
+				<field name="risk_profile_four"/>
+				<field name="risk_profile_five"/>
+				<field name="risk_profile_six"/>
+				</group>
+				<div><b><p>Profile Mode</p></b></div>
+				<group>
+				<field name="risk_profile_mode_one"/>
+				<field name="risk_profile_mode_two"/>
+				<field name="risk_profile_mode_two1" attrs="{'invisible':[('risk_profile_mode_two','=',False)]}" style="width:60%%;"/>
+				<field name="risk_profile_mode_ext"/>
+				</group>
+				<group>
+				<field name="risk_profile_mode_date"/>
+				<field name="risk_profile_mode_name_staff"/>
+				</group>
+				</page>
+				</notebook>
+				</sheet>
+			    </form>
+		      </field>
+	     </record>
+
+
+
+	 <!--Action For Risk Profile  Form-->
+	<record id="action_client_risk_profile" model="ir.actions.act_window">
+            <field name="name">Investment Risk Profile</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">client.investment.risk.profile</field>
+	    <field name="view_type">form</field>
+	   <!-- <field name="view_id" ref="suisse_asset_client_tree"/>-->
+            <field name="view_mode">tree,form</field>
+	    <field name="context">{}</field>
+	     <!--<field name="domain">[('state','in',('draft','sent','confirmed'))]</field>-->
+	   <!-- <field name="search_view_id" ref="view_suisse_asset_filter"/>-->
+	    <field name="help" type="html">
+           <p class="oe_view_nocontent_create">
+                Click create to fill all forms related to Client Investment Risk Profile.
+              </p><p>
+                 This form contain series of questions which help you to appraise your <br/> <b>risk attitudes,financial means and
+		investment objectives</b> prior to your selection of appropriate investment/treasury product(s).
+              </p>
+		<p>
+		<b>For Joint Accounts</b><br/>
+		<b>1.</b> Please answer these questions from the perspective of the Key account decision maker(s).<br/>
+        	<b>2.</b> For ease of account management, the bank shall recognize only one Customer Investment Profile("CIP")
+		duly completed for any Joint Account.As joint<br/> account holders, you are required to confirm which individual's investment objectives and risk tolerance should be reflected on the <b>CIP</b> and there by assigned to the Joint Account.
+		</p>
+		
+            </field>
+        </record>
+	
+		
+		<menuitem action="action_client_risk_profile" id="menu_client_investment_risk" parent="suisse_asset_management_general_info"
+            sequence="1"/>
+
+   </data>
+</openerp>

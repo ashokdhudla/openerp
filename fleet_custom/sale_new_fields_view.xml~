@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields to sales object is res.objects-->
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_patner_form"/>
+            <field name="arch" type="xml">
+		<field name='website' position='after'>
+                   <field name='start_date'/>
+		   <field name='end_start'/>
+		   <field name='id_no'/>
+		   <field name='Licence_No'/> 
+		</field>
+	   </field>
+        </record>
+    </data>
+</openerp>

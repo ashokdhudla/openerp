@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<!-- Top menu item -->
+        <menuitem name="Troubleshoot"
+            id="menu_troubleshoot_root" />
+
+        <menuitem id="menu_troubleshoot_management" name="Details"
+            parent="menu_troubleshoot_root"/>
+       
+		 <record id="view_troubleshoot_form" model="ir.ui.view">
+			<field name="name">TroubleShoot</field>
+			<field name="model">ta.troubleshoot</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="Troubleshoot Details" version="7.0">
+				<field name="erp_name" class="oe_inline" invisible="1"/>
+				<sheet>
+				<group string="Details">
+					<field name="module_name" style="width:50%%"/>
+					<field name="name" style="width:50%%" on_change="onchange_task(task,name)"/>
+					<field name="trouble_name" placeholder="Give description about trouble..."/>
+					<field name="screen_shot"/>
+					<field name="erp_name" style="width:50%%"/>
+					<field name="change_given_by" style="width:60%%"/>
+					<field name="priority_level" style="width:50%%"/>
+					<field name="task" on_change="onchange_task(task,name)"/>
+					<field name="level_label"/>
+					<field name="solution_type" placeholder="Solution type...."/>
+					<field name="comments" placeholder="Comments here....."/>
+				</group>
+				</sheet>
+				</form>
+			</field>
+		</record> 
+		
+		
+		<record id="action_troubleshoot" model="ir.actions.act_window">
+			   <field name="name">Troubleshoot</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">ta.troubleshoot</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_troubleshoot_tree"/>
+			   <field name="view_mode">tree,form</field>
+			   <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a troubleshoot problem that you have faced.
+              </p><p>
+                Our technical team will help you and can efficiently handle the complete problem.
+              </p>
+            </field>
+		  </record>
+		
+		
+		
+		<!--Search View For Troubleshoot Form-->
+	<record id="view_troubleshoot_filter" model="ir.ui.view">
+            <field name="name">Troubleshoot Details</field>
+            <field name="model">ta.troubleshoot</field>
+            <field name="arch" type="xml">
+		 <search string="Troubleshoot details ">
+                    <field name="erp_name" string="Troubleshoot" filter_domain="['|'('erp_name','ilike',self)]"/>
+                   <separator/>
+                    <filter icon="terp-document-new" string="Client" help="List of all the client"/>
+		    <filter  icon="terp-dolar_ok!" string="Priority" name="priority_level" domain="[('priority_level','=',1)]"/>
+		    <filter  icon="terp-dolar_ok!" string="Module Name" name="type_joint" domain="[('module_name','=',1)]"/>
+		    <filter string="Changes Given By" domain="[('change_given_by','=',1)]" help="Client created by you" icon="terp-personal" name="my_client"/>
+                  
+                    <group expand="0" string="Group By...">
+          <filter string="Changes Given By" icon="terp-personal" domain="[]" context="{'group_by':'change_given_by'}"/>
+			 <filter string="ERP Name" icon="terp-personal" domain="[]" context="{'group_by':'erp_name'}"/>
+			     
+                    </group>
+               </search>
+            </field>
+	</record>
+	<record id="view_troubleshoot_tree" model="ir.ui.view">
+            <field name="name">troubleshoot.tree</field>
+            <field name="model">ta.troubleshoot</field>
+            <field name="priority">4</field>
+            <field name="arch" type="xml">
+                <tree string="Troubleshoot tree" >
+                <field name="serial_number"/>
+                    <field name="priority_level"/>
+                    <field name="trouble_name" />
+                    <field name="erp_name"/>
+                    <field name="change_given_by"/>
+                </tree>
+            </field>
+        </record>
+		
+		 <menuitem action="action_troubleshoot" id="menu_for_troubleshoot_details"
+            parent="menu_troubleshoot_management"/>
+	
+    </data>
+</openerp>

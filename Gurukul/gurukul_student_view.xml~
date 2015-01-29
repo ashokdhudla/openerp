@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>   
+		<!-- Top menu item -->
+        <menuitem name="Student Forum"
+            id="base.menu_student_view_root" />
+
+        <menuitem id="menu_student_view" name="Student Form"
+            parent="base.menu_student_view_root"/>
+			
+		 <record id="gurukul_student_form" model="ir.ui.view">
+			<field name="name">Student form</field>
+			<field name="model">gurukul.student</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+			<form string="Employee" version="7.0">
+                    		<sheet>
+                        		<field name="image_medium" widget='image' class="oe_left oe_avatar"/>
+                        			<div class="oe_title">
+                            			<label for="name" class="oe_edit_only"/>
+                            			<h1>
+                                			<field name="name"/>
+                            			</h1>
+						</div>
+						<group>
+						<field name="course"/>
+						<field name="batch"/>
+						<field name="admission_no"/>
+						</group>
+				<notebook>
+                            		<page string="Personsal Information">
+						<group string="Personal Info">
+						<field name="join_date"/>
+						<field name="date_of_birth"/>
+						<field name="blood_group"/>
+						<field name="gender"/>
+						<field name="country_id"/>
+						<field name="language"/>
+						<field name="category"/>
+						<field name="religion"/>
+						<field name="address"/>
+						<field name="city"/>
+						<field name="state"/>
+						<field name="zip_code"/>
+						<field name="country"/>
+						<field name="phone"/>
+						<field name="mobile"/>
+						<field name="email" widget="email"/>
+						<field name="sms_alerts"/>
+						</group>
+					</page>
+				</notebook>
+				</sheet>
+				</form>
+				</field>
+			</record>
+
+	<!-- Partner Kanban View-->
+        <record model="ir.ui.view" id="gurukul_student_kanban_view">
+            <field name="name">gurukul.student.kanban</field>
+            <field name="model">gurukul.student</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone"/>
+                    <field name="country_id"/>
+                    <field name="mobile"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_vignette oe_semantic_html_override">
+                                <a type="open">
+                                    <t t-if="record.has_image.raw_value === true">
+                                        <img t-att-src="kanban_image('gurukul.student', 'image_medium', record.id.value)" class="oe_kanban_image"/>
+                                    </t>
+                                </a>
+                                <div class="oe_kanban_details">
+                                    <h4 class="oe_partner_heading"><a type="open"><field name="name"/></a></h4>
+                                    <div class="oe_kanban_partner_categories"/>
+                                    <div class="oe_kanban_partner_links"/>
+                                    <ul>
+                                        <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                        <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country"/></li>
+                                        <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country"/></li>
+                                        <li t-if="record.email.raw_value"><a t-attf-href="mailto:#{record.email.raw_value}"><field name="email"/></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+		<record id="open_student_list" model="ir.actions.act_window">
+            <field name="name">Students</field>
+            <field name="res_model">gurukul.student</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="view_id" eval="False"/>
+            <field name="search_view_id" ref="gurukul_student_form"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Student.
+              </p><p>
+                With just a quick glance on the OpenERP student screen, you
+                can easily find all the information you need for each student;
+                name, phone, email, etc.
+              </p>
+            </field>
+        </record>
+
+	<record id="student_view_tree" model="ir.ui.view">
+            <field name="name">Gurukul Student</field>
+            <field name="model">gurukul.student</field>
+            <field name="arch" type="xml">
+                <tree string="Form Details" >
+                        <field name="name"/>
+			<field name="mobile"/>
+			<field name="email"/>
+                </tree>
+            </field>
+        </record>
+			<record id="gurukul_student_form_action" model="ir.actions.act_window">
+            <field name="name">Student Details</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">gurukul.student</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+            <field name="view_id" ref="student_view_tree"/>
+        </record>
+		<menuitem action="gurukul_student_form_action" id="menu_for_student_details"
+            parent="menu_student_view"/>
+
+	<!--<menuitem action="open_student_list" id="menu_open_view_student_list_my" sequence="3" parent="base.menu_student_view_root"/>-->
+
+
+	</data>
+</openerp>
+

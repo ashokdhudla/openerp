@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields to fleet vechicle object -->
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+		<group>
+	          <group string="Add Vehicles">
+			<group>
+                           <field name='Registration_No' placeholder="Enter Registration No."/>
+			   <field name='Make' placeholder="Enter Make"/>
+			   <field name='Color' placeholder="Enter Color."/>
+			   <field name='Type_Of_Body' placeholder="Enter Type Of Body."/>
+			   <field name='Chassis_No' placeholder="Enter Chassis No."/>
+			   <field name='Engine_No' placeholder="Enter Engine No."/>
+			   <field name='Manufacture' placeholder="Enter Manufacture."/>
+	    		   <field name='Rating' placeholder="Enter Rating."/>
+			   <field name="Capacity" placeholder="Capacity."/>
+	                </group>
+	         </group>
+		</group>
+	   </field>
+        </record>
+<!-- Adding the fields to vehicle fuel object -->
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">fleet.vehicle.fuel.form</field>
+            <field name="model">fleet.vehicle.log.fuel</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form"/>
+            <field name="arch" type="xml">
+		<field name='vehicle_id' position='after'>
+                   <field name='Start_Date' placeholder="Enter Start Date."/>
+		   <field name='End_Date' placeholder="Enter End Date."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Petrol_purchase_in_Litres'/>
+		   <field name='diesel_purchase_in_Litres'/>
+	           <field name='Driver_Name'/>
+		</field>
+	   </field>
+        </record>
+	<!-- Adding the fields to vehicle service object 
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">fleet.vehicle.log.service.form</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_form"/>
+            <field name="arch" type="xml">
+		<field name='amount' position='after'>
+                   <field name='Time_In' placeholder="Enter Time In."/>
+		   <field name='Next_Repair' placeholder="Enter Next Repair."/>
+		   <field name='Time_Out' placeholder="Enter Time Out."/>
+		   <field name='Speedometer' placeholder="Enter Speedometer."/>
+		   <field name='Garage_Mechanic' placeholder="Enter Garage Mechanic."/>
+		   <field name='Nature_of_Repairs_Service' placeholder="Enter Nature of Repairs Service."/>
+		   <field name='Signature' placeholder="Enter Signature."/>
+		</field>
+	   </field>
+        </record>-->
+
+    </data>
+</openerp>

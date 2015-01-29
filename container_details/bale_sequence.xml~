@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+    <!-- Sequences for Bale --> 
+        <record id="seq_type_reason_code" model="ir.sequence.type">
+            <field name="name">Bale code</field>
+            <field name="code">stock.move</field>
+        </record>
+
+        <record id="seq_reason_code" model="ir.sequence">
+            <field name="name">balecode</field>
+            <field name="code">stock.move</field>
+            <field name="prefix">BALE</field>
+            <field name="padding">7</field>
+        </record>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="view_order_form_extend">
+    		<field name="name">sale.order.form.inherit1</field>
+    		<field name="model">sale.order</field>
+   			<field name="inherit_id" ref="sale.view_order_form"/>
+    		<field name="arch" type="xml">
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+ 				<field name="partner_id" position="after">
+                     <field name="validity_new" placeholder="Container No."/>
+					 <field name="warranty_new" placeholder="Seal No."/>
+		            </field>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="before">
+					<field name="serial_no"/>
+				</xpath>
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+					<field name="serial_no"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="before">
+					<field name="weight"/>
+					<field name="total_weight"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="after">
+					<field name="weight"/>
+					<field name="total_weight"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='th_weight']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='tax_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+
+				<xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group[@name='sale_total']/field[@name='amount_tax']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+               
+    		</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="view_invoice_form_extend_new">
+    		<field name="name">acount.invoice.form.inherit1</field>
+    		<field name="model">account.invoice</field>
+   			<field name="inherit_id" ref="account.invoice_form"/>
+    		<field name="arch" type="xml">
+    			<field name="invoice_line_tax_id" position="replace"/>
+				<xpath expr="/form/sheet/group/group/field[@name='date_invoice']" position="after">
+		            <field name="validity_new_invoice" placeholder="Container No."/>
+					<field name="warranty_new_invoice" placeholder="Seal no."/>
+		        </xpath>
+
+		        <!-- <xpath expr="/form/sheet/group/group/field[@name='fiscal_position']" position="after">
+		            <field name="availability_new_invoice" placeholder="Availability"/>
+					 <field name="amount_inwords_invoice" />
+		        </xpath> -->
+
+		        <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
+					<field name="serial_no_invoice"/>
+				</xpath>
+				 <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='quantity']" position="after">
+				 	<field name="quantity" on_change="change_total_weight(t_weight,quantity)"/>
+					<field name="t_weight" on_change="change_total_weight(t_weight,quantity)"/>
+					<field name="total_weight"/>
+					<field name="unit_price" />
+					<field name="price_subtotal_new"/>
+				</xpath>
+
+				
+				 <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='quantity']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				 <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='price_unit']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='price_subtotal']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page[@string='Other Info']/field[@name='tax_line']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//label[@for='amount_tax']" position='replace'>
+					<lable for=''/>
+				</xpath>
+
+
+				<xpath expr="/form/sheet/notebook/page[@string='Invoice Lines']/group/field[@name='amount_tax']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+
+		       
+    		</field>
+	</record>
+
+	
+    </data>
+</openerp>

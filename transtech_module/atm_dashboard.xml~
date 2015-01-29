@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_task_dashboard_tree" model="ir.ui.view">
+            <field name="name">atm.task.tree</field>
+            <field name="model">atm.surverys.management</field>
+            <field eval="50" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="ATM Task Tree">
+                    <field name="atm_report_task_id"/>
+                    <field name="customer"/>
+                    <field name="atm"/>
+                    <field name="country"/>
+                    <field name="state" />
+                    <field name="surveyor" />
+                    <field name="visit_time"/>
+                    <field name="additional_info"/>
+                    <field name="assigned_by"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="my_open_atm_tasks_action" model="ir.actions.act_window">
+            <field name="name">Tasks/Alerts in Queue</field>
+            <field name="res_model">atm.surverys.management</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">['|',('surveyor','=',uid),('assigned_by','=',uid),('status','not in',('cancel','done'))]</field>
+            <field name="view_id" ref="view_task_dashboard_tree"/>
+        </record>
+
+        <record id="board_atm_form" model="ir.ui.view">
+            <field name="name">board.atm.form</field>
+            <field name="model">board.board</field>
+            <field name="arch" type="xml">
+                <form string="My Board ATM" version="7.0">
+                    <board style="2-1">
+                        <column>
+                            <action name="%(my_open_atm_tasks_action)d" string="Tasks/Alerts in Queue"/>
+                        </column>
+                    </board>
+                </form>
+            </field>
+        </record>
+
+        <record id="open_board_atm" model="ir.actions.act_window">
+            <field name="name">User Dashboard</field>
+            <field name="res_model">board.board</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="usage">menu</field>
+            <field name="view_id" ref="board_atm_form"/>
+        </record>
+
+
+        <record model="ir.ui.view" id="atm_issue_board_tree_view">
+            <field name="name">ATM task Issue Board Tree</field>
+            <field name="model">atm.surverys.management</field>
+            <field name="arch" type="xml">
+                <tree string="ATM Issue Tracker Tree">
+                    <field name="atm_report_task_id"/>
+                    <field name="customer"/>
+                    <field name="atm"/>
+                    <field name="country"/>
+                    <field name="state" />
+                    <field name="surveyor" />
+                    <field name="visit_time"/>
+                    <field name="additional_info"/>
+                     <field name="assigned_by"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_view_my_atm_issue_tree" model="ir.actions.act_window">
+            <field name="name">Tasks/Alerts Done</field>
+            <field name="res_model">atm.surverys.management</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('surveyor','=',uid),('status','in',('cancel','done'))]</field>
+           <field name="view_id" ref="atm_issue_board_tree_view"/>
+        </record>
+
+        <record id="board_my_atm_issue_form" model="ir.ui.view">
+            <field name="name">board.my.atm.issue.form.inherit</field>
+            <field name="model">board.board</field>
+            <field name="inherit_id" ref="board_atm_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/board/column/action[@string='Tasks/Alerts in Queue']" position="after">
+                    <action name="%(action_view_my_atm_issue_tree)d" string="Tasks/Alerts in Queue"/>
+                </xpath>
+            </field>
+        </record>
+
+        
+
+         <menuitem id="atm_dashbord_menu" name="ATM Dashboard"
+            parent="atm_setup_root" sequence="1"/>
+        
+        <menuitem id="menu_atm_task_dashboard"
+                  sequence="1"
+                  parent="atm_dashbord_menu"
+                  action="open_board_atm"/>
+    <!--<menuitem id="menu_atm"
+                  sequence="1"
+                  parent="atm_dashbord_menu"
+                  action="open_atm_dashbord"/> -->
+    </data>
+</openerp>

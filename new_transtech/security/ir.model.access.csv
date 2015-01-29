@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_transtech_manager,transtech.img,model_transtech_img,new_transtech.group_transtech_manager,1,1,1,1
+
+access_transtech_cus,transtech.img,model_transtech_img,new_transtech.group_transtech_cus,1,0,0,0

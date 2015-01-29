@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<delete id="stock.menu_action_pdct_in" model="ir.ui.menu"/>
+	<delete id="stock.menu_action_pdct_out" model="ir.ui.menu"/>
+	
+	<delete id="stock.menu_stock_products_moves" model="ir.ui.menu"/>
+
+
+<record id="view_incoming_shipment_modif" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+           <field name="arch" type="xml">
+	           
+	<data>  
+	
+	<xpath expr="//field[@name='partner_id']" position="after">
+	   
+			
+			<field name="container_no"/>
+			<field name="seal_no"/>
+		</xpath>
+	</data>
+	</field>
+        </record>
+<record id="view_stock_move_incoming_modif" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+           <field name="arch" type="xml">
+		
+	<data>  
+	
+	<xpath expr="//button[@name='%(stock.move_scrap)d']" position='replace'>		
+			
+		</xpath>
+
+	
+
+	
+	   
+			
+	
+	<xpath expr="//field[@name='product_id']" position='before'>
+	   
+			<field name="sl_no"/>
+			
+		</xpath>
+	<xpath expr="//field[@name='location_id']" position='before'>
+	
+		
+	</xpath>
+	<xpath expr="//field[@name='location_id']" position='before'>
+	   
+			<field name="enbar" string="EAN13-Barcode"/>
+			<field name="broad_category"/>
+			
+			
+		</xpath>
+
+
+
+	
+	</data>
+	</field>
+        </record>
+
+
+
+
+
+<record id="view_stock_move_modif" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_form"/>
+           <field name="arch" type="xml">
+		
+	 
+	<data>
+	
+	
+	 
+
+
+	<xpath expr="//field[@name='product_id']" position='after'>	
+		<field name="enbar" string="EAN13-Barcode"/>
+		<field name="broad_category"/>
+	  	
+		</xpath>
+	<field name="name" position="replace"/>
+	<xpath expr="//button[@name='%(stock.move_scrap)d']" position='replace'>		
+			
+		</xpath>
+	<xpath expr="//field[@name='product_id']" position='after'>	
+		<field name="name"/>
+	  	
+		</xpath>
+	
+
+	</data>
+	</field>
+        </record>
+	
+	 <record id="product_search_form_view_bales" model="ir.ui.view">
+            <field name="name">product.search.raw.material.form</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                    <filter name="filter_to_bales" string="Bales" icon="terp-accessories-archiver+" domain="[('is_bale', '=', 1)]"/>
+            </search>
+        </field>
+        </record>
+
+
+          <record id="product_normal_action_bales" model="ir.actions.act_window">
+            <field name="name">bales</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form,tree</field>
+            <field name="context">{"search_default_filter_to_bales":'is_bale'}</field>
+            <field name="view_id" ref="product.product_kanban_view"/>
+            <field name="search_view_id" ref="product_search_form_view_bales"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new product.
+              </p><p>
+                You must define a product for everything you purchase, whether
+                it's a physical product, a consumable or services you buy to
+                subcontractants.
+              </p><p>
+                The product form contains detailed information to improve the
+                purchase process: prices, procurement logistics, accounting data,
+                available suppliers, etc.
+              </p>
+            </field>
+        </record>
+
+
+         <record id="view_stock_move_modif1" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_form"/>
+           <field name="arch" type="xml">
+
+				<xpath expr="//field[@name='product_id']" position='after'>	
+					<field name="enbar"/>
+					<field name="broad_category"/>
+	  	 <!-- <field name="weight"/> -->
+		</xpath>
+	<xpath expr="//button[@name='%(stock.move_scrap)d']" position='replace'>		
+			
+		</xpath>
+
+			</field>
+		</record>
+		
+
+	<delete id="stock.menu_stock_products_menu" model="ir.ui.menu"/>
+        <menuitem name="Bales" id="menu_for_product_to_bales" action="product_normal_action_bales"
+         parent="stock.menu_stock_product" sequence="1" />
+
+
+    <!-- <record model="ir.ui.view" id="stock_partial_picking_inherit_form">
+    <field name="name">Stock Partial Picking Form</field>
+    <field name="model">stock.partial.picking</field>
+        <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+        <field name="arch" type="xml">
+        	<field name="product_id" position="replace">
+        		<field name="product_id" on_change="onchange_product_id(product_id)"/>
+        	</field>
+        	<field name="quantity" position="replace">
+        		<field name="quantity" on_change="onchange_weight(product_id,quantity)"/>
+        	</field>
+        </field>
+    </record> -->
+
+    <record id="container_charges_view_form" model="ir.ui.view">
+            <field name="name">container.charges.form</field>
+            <field name="model">container.charges</field>
+            <field name="arch" type="xml">
+                <form string="Container Charges" version="7.0">
+                	<sheet>
+                		<group>
+                			<!-- <field name="dept_no"/> -->
+                			<group>
+								<field name="container_no" style="width:60%%;" on_change="onchange_containerno(container_no,oth_charges1,oth_charges2)"/>
+								<field name="total_amount"/>
+							</group>
+							<group>
+								<field name="oth_charges1" on_change="onchange_containerno(container_no,oth_charges1,oth_charges2)"/>
+								<field name="oth_charges2" on_change="onchange_containerno(container_no,oth_charges1,oth_charges2)"/>
+							</group>
+				
+						</group>
+					<notebook>
+				<page string="Product Line">
+               			 <field name="prod_line">
+                                <tree string="Product lines">
+                                    <field name="prod_id"/>
+                                    <field name="name"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="is_inventory"/>
+                                    <field name="account_id" />
+                                    <field name="weight" string="Quantity"/>
+                                    <field name="quantity" string="Total Weight (in Kgs)"/>
+                                    <field name="unit_price"/>
+                                    <field name="total_amount"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                </tree>
+                            </field>
+                            
+                        </page>
+			<page string="Invoice">
+                            <field name="invoice_line">
+                                <tree string="Invoice lines">
+                                    <!--<field name="sequence" widget="handle" />-->
+                                    <field name="ch_id"/>
+                                    <field name="name"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="account_id" groups="account.group_account_user"/>
+                                    <field name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
+                                    <field name="quantity"/>
+                                    <field name="uos_id" groups="product.group_uom"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="invoice_line_tax_id" widget="many2many_tags" context="{'type':parent.type}"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+			</page>
+			</notebook>
+						
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="container_charges_view_tree" model="ir.ui.view">
+			<field name="name">Container Charges Tree</field>
+			<field name="model">container.charges</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Container Charges Information">
+							<field name="container_no"/>
+							<field name="total_amount" sum="Total Amount"/>
+				</tree>
+			</field>
+		</record>
+
+	<record id="container_charges_view_action" model="ir.actions.act_window">
+		  	<field name="name">Container Charges</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">container.charges</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="container_charges_view_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Container Charges......
+              		</p>
+               		</field>
+		</record>
+        <menuitem action="container_charges_view_action" id="menu_container_charges_view" parent="account.menu_finance_payables"/>
+
+
+
+    <record id="partial_picking_line_modif_view" model="ir.ui.view">
+            <field name="name">stock.recv.prod.list.tree</field>
+            <field name="model">stock.partial.picking</field>
+            <field name="inherit_id" ref="stock.stock_partial_picking_form"/>
+        <field name="arch" type="xml">
+		
+			<data>  
+		
+				<xpath expr="//field[@name='quantity']" position='after'>
+					<field name='broad_category'/>	
+				
+				</xpath>
+
+			</data>	
+		</field>
+	</record>
+
+	
+	
+ </data>
+</openerp>
+

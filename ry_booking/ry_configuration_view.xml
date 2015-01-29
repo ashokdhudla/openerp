@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+		<menuitem id="menuitem_ry_top" name="Yachts Booking"/>
+		<menuitem id="menuitem_ry_booking" name="Yachts Booking" parent="menuitem_ry_top"/>
+
+		<menuitem id="partner_menu_id" name="Customers" parent="menuitem_ry_top" sequence="1"/>
+
+        <menuitem action="base.action_partner_form" id="menu_packaging_customer_view_action"
+            parent="partner_menu_id" sequence="1"/>
+
+		<record id="yachts_booking_form_view" model="ir.ui.view">
+            <field name="name">yatch.booking.form</field>
+            <field name="model">booking.yachts</field>
+            <field name="arch" type="xml">
+                <form string="Booking Order" version="7.0">
+                	<header>
+                		<button name="create_quotation" type="object" String="Create Quotation" class="oe_highlight" states="approved" confirm="Are you sure?? want to Create Quotation for this Booking??"/>
+                		<button name="status_approve" type="object" String="Approve" class="oe_highlight" confirm="Are you sure?? want to approve this Booking??" states="draft" groups="ry_booking.group_ry_manager"/>
+
+                		<button name="cancel_booking" type="object" states="draft" string="Cancel Booking" class="oe_highlight" groups="ry_booking.group_ry_manager"/>
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,approved,quotation,done"/>
+                	</header>
+                	<sheet>
+                		<group>
+                			<h2>
+                				<field name="name"/>
+                			</h2>
+                		</group>
+						<group>
+							<group>
+								<field name="yacht_id" style="width:60%%" on_change="onchange_yacht(yacht_id)" required="1" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="client_id" style="width:60%%" on_change="onchange_client(client_id)" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+							<group>
+								<field name="contact_num" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="book_for" style="width:60%%" on_change="onchange_booking_type(book_for,yacht_id)" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="no_guests" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+								 <field name="src" style="width:50%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+							<group>
+								<field name="mail" style="width:80%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+							 	<field name="cruise_date" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+						</group>
+						<!-- <button name="send_mail" type="object" String="Send" class="oe_highlight"/> -->
+							<group>
+								<!-- <group string="Time:"> -->
+								<div style="margin-top:1%%">
+									<h3> Start Time:</h3>
+								</div>
+								<div style="margin-left:-20%%">
+									<h3> End Time:</h3>
+								</div>
+								
+								<field name="time1" style="width:60%%;;margin-left: 20%%;margin-top:-6%%;" nolabel="1" on_change="onchange_time(time1,time2,cost_per_hr,half_amt_received)" widget="float_time" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<!-- <div>
+									<h4>TO</h4>
+								</div> -->
+								<field name="time2" style="width:60%%;margin-left: -1%%;margin-top:-7%%" nolabel="1" on_change="onchange_time(time1,time2,cost_per_hr,half_amt_received)" widget="float_time" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<!-- </group> -->
+								<field name="am_pm1" style="width:30%%;margin-left: 46%%;margin-top: -11%%;" nolabel="1" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="am_pm" style="width:30%%;margin-left: 23%%;margin-top: -11%%;" nolabel="1" attrs="{'readonly': [('state','=','quotation')]}"/>
+							<group style="margin-left:5%%">
+								<field name="total_hrs" widget="float_time" group="group_ry_agent" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="cost_per_hr" on_change="onchange_cost_per_hr(cost_per_hr)" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="security_deposit" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="amount_total" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+							<group>
+								<field name="half_amt_received" style="width:60%%" on_change="onchange_amt(amount_total,half_amt_received)" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="amount_received" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="amt_date" attrs="{'readonly': [('state','=','quotation')]}"/>
+								<field name="amt_bal" attrs="{'readonly': [('state','=','quotation')]}"/>
+							</group>
+							</group>
+						<notebook>
+							<page string="Extras Provided by Royal Yachts">
+								<group>
+								<group string="Extras Provided by Royal Yachts">
+										<field name="catering" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="cat_company" style="width:60%%" attrs="{'invisible': [('catering', '=',False)]}" />
+										 <field name="contact_point" style="width:60%%" attrs="{'invisible': [('catering', '=',False)]}" />
+										<field name="own_food" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="food_type" style="width:60%%" attrs="{'invisible': [('own_food', '=',False)]}" />
+										<field name="food_pax" style="width:60%%" attrs="{'invisible': [('own_food', '=',False)]}" />
+										<field name="catering_board" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										
+								</group>
+								<group>
+										<field name="no_on_board" attrs="{'invisible': [('catering_board', '=',False)]}" />
+										<field name="decoration" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="occasion_type" style="width:60%%" attrs="{'invisible': [('decoration', '=',False)]}"/>
+										<field name="dj" style="width:60%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="contact_num2" style="width:60%%" attrs="{'invisible': [('dj', '=',False)]}"/>
+								</group>
+							</group>
+							<group>
+									<field name="remarks" placeholder="Remarks...." attrs="{'readonly': [('state','=','quotation')]}"/>
+								</group>
+								<!-- <group>
+									<field name="sales_remarks" placeholder="Remarks...."/>
+								</group> -->
+							</page>
+
+							<page string="Others">
+									<group>
+										<field name="luxury_transportation" style="width:30%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="contact_no_chauffeur" style="width:30%%" attrs="{'invisible': [('luxury_transportation', '=',False)]}"/>
+										<field name="water_sports" style="width:30%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="supplier_contact_point" style="width:30%%" attrs="{'invisible': [('water_sports', '=',False)]}"/>
+										<field name="time_for_sport_activity" style="width:50%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="type_water_sports" style="width:30%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="client_bring_alcohol" style="width:30%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="need_to_prepare" style="width:30%%" attrs="{'invisible': [('client_bring_alcohol', '=',False)]}"/>
+									</group>
+									<group>
+										<field name="client_activity_remarks" placeholder="Client Activity Remarks...." attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="charter_sales_remarks" placeholder="Charter Sale Remarks...." attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="booked_by" style="width:50%%" on_change="onchange_user(booked_by)" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="phone" style="width:50%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+										<field name="signature" style="width:50%%" attrs="{'readonly': [('state','=','quotation')]}"/>
+									</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="yacht_booking_order_tree" model="ir.ui.view">
+            <field name="name">yacht.order.tree</field>
+            <field name="model">booking.yachts</field>
+            <field name="arch" type="xml">
+				<tree string="Yacht Booking Tree"  colors="grey:state=='draft';blue:state=='approved';green:state=='quotation';red:state=='cancel';orange:state=='done'" version="7.0">
+					<field name="name"/>
+					<field name="yacht_id"/>
+					<field name="client_id"/>
+					<field name="contact_num"/>
+					<field name="no_guests"/>
+					<field name="cruise_date"/>
+					<field name="state"/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_booking_order_filter" model="ir.ui.view">
+            <field name="name">booking.order.list.select</field>
+            <field name="model">booking.yachts</field>
+            <field name="arch" type="xml">
+                <search string="Search Booking Order">
+                    <field name="name" string="Booking Order" filter_domain="[('name','ilike',self)]"/>
+                    <separator/>
+                    <filter icon="terp-document-new" string="Draft" name="draft" domain="[('state','=',('draft'))]"/>
+                    <separator/>
+                    <filter icon="terp-document-new" string="Quotations" name="quotation" domain="[('state','=',('quotation'))]" help="Booking Order that haven't yet been confirmed"/>
+                    <separator/>
+                    <filter icon="terp-document-new" string="Approved" name="approved" domain="[('state','=',('approved'))]" help="Booking Order that have been approved"/>
+                    <separator/>
+                    <filter icon="terp-check" string="Done" name="done" domain="[('state','=',('done'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'client_id'}"/>
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Cruising Date" icon="terp-go-month" domain="[]" context="{'group_by':'cruise_date'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+		<record id="yacht_booking_action_view" model="ir.actions.act_window">
+			<field name="name">Booking</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">booking.yachts</field>
+			<field name="view_id" ref="yacht_booking_order_tree"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="help" type="html">
+      		<p class="oe_view_nocontent_create">
+        	Click to Create Yachts Booking......
+      		</p>
+       		</field>
+		</record>
+
+		 <record id="view_yacht_booking_calendar" model="ir.ui.view">
+            <field name="name">yacht.booking.calendar</field>
+            <field name="model">booking.yachts</field>
+            <field name="arch" type="xml">
+                <calendar string="Booked Yachts" color="state" date_start="cruise_date">
+					<field name="yacht_id"/>
+					<field name="client_id"/>
+					<field name="no_guests"/>
+					<field name="total_hrs"/>
+                </calendar>
+            </field>
+        </record>
+
+<menuitem id="yacht_booking_action_menu" action="yacht_booking_action_view" parent="menuitem_ry_booking"/>
+
+ <menuitem action="sale.action_orders" id="menu_sale_order_inherit" parent="partner_menu_id" sequence="3"/>
+
+ <menuitem id="menu_sale_quotations_inherit"
+        action="sale.action_quotations" parent="partner_menu_id" sequence="2"/>
+
+	
+	<record model="ir.ui.view" id="sales_purchase_page_view1">
+		    <field name="name">Partner Inherit Form</field>
+		    <field name="model">res.partner</field>
+	        <field name="inherit_id" ref="base.view_partner_form"/>
+	        <field name="arch" type="xml">
+	         	<xpath expr="/form[@string='Partners']/sheet/notebook/page[@string='Sales &amp; Purchases']" position="attributes">
+	         	<attribute name="invisible">1</attribute>
+	         	</xpath>
+        	</field>
+    	</record>
+
+
+    <record model="ir.ui.view" id="view_order_form_inherit">
+    		<field name="name">sale.order.form.inherit</field>
+    		<field name="model">sale.order</field>
+   			<field name="inherit_id" ref="sale.view_order_form"/>
+    		<field name="arch" type="xml">
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="before">
+					<field name="serial_no"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_id']" position="after">
+					<field name="yacht_id" on_change="onchange_yacht_id(yacht_id)" required="1"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='product_uom_qty']" position="after">
+					<field name="book_for" on_change="onchange_booking_type(book_for,yacht_id)"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='price_unit']" position="before">
+					<field name="book_for" on_change="onchange_booking_type(book_for,yacht_id)"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='tax_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='product_id']" position="after">
+					<field name="yacht_id" on_change="onchange_yacht_id(yacht_id)" required="1"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/field[@name='type']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+
+				<xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group[@name='sale_total']/field[@name='amount_tax']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+               
+    		</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="view_royal_yacht_invoice_form">
+    		<field name="name">acount.invoice.form.ry</field>
+    		<field name="model">account.invoice</field>
+   			<field name="inherit_id" ref="account.invoice_form"/>
+    		<field name="arch" type="xml">
+    			<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='product_id']" position="before">
+					<field name="serial_no_invoice"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='product_id']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='product_id']" position="after">
+					<field name="yacht_id"/>
+				</xpath>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='invoice_line_tax_id']" position="replace"/>
+
+				<xpath expr="/form/sheet/notebook/page[@string='Other Info']/field[@name='tax_line']" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</xpath>
+
+				<xpath expr="//label[@for='amount_tax']" position='replace'>
+					<lable for=''/>
+				</xpath>
+
+				<field name='amount_tax' position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+
+				<xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='price_unit']" position="before">
+					<field name="book_for"/>
+				</xpath>
+			</field>
+		</record>
+
+
+		 <record model="ir.ui.view" id="ry_customer_form">
+		    <field name="name">Partner Inherit Form</field>
+		    <field name="model">res.partner</field>
+	        <field name="inherit_id" ref="base.view_partner_form"/>
+	        <field name="arch" type="xml">
+	         	<field name="website" position="after">
+	         		<field name="discount"/>
+	         	</field>
+	         	<field name="category_id" position="after">
+	         		<div name="options" groups="base.group_user">
+	                    <field name="is_agent" on_change="onchange_customer(is_agent,is_saleperson,is_manager)"/>
+	                    <label for="is_agent"/>
+	                   	<field name="is_saleperson" on_change="onchange_customer1(is_agent,is_saleperson,is_manager)"/>
+	                    <label for="is_saleperson"/>
+	                    <field name="is_manager" on_change="onchange_customer2(is_agent,is_saleperson,is_manager)"/>
+	                    <label for="is_manager"/>
+                    </div>
+                </field>
+        	</field>
+    	</record>
+
+
+    <record id="view_order_form_cust_ref_readonly" model="ir.ui.view">
+    <field name="name">sale.order.form.readonly.cust</field>
+    <field name="model">booking.yachts</field>
+    <field name="inherit_id" ref="ry_booking.yachts_booking_form_view"/>
+    <field name="groups_id" eval="[(6, 0, [ref('ry_booking.group_ry_agent')])]"/>
+    <field name="arch" type="xml">
+        <field name='total_hrs' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='cost_per_hr' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amount_total' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='cost_per_hr' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amount_received' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amt_bal' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='security_deposit' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+    </field>
+   </record>
+
+ <record id="view_order_form_cust_ref_readonly_sales_person" model="ir.ui.view">
+    <field name="name">sale.order.form.readonly.sales_person</field>
+    <field name="model">booking.yachts</field>
+    <field name="inherit_id" ref="ry_booking.yachts_booking_form_view"/>
+    <field name="groups_id" eval="[(6, 0, [ref('ry_booking.group_ry_user')])]"/>
+    <field name="arch" type="xml">
+        <field name='total_hrs' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='cost_per_hr' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amount_total' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='cost_per_hr' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amount_received' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='amt_bal' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+        <field name='security_deposit' position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field>
+
+    </field>
+   </record>
+</data>
+</openerp>

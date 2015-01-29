@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+		<record id="view_customer_info_form" model="ir.ui.view">
+			<field name="name">Customer Info</field>
+			<field name="model">customer.info</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="Customer Details" version="7.0">
+					<sheet>
+					<field name="image" widget='image' class="oe_left oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+					<div class="oe_title">
+                        		
+							<h2>
+								<field name="customer_code" string="Customer Code"/>
+								<field name="name" default_focus="1" placeholder="Customer Name" string="Customer Name"/>
+							</h2>
+						
+						<button name="send_invitation" type="object" String="Portal Access"  confirm="Are you sure? want to make this customer as your portal user??" help="Sends the invitation mail to the customer with login credentials &amp; Makes this customer as your portal User" groups="transtech_module.group_atm_manager"/>
+					
+											
+					</div>
+						<group>
+							<group>
+								<field name="address"/>
+								<field name="country_id"/>
+								<field name="contact_person"/>
+								<field name="contact_email" widget="email"/>
+								<field name="mobile_no" string="Contact Number"/>
+								<field name="active"/>
+								<field name="sla_start"/>
+								<field name="sla_end"/>
+								<field name="display_mapping" invisible="1"/>
+							</group>
+							<group string="Escalation Levels">
+								 <field name="account_manager"/>
+								 <field name="other_1"/>
+								 <field name="other_2"/>
+							</group>
+						</group>
+						<notebook>
+							<page string="List of Tasks for You">
+								<field name="task_ids" widget="many2many_list">
+									 <tree string="ATM Surverys tree">
+										<field name="customer"/>
+										<field name="atm"/>
+										<field name="country"/>
+										<field name="state" />
+										<field name="surveyor" />
+										<field name="visit_time"/>
+										<field name="additional_info"/>
+										<field name="status"/>
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_customer_info_tree" model="ir.ui.view">
+			<field name="name">Customer Tree</field>
+			<field name="model">customer.info</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Customer Information">
+							<field name="customer_code"/>
+							<field name="name"/>
+							<field name="country_id"/>
+							<field name="contact_person"/>
+							<field name="mobile_no" string="Contact Number"/>
+							<field name="active"/>
+				</tree>
+			</field>
+		</record>
+		
+	     <record id="view_customer_search" model="ir.ui.view">
+            	<field name="name">customer.info.search</field>
+            	<field name="model">customer.info</field>
+            	<field name="arch" type="xml">
+                	<search string="Customer">
+                    		<field name="name" filter_domain="['|', ('name','ilike',self), ('contact_person','ilike',self)]" string="Customer"/>
+                	</search>
+            	</field>
+       	    </record>
+		<record id="view_customer_info_action" model="ir.actions.act_window">
+		  	<field name="name">Customer Details</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">customer.info</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_customer_info_tree"/>
+			   <field name="search_view_id" ref="view_customer_search"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	click to add new Customer details......
+              		</p>
+               		</field>
+		</record>
+
+	
+
+        <menuitem action="view_customer_info_action" id="menu_customer_info" parent="menu_customer_atm" sequence="1"/>
+
+</data>
+</openerp>

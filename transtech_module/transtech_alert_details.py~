@@ -1,0 +1,79 @@
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+import datetime
+import time
+class alert_section(osv.osv):
+	
+	_name = "alert.info"
+	
+	#_inherit = ['mail.thread','ir.needaction_mixin']
+
+	def copy(self, cr, uid, id, default=None, context=None):
+		if not default:
+			default = {}
+		default.update({
+			'name': self.pool.get('ir.sequence').get(cr, uid, 'alert.info'),
+			})
+
+		return super(alert_section, self).copy(cr, uid, id, default, context=context)
+
+	def _login_customer(self,cr,uid,ids,name,arg,context=None):
+		customerid = self.pool.get('res.users').search(cr, uid, [('id', '=', uid)], context=context)
+		customerid_name =self.pool.get('res.users').browse(cr, uid, customerid, context=context)
+		print customerid_name[0].name
+		customer_info = self.pool.get('customer.info').search(cr, uid, [('name', '=', customerid_name[0].name)], context=context)
+		customer_info_name = self.pool.get('customer.info').browse(cr, uid,customer_info, context=context)
+		print customer_info_name[0].id
+		return customer_info_name[0].id
+
+          
+	_columns = {
+		'name':fields.char('Alert ID',readonly=True),
+		'customer':fields.many2one('customer.info','Customer', required=False),
+		#'customer':fields.function(_login_customer,type="many2one",relation="customer.info",string='Customer',required=False),
+		'atm_id':fields.many2one('atm.info','ATM', required=True,domain="[('customer','=',customer)]"),
+		'category':fields.selection([('complaint','Complaint'),('issue','Issue')],'Category',required=True),
+		'priority':fields.selection([('low','Low'),('medium','Medium'), ('high','High'),('critical','Critical')],'Priority',required=True),
+		'country_id':fields.many2one('res.country','Country',domain="[('code','=','AE')]"),
+		'state_id':fields.many2one('res.country.state','State', domain="[('country_id','=',country_id)]"),
+		#'assign_to':fields.many2one('res.users','Assign To', required=True, domain="[('role','=','Surveyor')]"),
+		'status':fields.selection([('assigned','Assigned'),('resolved','Resolved'), ('closed','Closed')],'Status',required=True,track_visibility='always'),
+		'summary':fields.char('Summary', size=100, required=False),
+		'description':fields.text('Description'),
+		'reason_id':fields.many2one('reason.code','Reason Code'),
+		'reason_disc':fields.text('Reason Descriptions'),
+	}
+
+	def _default_country(self, cr, uid, context=None):
+		cid = self.pool.get('res.country').search(cr, uid, [('code', '=', 'AE')], context=context)
+		return cid[0]		
+			
+	
+	_defaults = {
+		'status':'assigned',
+		'country_id':_default_country,
+         	
+	}
+	_order = "name desc"
+	
+	def create(self,cr,uid,vals,context=None):
+		if vals.get('name','/') == '/': 
+			vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'alert.info') or '/'
+		
+		return super(alert_section, self).create(cr, uid, vals, context=context)
+
+	def status_resolve(self,cr,uid,ids,context=None):
+		self.write(cr,uid,ids,{'status':'resolved'},context=context)
+		return True
+
+	def status_close(self,cr,uid,ids,context=None):
+		self.write(cr,uid,ids,{'status':'closed'},context=context)
+		return True
+
+	def unlink(self, cr, uid, ids, context=None):
+        	alert_obj = self.pool.get('alert.info').browse(cr,uid,ids[0])
+		if alert_obj.status in ('resolved','closed'):
+			raise osv.except_osv(_('Invalid Action!'), _("You can't delete an Alert which is either in 'Resolved state' or in 'Closed state' "))
+        	
+        	return super(alert_section, self).unlink(cr, uid, ids, context=context)
+alert_section()

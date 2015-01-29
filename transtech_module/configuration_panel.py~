@@ -1,0 +1,66 @@
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+import datetime
+import time
+
+class state_setup(osv.osv):
+
+	_inherit="res.country.state"
+
+state_setup()
+
+class reason_code_setup(osv.osv):
+
+	_name = 'reason.code'
+
+	_columns = {
+		'reason_code':fields.char("Code",size=60,readonly=True),
+		'name':fields.char('Reason Code', size=240),
+		
+	}
+	
+	def create(self, cr, uid, vals, context=None):
+		if vals.get('reason_code','/')== '/':
+			vals['reason_code'] = self.pool.get('ir.sequence').get(cr, uid, 'reason.code') or '/'
+			code_value=super(reason_code_setup, self).create(cr, uid, vals, context=context)
+		return code_value
+
+reason_code_setup()
+
+class remarks_category(osv.osv):
+
+	_name = 'remarks.category'
+
+	_columns = {
+		'description':fields.char("Remark Category ID",size=200,readonly=True),
+		'name':fields.char('Remark Description', required=True),
+	}
+	def create(self, cr, uid, vals, context=None):
+		if vals.get('description','/')== '/':
+			vals['description'] = self.pool.get('ir.sequence').get(cr, uid, 'remarks.category') or '/'
+			remark_code=super(remarks_category, self).create(cr, uid, vals, context=context)
+		return remark_code
+
+		
+
+remarks_category()
+
+class manage_group(osv.osv):
+
+	_inherit="res.groups"
+
+manage_group()
+
+
+class manage_users(osv.osv):
+	
+	_inherit="res.users"
+        
+	_columns ={
+		#'tuser_id':fields.char('User ID',readonly=True),
+		#'contact_num':fields.char('Contact Number'),
+		#'joining_date':fields.datetime('Joining Date'),
+		#'Comments':field.text('Comments'),
+	}
+
+manage_users()

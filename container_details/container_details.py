@@ -1,0 +1,569 @@
+import random
+from openerp.osv import fields, osv
+import openerp.addons.decimal_precision as dp
+import math
+import time
+from lxml import etree
+from openerp.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT
+from openerp.tools.float_utils import float_compare
+import openerp.addons.decimal_precision as dp
+from openerp.tools.translate import _
+class incomming_stock_modif(osv.osv):
+	_inherit="stock.picking"
+	_columns={	
+		'container_no':fields.char('Container Number',size=20),
+		'seal_no':fields.char('Seal Number',size=20),
+	}
+
+	def create(self,cr,uid,vals,context=None):
+		print vals
+		return super(incomming_stock_modif,self).create(cr,uid,vals,context=None)
+
+	def action_process(self, cr, uid, ids, context=None):
+		if context is None:
+			context = {''}
+			"""Open the partial picking wizard"""
+			l_obj = self.browse(cr,uid,ids[0])
+			context.update({
+			'quantity':self.Product_qty,
+			'broad_category':self.broad_category,
+			#'active_model': self._name,
+			'active_ids': ids,
+			'active_id': len(ids) and ids[0] or False
+			})
+		return {
+		'view_type': 'form',
+		'view_mode': 'form',
+		'res_model': 'stock.partial.picking',
+		'type': 'ir.actions.act_window',
+		'target': 'new',
+		'context': context,
+		'nodestroy': True,
+		}		
+	
+incomming_stock_modif()
+	
+class incomming_shipment_modif(osv.osv):
+	_inherit="stock.picking.in"
+	
+			
+	
+	
+	_columns={	
+		'container_no':fields.char('Container Number',size=20),
+		'seal_no':fields.char('Seal Number',size=20),
+		
+	}
+	
+
+	def action_process(self, cr, uid, ids, context=None):
+		if context is None:
+			context = {''}
+			"""Open the partial picking wizard"""
+			l_obj = self.browse(cr,uid,ids[0])
+			context.update({
+			'quantity':l_obj.Product_qty,
+			'broad_category':l_obj.broad_category,
+			'active_model': 'stock.picking.in',
+			'active_ids': ids,
+			'active_id': len(ids) and ids[0] or False
+			})
+		return {
+		'view_type': 'form',
+		'view_mode': 'form',
+		'res_model': 'stock.partial.picking',
+		'type': 'ir.actions.act_window',
+		'target': 'new',
+		'context': context,
+		'nodestroy': True,
+		}		
+	
+
+incomming_shipment_modif()
+
+
+class stock_move_modifs(osv.osv):
+	_inherit=["stock.move",'stock.move.split']
+	_name='stock.move'
+
+	def serial_inc(self,cr,uid,ids,field_name, arg, context=None):
+		res={}
+		counter=0
+		for i in self.browse(cr,uid,ids,context=None):
+			res[i.id]={
+					'sl_no':1
+				}
+			counter+=1
+			res[i.id]['sl_no'] = counter
+		return res
+
+	
+	
+	def _default_product(self, cr, uid, ids, context=None):
+		#print ids
+		seq=self.pool.get('ir.sequence').get(cr, uid, 'stock.move')
+		ran = random.randint(1000000000000,9999999999999)
+		# vals.update({'enbar':str(ran)+vals['name'][4:]})
+		oddsum=0
+		evensum=0
+		total=0
+		eanvalue=str(ran)
+		reversevalue = eanvalue[::-1]
+		finalean=reversevalue[1:]
+		for i in range(len(finalean)):
+			if i % 2 == 0:
+				oddsum += int(finalean[i])
+			else:
+				evensum += int(finalean[i])
+		total=(oddsum * 3) + evensum
+
+		check = int(10 - math.ceil(total % 10.0)) %10
+		ctg_id=self.pool.get('product.category').search(cr,uid,[('name','=','Raw Material')])
+		values = {'is_bale':1,'warranty': 0, 'ean13': eanvalue[:-1] + str(check), 'supply_method': 'buy', 'uos_id': False, 'list_price': 1, 'weight': 0, 'track_production': False, 'standard_price': 0, 'price_extra': 0, 'mes_type': 'fixed', 'procure_method': 'make_to_stock', 'description_purchase': False, 'default_code': False, 'type': 'consu', 'property_account_income': False, 'cost_method': 'standard', 'uos_coeff': 1, 'sale_ok': False, 'message_follower_ids': False, 'purchase_ok': 1, 'product_manager': False, 'track_outgoing': False, 'company_id': 1, 'message_ids': False, 'state': False, 'loc_rack': False, 'uom_po_id': 1, 'pkg_weight': 0, 'price_margin': 1, 'weight_net': 0, 'description': False, 'valuation': 'manual_periodic', 'track_incoming': False, 'property_stock_production': 7, 'supplier_taxes_id': [[6, False, []]], 'volume': 0, 'sale_delay': 7, 'loc_row': False, 'description_sale': False, 'active': 1, 'property_stock_inventory': 5, 'variants': False, 'categ_id': ctg_id[0], 'loc_case': False, 'packaging': [], 'image_medium': False, 'name': seq, 'uom_id': 1, 'produce_delay': 1, 'property_account_expense': False, 'property_stock_account_input': False, 'property_stock_procurement': 6, 'taxes_id': [[6, False, []]], 'property_stock_account_output': False, 'seller_ids': []}
+		new_id = self.pool.get('product.product').create(cr,uid,values)
+		return new_id
+
+	
+	_columns={
+		'sl_no':fields.function(serial_inc,string='Sl.No',type="integer",multi="sums" ,readonly=True),
+		'name': fields.char('Description', select=False),
+		"enbar":fields.char('Ean-13 Barcode',size=13),
+		'broad_category':fields.char('Broad Category'),
+		'product_id': fields.many2one('product.product','Bale ID', required=True, select=True),
+		'product_qty': fields.float('Weight(Kgs)', digits_compute=dp.get_precision('Product Unit of Measure'),
+			required=True,states={'done': [('readonly', True)]}),
+		'product_uom': fields.many2one('product.uom', 'Unit of Measure', required=False,states={'done': [('readonly', True)]}),
+
+	}
+
+	_defaults = {
+		
+		'product_id':_default_product,
+		'qty' : 1,
+		'product_qty' : 0.0,
+	
+			
+	}
+
+	def create(self,cr,uid,vals,context=None):
+		print 'WRITE',vals
+
+		return super(stock_move_modifs,self).create(cr,uid,vals,context=None)
+
+	def write(self,cr,uid,ids,vals,context=None):
+		print vals
+
+		return super(stock_move_modifs,self).write(cr,uid,ids,vals,context=None)
+	
+
+	def onchange_product_id(self, cr, uid, ids, prod_id=False, loc_id=False,
+							loc_dest_id=False, partner_id=False):
+		""" On change of product id, if finds UoM, UoS, quantity and UoS quantity.
+		@param prod_id: Changed Product id
+		@param loc_id: Source location id
+		@param loc_dest_id: Destination location id
+		@param partner_id: Address id of partner
+		@return: Dictionary of values
+		"""
+		if not prod_id:
+			return {}
+		user = self.pool.get('res.users').browse(cr, uid, uid)
+		lang = user and user.lang or False
+		if partner_id:
+			addr_rec = self.pool.get('res.partner').browse(cr, uid, partner_id)
+			if addr_rec:
+				lang = addr_rec and addr_rec.lang or False
+		ctx = {'lang': lang}
+
+		product = self.pool.get('product.product').browse(cr, uid, [prod_id], context=ctx)[0]
+		uos_id  = product.uos_id and product.uos_id.id or False
+		result = {
+			'product_uom': product.uom_id.id,
+			'product_uos': uos_id,
+			'product_qty': 1.00,
+			'product_uos_qty' : self.pool.get('stock.move').onchange_quantity(cr, uid, ids, prod_id, 1.00, product.uom_id.id, uos_id)['value']['product_uos_qty'],
+			'prodlot_id' : False,
+			'enbar': product.ean13,
+			# 'broad_category':product.name,
+		}
+		if not ids:
+			result['name'] = product.partner_ref
+		if loc_id:
+			result['location_id'] = loc_id
+		if loc_dest_id:
+			result['location_dest_id'] = loc_dest_id
+		return {'value': result}
+
+	
+
+stock_move_modifs()
+
+
+class mdif_quantity_inventory(osv.osv_memory):
+	_inherit="stock.inventory.line"
+	_columns = {
+		'product_qty': fields.float('Weight(Kg)', digits_compute=dp.get_precision('Product Unit of Measure')),
+	}
+
+mdif_quantity_inventory()
+
+
+
+
+
+class container_charges(osv.osv):
+
+	_name = 'container.charges'
+
+	_rec_name="container_no"
+	def _show_prod(self, cr, uid, ids, name, args, context=None):
+		res = {}
+		line_ids=[]
+		all_inv_ids = self.pool.get('account.invoice').search(cr,uid,[('container_no','!=','False')])
+		read_ids = self.pool.get('account.invoice').read(cr,uid,all_inv_ids,['container_no'])
+		
+		cntr_obj=self.browse(cr,uid,ids)
+		for i in cntr_obj:
+			for j in read_ids:
+				l = j['container_no'].split(',')
+				
+				for k in l:
+					if k == i.container_no:
+						
+						lin_ids=self.pool.get('account.invoice.line').search(cr,uid,[('pr_id','=',j['id'])])
+						line_ids.extend(lin_ids)
+					
+			res[i.id] = line_ids
+		return res
+
+
+	def _show_invoice(self, cr, uid, ids, name, args, context=None):
+		res = {}
+		line_ids=[]
+		all_inv_ids = self.pool.get('account.invoice').search(cr,uid,[('container_no','!=','False')])
+		read_ids = self.pool.get('account.invoice').read(cr,uid,all_inv_ids,['container_no'])
+		
+		cntr_obj=self.browse(cr,uid,ids)
+		for i in cntr_obj:
+			for j in read_ids:
+				l = j['container_no'].split(',')
+				
+				for k in l:
+					if k == i.container_no:
+						
+						lin_ids=self.pool.get('account.invoice.line').search(cr,uid,[('invoice_id','=',j['id'])])
+						line_ids.extend(lin_ids)
+					
+			res[i.id] = line_ids
+		return res		
+	_columns={
+	'container_no':fields.char('Container No'),
+	'total_amount':fields.float('Total Amount',digits_compute=dp.get_precision('Account')),
+	'oth_charges1':fields.float('Other Charges1'),
+	'oth_charges2':fields.float('Other Charges2'),
+	# 'product_line':fields.one2many('container.lines','pr_id','Product Line'),
+	# 'invoice_line': fields.one2many('container.lines', 'invoice_id', 'Invoice Lines', readonly=True, states={'draft':[('readonly',False)]}),
+	'prod_line': fields.function(_show_prod, relation='account.invoice.line', type="many2many", string='Product Line',readonly=True),
+	'invoice_line': fields.function(_show_invoice, relation='account.invoice.line', type="many2many", string='Product Line',readonly=True),
+
+
+	}
+
+	_sql_constraints = [('container_no','unique(container_no)', 'Container Number already exists...!')]
+
+	def onchange_containerno(self,cr,uid,ids,container_no,oth_charges1,oth_charges2,context=None):
+		all_inv_ids = self.pool.get('account.invoice').search(cr,uid,[('container_no','!=','False')])
+		read_ids = self.pool.get('account.invoice').read(cr,uid,all_inv_ids,['container_no'])
+		amt=0.0
+		res={}
+		for j in read_ids:
+			l = j['container_no'].split(',')
+			for k in l:
+				if k == container_no:
+					inv_obj = self.pool.get('account.invoice').browse(cr,uid,j['id'])
+					amt += inv_obj.amount_total/len(l)
+		obj=self.pool.get('account.invoice').browse(cr,uid,read_ids[0])
+		res.update({'total_amount':amt+oth_charges1+oth_charges2})
+		#self.pool.get('container_lines').create(cr,uid,{'name':obj.name,'account_id':obj.account_id,'prod_id':obj.prod_id,'is_inventory':obj.is_inventory,'weight':obj.weight})
+		return {'value':res}
+
+container_charges()
+
+# class container_lines(osv.osv):
+# 	_inherit="account.invoice.line"
+# 	_name="container.lines"
+# 	_columns={
+# 	#'serial_no_invoice':fields.function(serial_inc,string='Sr.No',type="integer",multi="sums" ,readonly=True),
+# 	'name': fields.text('Description', required=True),
+# 	'account_id': fields.many2one('account.account', 'Account', required=True, domain=[('type','<>','view'), ('type', '<>', 'closed')], help="The income or expense account related to the selected product."),
+# 	'charge_id': fields.many2one('account.invoice', 'Invoice Reference', ondelete='cascade', select=True),
+# 	'pr_id': fields.many2one('container.charges', 'Invoice Reference', ondelete='cascade', select=True),
+# 	'ch_id': fields.many2one('product.product', 'Charge Details', ondelete='set null', select=True,domain=[('is_charge','=','True')]),
+# 	# 'total_amount':fields.float('Total Amount'),
+# 	# 'no_bales':fields.integer('No.of Bales'),
+# 	'weight':fields.float('Weight(in Kgs.)'),
+# 	#'price_subtotal_new': fields.function(_amount_line_new, string='Total Amount', type="float",
+# 			#digits_compute= dp.get_precision('Account'), store=True),
+# 	#'total_amount': fields.function(_amount_line_product, string='Total Amount', type="float",
+# 			#digits_compute= dp.get_precision('Account'), store=True),
+# 	'prod_id': fields.many2one('product.product', 'Product Name', ondelete='set null', select=True,domain=[('is_raw_material','=','True')]),
+# 	# 'price_subtotal': fields.function(_amount_line_product, string='Amount', type="float",
+# 	# 		digits_compute= dp.get_precision('Account'), store=True),
+# 	# 'total_weight':fields.function(_amount_line_weight, string='Total KGs', type='float',multi="sums",readonly=True),
+# 	't_weight':fields.float("KG in Bales"),
+# 	'unit_price': fields.float('Price/KG', required=True),
+# 	'is_inventory':fields.boolean('Is for Inventory??'),
+
+
+	
+# 	 'invoice_id': fields.many2one('container.charges', 'Invoice Reference', ondelete='cascade', select=True),
+# 	'origin': fields.char('Source Document', size=256, help="Reference of the document that produced this invoice."),
+#         'sequence': fields.integer('Sequence', help="Gives the sequence of this line when displaying the invoice."),
+#         'invoice_id': fields.many2one('account.invoice', 'Invoice Reference', ondelete='cascade', select=True),
+#         'uos_id': fields.many2one('product.uom', 'Unit of Measure', ondelete='set null', select=True),
+#         'product_id': fields.many2one('product.product', 'Product', ondelete='set null', select=True),
+#         'account_id': fields.many2one('account.account', 'Account', required=True, domain=[('type','<>','view'), ('type', '<>', 'closed')], help="The income or expense account related to the selected product."),
+#         'price_unit': fields.float('Unit Price', required=True, digits_compute= dp.get_precision('Product Price')),
+        
+#         'quantity': fields.float('Quantity', digits_compute= dp.get_precision('Product Unit of Measure'), required=True),
+#         'discount': fields.float('Discount (%)', digits_compute= dp.get_precision('Discount')),
+#         'invoice_line_tax_id': fields.many2many('account.tax', 'account_invoice_line_tax', 'invoice_line_id', 'tax_id', 'Taxes', domain=[('parent_id','=',False)]),
+#         'account_analytic_id':  fields.many2one('account.analytic.account', 'Analytic Account'),
+#         'company_id': fields.related('invoice_id','company_id',type='many2one',relation='res.company',string='Company', store=True, readonly=True),
+#         'partner_id': fields.related('invoice_id','partner_id',type='many2one',relation='res.partner',string='Partner',store=True)
+# 	}
+# container_lines()
+
+# container_invoice_line(osv.osv):
+# cont
+
+class mdif_quantity(osv.TransientModel):
+	_inherit="stock.partial.picking.line"
+	def _tracking(self, cursor, user, ids, name, arg, context=None):
+		res = {}
+		for tracklot in self.browse(cursor, user, ids, context=context):
+			tracking = False
+			if (tracklot.move_id.picking_id.type == 'in' and tracklot.product_id.track_incoming == True) or \
+				(tracklot.move_id.picking_id.type == 'out' and tracklot.product_id.track_outgoing == True):
+				tracking = True
+			res[tracklot.id] = tracking
+		return res
+	_name = "stock.partial.picking.line"
+	_rec_name = 'product_id'
+	_columns = {
+		'product_id' : fields.many2one('product.product', string="Product", required=True, ondelete='CASCADE'),
+		'quantity' : fields.float("Quantity", digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
+		'product_uom': fields.many2one('product.uom', 'Unit of Measure', required=True, ondelete='CASCADE'),
+		'prodlot_id' : fields.many2one('stock.production.lot', 'Serial Number', ondelete='CASCADE'),
+		'location_id': fields.many2one('stock.location', 'Location', required=True, ondelete='CASCADE', domain = [('usage','<>','view')]),
+		'location_dest_id': fields.many2one('stock.location', 'Dest. Location', required=True, ondelete='CASCADE',domain = [('usage','<>','view')]),
+		'move_id' : fields.many2one('stock.move', "Move", ondelete='CASCADE'),
+		'wizard_id' : fields.many2one('stock.partial.picking', string="Wizard", ondelete='CASCADE'),
+		'update_cost': fields.boolean('Need cost update'),
+		'cost' : fields.float("Cost", help="Unit Cost for this product line"),
+		'currency' : fields.many2one('res.currency', string="Currency", help="Currency in which Unit cost is expressed", ondelete='CASCADE'),
+		'tracking': fields.function(_tracking, string='Tracking', type='boolean'),
+		'broad_category':fields.char('Broad Category'),
+	}
+
+	def onchange_product_id(self, cr, uid, ids, product_id, context=None):
+		uom_id = False
+		if product_id:
+			product = self.pool.get('product.product').browse(cr, uid, product_id, context=context)
+			uom_id = product.uom_id.id
+		return {'value': {'product_uom': uom_id}}
+	# _columns = {
+	#    'quantity' : fields.float("Weight(kg)", digits_compute=dp.get_precision('Product Unit of Measure'), required=True),
+	#    'broad_category':fields.char('Broad Category'),
+	# }
+
+	
+mdif_quantity()
+
+
+
+class partial_picking_new(osv.osv_memory):
+	_inherit="stock.partial.picking"
+	_name="stock.partial.picking"
+	_rec_name = 'picking_id'
+	def _hide_tracking(self, cursor, user, ids, name, arg, context=None):
+		res = {}
+		for wizard in self.browse(cursor, user, ids, context=context):
+			res[wizard.id] = any([not(x.tracking) for x in wizard.move_ids])
+		return res
+	_columns = {
+		'date': fields.datetime('Date', required=True),
+		'move_ids' : fields.one2many('stock.partial.picking.line', 'wizard_id', 'Product Moves'),
+		'picking_id': fields.many2one('stock.picking', 'Picking', required=True, ondelete='CASCADE'),
+		'broad_category':fields.char('Broad Category'),
+		'hide_tracking': fields.function(_hide_tracking, string='Tracking', type='boolean', help='This field is for internal purpose. It is used to decide if the column production lot has to be shown on the moves or not.'),
+	 }
+
+	
+
+	def default_get(self, cr, uid, fields, context=None):
+		if context is None: context = {}
+		res = super(partial_picking_new, self).default_get(cr, uid, fields, context=context)
+		picking_ids = context.get('active_ids', [])
+		active_model = context.get('active_model')
+
+		if not picking_ids or len(picking_ids) != 1:
+			# Partial Picking Processing may only be done for one picking at a time
+			return res
+		assert active_model in ('stock.picking', 'stock.picking.in', 'stock.picking.out'), 'Bad context propagation'
+		picking_id, = picking_ids
+		if 'picking_id' in fields:
+			res.update(picking_id=picking_id)
+		if 'move_ids' in fields:
+			picking = self.pool.get('stock.picking').browse(cr, uid, picking_id, context=context)
+			moves = [self._partial_move_for(cr, uid, m) for m in picking.move_lines if m.state not in ('done','cancel')]
+			res.update(move_ids=moves)
+		if 'date' in fields:
+			res.update(date=time.strftime(DEFAULT_SERVER_DATETIME_FORMAT))
+		return res
+
+	def _product_cost_for_average_update(self, cr, uid, move):
+		"""Returns product cost and currency ID for the given move, suited for re-computing
+		   the average product cost.
+
+		   :return: map of the form::
+
+				{'cost': 123.34,
+				 'currency': 42}
+		"""
+		# Currently, the cost on the product form is supposed to be expressed in the currency
+		# of the company owning the product. If not set, we fall back to the picking's company,
+		# which should work in simple cases.
+		product_currency_id = move.product_id.company_id.currency_id and move.product_id.company_id.currency_id.id
+		picking_currency_id = move.picking_id.company_id.currency_id and move.picking_id.company_id.currency_id.id
+		return {'cost': move.product_id.standard_price,
+				'currency': product_currency_id or picking_currency_id or False}
+
+	def _partial_move_for(self, cr, uid, move):
+		partial_move = {
+			'product_id' : move.product_id.id,
+			'quantity' : move.product_qty,# if move.state == 'assigned' else 0,
+			'product_uom' : move.product_uom.id,
+			'prodlot_id' : move.prodlot_id.id,
+			'move_id' : move.id,
+			'location_id' : move.location_id.id,
+			'location_dest_id' : move.location_dest_id.id,
+			'broad_category':move.broad_category
+		}
+		if move.picking_id.type == 'in' and move.product_id.cost_method == 'average':
+			partial_move.update(update_cost=True, **self._product_cost_for_average_update(cr, uid, move))
+		return partial_move
+
+	def do_partial(self, cr, uid, ids, context=None):
+		assert len(ids) == 1, 'Partial picking processing may only be done one at a time.'
+		stock_picking = self.pool.get('stock.picking')
+		stock_move = self.pool.get('stock.move')
+		stock_picking = self.pool.get('stock.picking')
+		uom_obj = self.pool.get('product.uom')
+		partial = self.browse(cr, uid, ids[0], context=context)
+		partial_data = {
+			'delivery_date' : partial.date
+		}
+		final_uos_old = 0
+		picking_type = partial.picking_id.type
+		for wizard_line in partial.move_ids:
+			line_uom = wizard_line.product_uom
+			move_id = wizard_line.move_id.id
+			print wizard_line.broad_category
+			m_id = self.pool.get("stock.move").search(cr , uid,[('name','=',wizard_line.broad_category),('state','!=','done')])
+			print "product idsssssssssss",m_id
+			if m_id:
+				if len(m_id)>1:
+					stock_pre_obj = self.pool.get('stock.move').browse(cr,uid,m_id[1],context=None)
+					print "product pre quantity",stock_pre_obj.product_qty
+					final_uos_old = stock_pre_obj.product_qty
+				stock_obj = self.pool.get('stock.move').browse(cr,uid,m_id[0],context=None)
+				print "product quantity latest",stock_obj.product_qty
+				print "stock picking id",stock_obj.picking_id
+				print "product quantity",wizard_line.quantity
+				final_uos = final_uos_old + stock_obj.product_qty
+				rtrn = self.pool.get("stock.move").write(cr , uid, m_id[0], {'product_qty':final_uos,'state':'done'}, context=context)
+				print "partial picking_id",partial.picking_id.id
+				print "partial picking_id name",partial.picking_id.name
+				# rttn_picking = self.pool.get("stock.picking").write(cr , uid, partial.picking_id.id, {'type':'out','state':'confirmed'}, context=context)
+				product_ids = self.pool.get('product.product').search(cr , uid,[('name','=',wizard_line.broad_category)])
+				product_obj = self.pool.get('product.product').browse(cr,uid,product_ids[0],context=None)
+				loc_src_id=self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Physical Locations / Celina Trading LLc. / Stock")])
+				loc_dest_id=self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Physical Locations / Celina Trading LLc. / Production")])
+				inventry_obj = self.pool.get('stock.inventory')
+				inventry_line_obj = self.pool.get('stock.inventory.line')
+				prod_obj_pool = self.pool.get('product.product')
+				invoice_line_data={
+						'name': stock_obj.product_id.name,
+						'product_id': stock_obj.product_id.id,
+						'product_qty': stock_obj.product_qty,
+						'product_uos_qty': stock_obj.product_qty,
+						'product_uom': product_obj.uom_id.id,
+						'product_uos': product_obj.uom_id.id,
+						'location_id': loc_src_id[0],
+						'location_dest_id': loc_dest_id[0],
+						'move_dest_id': '',
+						'state': 'confirmed',
+						'type':'out',
+						'company_id': 1,
+						'price_unit': stock_obj.price_unit,
+					}
+				
+				
+			#Quantiny must be Positive
+			if wizard_line.quantity < 0:
+				raise osv.except_osv(_('Warning!'), _('Please provide proper Quantity.'))
+
+			#Compute the quantity for respective wizard_line in the line uom (this jsut do the rounding if necessary)
+			qty_in_line_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, line_uom.id)
+
+			# if line_uom.factor and line_uom.factor <> 0:
+			# 	if float_compare(qty_in_line_uom, wizard_line.quantity, precision_rounding=line_uom.rounding) != 0:
+			# 		raise osv.except_osv(_('Warning!'), _('The unit of measure rounding does not allow you to ship "%s %s", only rounding of "%s %s" is accepted by the Unit of Measure.') % (wizard_line.quantity, line_uom.name, line_uom.rounding, line_uom.name))
+			if move_id:
+				#Check rounding Quantity.ex.
+				#picking: 1kg, uom kg rounding = 0.01 (rounding to 10g),
+				#partial delivery: 253g
+				#=> result= refused, as the qty left on picking would be 0.747kg and only 0.75 is accepted by the uom.
+				initial_uom = wizard_line.move_id.product_uom
+				#Compute the quantity for respective wizard_line in the initial uom
+				qty_in_initial_uom = uom_obj._compute_qty(cr, uid, line_uom.id, wizard_line.quantity, initial_uom.id)
+				without_rounding_qty = (wizard_line.quantity / line_uom.factor) * initial_uom.factor
+				# if float_compare(qty_in_initial_uom, without_rounding_qty, precision_rounding=initial_uom.rounding) != 0:
+				# 	raise osv.except_osv(_('Warning!'), _('The rounding of the initial uom does not allow you to ship "%s %s", as it would let a quantity of "%s %s" to ship and only rounding of "%s %s" is accepted by the uom.') % (wizard_line.quantity, line_uom.name, wizard_line.move_id.product_qty - without_rounding_qty, initial_uom.name, initial_uom.rounding, initial_uom.name))
+			else:
+				seq_obj_name =  'stock.picking.' + picking_type
+				move_id = stock_move.create(cr,uid,{'name' : self.pool.get('ir.sequence').get(cr, uid, seq_obj_name),
+													'product_id': wizard_line.product_id.id,
+													'product_qty': wizard_line.quantity,
+													'product_uom': wizard_line.product_uom.id,
+													'prodlot_id': wizard_line.prodlot_id.id,
+													'location_id' : wizard_line.location_id.id,
+													'location_dest_id' : wizard_line.location_dest_id.id,
+													'picking_id': partial.picking_id.id
+													},context=context)
+				stock_move.action_confirm(cr, uid, [move_id], context)
+			partial_data['move%s' % (move_id)] = {
+				'product_id': wizard_line.product_id.id,
+				'product_qty': wizard_line.quantity,
+				'product_uom': wizard_line.product_uom.id,
+				'prodlot_id': wizard_line.prodlot_id.id,
+			}
+			if (picking_type == 'in') and (wizard_line.product_id.cost_method == 'average'):
+				partial_data['move%s' % (wizard_line.move_id.id)].update(product_price=wizard_line.cost,
+															  product_currency=wizard_line.currency.id)
+		print "invoice line data",invoice_line_data
+		move = stock_move.create(cr , uid, invoice_line_data, context=context)
+		stock_picking.do_partial(cr, uid, [partial.picking_id.id], partial_data, context=context)
+		return {'type': 'ir.actions.act_window_close'}
+partial_picking_new()
+
+
+
+
+
+
+
+
+
+

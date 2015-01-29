@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+	</record>-->
+           <record model="ir.ui.view" id="sale_order_tax_extend_new">
+    		<field name="name">Form</field>
+    		<field name="model">sale.order</field>
+   		<field name="inherit_id" ref="sale.view_order_form"/>
+		<field name="arch" type="xml">
+		<field name="tax_id" position="replace"/>
+		<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='tax_id']" position="replace"></xpath>
+		<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/form/group/group/div[@name='discount']/field[@name='discount']" position="after">
+			<field name="cst_vat_tax" string="VAT/CST"/>
+			<field name="service_tax" string="Service Tax"/>
+		</xpath>
+		<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='discount']" position="after">
+			<field name="cst_vat_tax"/>
+			<field name="service_tax"/>
+		</xpath>
+		<xpath expr="/form/sheet/notebook/page/field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+			<field name="installation_price" string="IP"/>
+			<field name="price_amount"/>
+		</xpath>
+                <xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group[@name='sale_total']/field[@name='amount_tax']" position="replace"></xpath>
+		<xpath expr="/form/sheet/notebook/page[@string='Order Lines']/group[@name='sale_total']/field[@name='amount_untaxed']" position="after">
+		<field name="discount_new" string="Discount"/>%%
+		<field name="order_total_price" string="Total Price"/>
+		<field name="amount_vat_cst_tax" string="Vat Total"/>
+		<field name="amount_service_tax" string="Service Tax Total"/>
+		</xpath>
+		
+       
+     
+		<!--<xpath expr="/form/sheet/group/group/field[@name='date_order']" position="before">
+			<field name="contact_person"/>
+		</xpath>-->
+		<field name="partner_id" position="after">
+			<field name="contact_person"/>
+		</field>
+		
+    	</field>
+	</record>
+	
+    </data>
+</openerp>

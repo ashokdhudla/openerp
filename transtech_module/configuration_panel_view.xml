@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+         <menuitem name="ATM Survey Management" id="transtech_atm_survey"/>
+         <menuitem id="menu_admin_details" name="Administration Setup" parent="transtech_atm_survey" sequence="30" groups="group_atm_manager"/>
+
+			<record id="view_state_info_form" model="ir.ui.view">
+				<field name="name">State Setup</field>
+				<field name="model">res.country.state</field>
+				<field name="type">form</field>
+				<field name="arch" type="xml">
+					<form string="State Details" version="7.0">
+						<sheet>
+							<group>
+								<field name="name"/>
+								<field name="code"/>
+								<field name="country_id"/>
+							</group>
+						</sheet>
+					</form>
+				</field>
+			</record>
+
+
+			<record id="view_state_tree" model="ir.ui.view">
+				<field name="name">State Tree</field>
+				<field name="model">res.country.state</field>
+				<field name="type">tree</field>
+				<field name="arch" type="xml">
+					<tree string="State Information">
+						<field name="name"/>
+						<field name="code"/>
+						<field name="country_id"/>
+					</tree>
+				</field>
+			</record>
+
+			<record id="view_state_info_action" model="ir.actions.act_window">
+				<field name="name">State Setup</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">res.country.state</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_state_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new States.....
+              		</p>
+					
+               		</field>
+		</record>
+
+		<menuitem action="view_state_info_action" id="menu_state_info" parent="menu_admin_details"/>
+
+		<record id="view_reason_code_info_form" model="ir.ui.view">
+			<field name="name">Reason Code Setup</field>
+			<field name="model">reason.code</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Reason Code Details" version="7.0">
+					<sheet>
+						<group>
+							<field name="reason_code"/>
+							<field name="name"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_reason_code_tree" model="ir.ui.view">
+			<field name="name">Reason Code Tree</field>
+			<field name="model">reason.code</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="Reason Code Information">
+							<field name="reason_code"/>
+							<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+	<record id="view_reason_code_action" model="ir.actions.act_window">
+		  	<field name="name">Reason Code Setup</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">reason.code</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_reason_code_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+							Click to add new Reason Codes......
+              		</p>
+					
+               		</field>
+		</record>
+
+		<menuitem action="view_reason_code_action" id="menu_reason_code_info" parent="menu_admin_details"/>
+
+
+     <record id="view_remarks_category_form" model="ir.ui.view">
+			<field name="name">Remarks Category Setup</field>
+			<field name="model">remarks.category</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="Remarks Details" version="7.0">
+					<sheet>
+						<group>
+							
+							<field name="description"/>
+							<field name="name"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+	<record id="view_remarks_category_tree" model="ir.ui.view">
+			<field name="name">Remarks Category Tree</field>
+			<field name="model">remarks.category</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Remarks Information">
+							<field name="description"/>
+							<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+	<record id="view_remarks_category_action" model="ir.actions.act_window">
+		  	<field name="name">Manage Remark Category</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">remarks.category</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_remarks_category_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Remark Categories......
+              		</p>
+					
+               		</field>
+		</record>
+
+
+		<menuitem action="view_remarks_category_action" id="menu_remarks_category_details" parent="menu_admin_details"/>
+
+		<record id="view_user_info_form" model="ir.ui.view">
+			<field name="name">Manage Users</field>
+			<field name="model">res.users</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="User Details" version="7.0">
+					<sheet>
+						<!-- <group>
+							<field name="name"/>
+							<field name="code"/>
+							<field name="country_id"/>
+						</group> -->
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+	<record model="ir.ui.view" id="res_user_tree_view_extend">
+    		<field name="name">res.user.tree.inherit</field>
+    		<field name="model">res.users</field>
+			<field name="inherit_id" ref="base.view_users_tree"/>
+			<field name="arch" type="xml">
+				<field name="date" position="replace"/>
+				<field name="lang" position='after'>
+					<field name="role"/>
+					<field name="contact_num"/>
+					<field name="joining_date"/>
+				</field>
+			</field>
+	</record>
+
+
+		 <record id="view_atm_user_tree" model="ir.ui.view">
+			<field name="name">Users Tree</field>
+			<field name="model">res.users</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Users Information">
+							<field name="login"/>
+		                    <field name="lang"/>
+		                    <field name="role"/>
+				</tree>
+			</field>
+		</record>
+
+	<record id="view_user_info_action" model="ir.actions.act_window">
+		  	<field name="name">Manage Users</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">res.users</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_atm_user_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Users......
+              		</p>
+               		</field>
+		</record>
+
+		<menuitem  id="transtech_user_management" name="User Management" parent="menu_admin_details"/>		
+		<menuitem action="base.action_res_users" id="action_res_users"  parent="transtech_user_management"  sequence="2"/>
+
+        <record id="view_atm_group_tree" model="ir.ui.view">
+			<field name="name">Group Tree</field>
+			<field name="model">res.groups</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="State Information">
+							<field name="name"/>
+				</tree>
+			</field>
+		</record>
+
+	<record id="view_atm_group_info_action" model="ir.actions.act_window">
+		  	<field name="name">Manage User Groups</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">res.groups</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_atm_group_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Groups......
+              		</p>
+               		</field>
+		</record>
+
+	
+		<menuitem action="base.action_res_groups" id="action_res_groups"  parent="transtech_user_management" sequence="0" />
+
+		
+
+
+</data>
+</openerp>

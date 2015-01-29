@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="daily_work_update_tree" model="ir.ui.view">
+            <field name="name">daily.work.tree</field>
+            <field name="model">daily.work</field>
+            <field name="arch" type="xml">
+                <tree editable="top" string="Daily Work Activities">
+                <field name="date"/>
+                <field name="user_id"/>
+                <field name="task" on_change="on_change_task(task)"/>
+                 <field name="project_id"/>
+                <field name="desc"/>
+                <field name="duration" sum="Total No.of hours" widget="float_time"/>
+                </tree>
+            </field>
+            </record>
+            
+            <record id="daily_work_line_form" model="ir.ui.view">
+            <field name="name">daily_work.form</field>
+            <field name="model">daily.work</field>
+            <field name="arch" type="xml">
+                <form string="Daily Work Activities" version="7.0">
+                    <sheet>
+                    <group>
+                        <group>
+                            <field name="desc"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="task" on_change="on_change_task(task)"/>
+                            <field name="project_id"/>
+                            <field name="duration"/>
+                        </group>
+                    </group>
+                    </sheet>
+                   </form>
+                   </field>
+                 </record>
+            
+            <record id="act_hr_timesheet_daily_work_tree" model="ir.actions.act_window">
+            <field name="name">Update Daily Work</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">daily.work</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add Your Daily work.
+              </p><p>
+                You can register and track your workings hours by project every
+                day.
+              </p>
+            </field>
+            </record>
+            
+            <record model="ir.ui.view" id="view_daily_work_filter">
+            <field name="name">view_update_work_filter</field>
+            <field name="model">daily.work</field>
+            <field name="arch" type="xml">
+                <search string="Work Update Search">
+                    <!-- <field name="date"
+                       filter_domain="[('date','ilike',self)]"/>-->
+                       <filter icon="terp-go-today" string="Today" name="today" domain="[('date','&gt;=',current_date),('date','&lt;=',current_date)]" />
+                     <group expand="0" string="Group By...">
+                        <filter string="Users" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Project" icon="terp-folder-green" domain="[]" context="{'group_by':'project_id'}"/>
+                        <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
+                    </group>
+            </search>
+            </field>
+            </record>
+            
+           <menuitem id="menu_work_update" parent="hr_attendance.menu_hr_time_tracking" action="act_hr_timesheet_daily_work_tree"/>
+             
+  </data>
+</openerp>
+            

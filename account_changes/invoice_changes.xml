@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    	<record id="product_product_tree_view_charge" model="ir.ui.view">
+            <field name="name">product.product.tree</field>
+            <field name="model">product.product</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <tree colors="red:virtual_available&lt;0;blue:virtual_available&gt;=0 and state in ('draft', 'end', 'obsolete');black:virtual_available&gt;=0 and state not in ('draft', 'end', 'obsolete')" string="Products">
+                    <field name="default_code"/>
+                    <field name="name"/>
+                    <field name="categ_id" invisible="1"/>
+                    <field name="type" invisible="1"/>
+                    <field name="variants" groups="product.group_product_variant"/>
+                    <field name="uom_id" string="Unit of Measure" groups="product.group_uom"/>
+                    <field name="qty_available"/>
+                    <field name="virtual_available"/>
+                    <field name="lst_price"/>
+                    <field name="price" invisible="not context.get('pricelist',False)"/>
+                    <field name="standard_price" invisible="1"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id=" product_charge_kanban">
+            <field name="name">Product Kanban</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name="color"/>
+                    <field name="type"/>
+                    <field name="image_small"/>
+                    <field name="list_price"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_vignette oe_semantic_html_override">
+                                <a type="open"><img t-att-src="kanban_image('product.product', 'image_small', record.id.value)" class="oe_kanban_image"/></a>
+                                <div class="oe_kanban_details">
+                                    <h4>
+                                        <a type="open">
+                                             <t t-if="record.code.raw_value">[<field name="code"/>]</t> <field name="name"/>
+                                        </a>
+                                    </h4>
+                                    <div name="tags"/>
+                                    <ul>
+                                        <li>Price: <field name="lst_price"></field></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="product_search_form_view_charge" model="ir.ui.view">
+            <field name="name">product.search.form.charge</field>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <search string="Product">
+                   <field name="name" string="Product" filter_domain="['|',('name','ilike',self),('default_code','ilike',self)]"/>
+                   <separator/>
+                   <filter string="Charges" name="filter_is_charge" icon="terp-accessories-archiver-minus" domain="[('is_charge','=',1)]"/>
+                </search>
+            </field>
+        </record>
+
+
+
+          <record id=" product_normal_action_charge" model="ir.actions.act_window">
+            <field name="name">Charges</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.product</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,form,tree</field>
+            <field name="context">{"search_default_filter_is_charge":'filter_is_charge'}</field>
+            <field name="view_id" ref="product.product_kanban_view"/>
+            <field name="search_view_id" ref="product_search_form_view_charge"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to define a new product.
+              </p><p>
+                You must define a product for everything you purchase, whether
+                it's a physical product, a consumable or services you buy to
+                subcontractants.
+              </p><p>
+                The product form contains detailed information to improve the
+                purchase process: prices, procurement logistics, accounting data,
+                available suppliers, etc.
+              </p>
+            </field>
+        </record>
+
+        
+
+
+        <record id=" product_normal_action_purchase_charge" model="ir.ui.view">
+            <field name="name">product.normal.charge.form</field>
+            <field name="model">product.product</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Product" version="7.0">
+                    <sheet>
+                        <field name="image_medium" widget="image" class="oe_avatar oe_left"/>
+                        <div class="oe_title">
+                            <div class="oe_edit_only">
+                                <label for="name" string="Charge Name"/>
+                            </div>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                            <h2><field name="categ_id" required="False" invisible="1"/></h2>
+                            <div name="options" groups="base.group_user">
+                                <field name="is_charge"/>
+                                <label for="is_charge"/>
+                                   <field name="is_bale"/>
+                                    <label for="is_bale"/>
+                                    <field name="is_raw_material"/>
+                                    <label for="is_raw_material"/>
+                                     <field name='sale_ok'/>
+                                     <label for="sale_ok"/>
+                                     <div>
+                                     <field name='purchase_ok'/>
+                                    <label for="purchase_ok"/>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                        </div>
+                        <notebook>
+                            <page string="Information">
+                                <field name="description" placeholder="describe the product characteristics..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="open_view_product_kanban_new" model="ir.actions.act_window.view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="product.product_kanban_view"/>
+            <field name="act_window_id" ref=" product_normal_action_charge"/>
+        </record>
+        
+         <record id="open_view_product_form_new" model="ir.actions.act_window.view">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref=" product_normal_action_purchase_charge"/>
+            <field name="act_window_id" ref=" product_normal_action_charge"/>
+        </record>
+
+        <menuitem name="Charges" id="menu_product_charges" action=" product_normal_action_charge"
+          parent="account.menu_finance_payables" sequence="10"/>
+
+
+   <record model="ir.ui.view" id="invoice_line_new">
+    <field name="name">Form</field>
+    <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+        <field name="invoice_line_tax_id" position="replace"/>
+        <field name="tax_line" position="replace"/>
+         <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='account_id']" position="replace"/>
+          <xpath expr="/form/sheet/notebook/page/field[@name='invoice_line']/tree/field[@name='quantity']" position="after">
+            <field name="account_id" on_change="onchange_account_id(ch_id, parent.partner_id, parent.type, parent.fiscal_position,account_id)"/>
+        </xpath>
+        <field name="product_id" position="replace">
+            <field name="ch_id" on_change="onchange_charge_id(ch_id)"/>
+        </field>
+        <field name="amount_tax" position="replace">
+            <button name="button_reset_taxes" states="draft,proforma2"
+                                        string="(update)" class="oe_link oe_edit_only"
+                                        type="object" help="Recompute taxes and total" invisible="1"/>
+            </field>
+
+        <xpath expr="//field[@name='currency_id']" position="after">                
+            <field name="job_no"/>
+            <field name="job_date"/>
+            <field name="master_no"/>
+            <field name="house_no"/>
+            <field name="no_pack"/>
+            <field name="weight"/>
+            <field name="vol"/>
+            <field name="prod_type" widget="many2many_tags" invisible="1"/>
+            <field name="container_no"/>
+            <field name="seal_no"/>
+        </xpath>
+        <xpath expr="//field[@name='supplier_invoice_number']" position="after">                
+            <field name="port_origin"/>
+            <field name="destin"/>
+            <field name="vissle"/>
+            <field name="voyage_no"/>
+            <field name="ship_ref"/>
+            <field name="eta"/>
+            <field name="etd"/>
+            
+        </xpath>
+    </field>
+</record>
+
+    <record model="ir.ui.view" id="invoice_line_raw_material">
+    <field name="name">Raw Material Form</field>
+    <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_supplier_form"/>
+        <field name="arch" type="xml">
+        <xpath expr="//label[@for='amount_tax']" position='replace'>
+                    <lable for=''/>
+                </xpath>
+         <xpath expr="/form/sheet/notebook/page[@string='Invoice']" position="before">
+            <page string="Product Line">
+                <field context="{'partner_id': partner_id, 'price_type': context.get('price_type') or False, 'type': type}" name="product_line">
+                                <tree string="Product lines" editable="bottom">
+                                    <field name="prod_id"  on_change="onchange_prod_id(prod_id)"/>
+                                    <field name="name"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="is_inventory"/>
+                                    <field name="account_id" groups="account.group_account_user"
+                                        domain="[('company_id', '=', parent.company_id), ('journal_id', '=', parent.journal_id), ('type', '=', 'other')]"
+                                        on_change="onchange_account_id(prod_id, parent.partner_id, parent.type, parent.fiscal_position,account_id)"/>
+                                    <field name="weight" string="Quantity"/>
+                                    <field name="quantity" string="Total Weight (in Kgs)"/>
+                                    <field name="price_unit"/>
+                                    <field name="total_amount"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                </tree>
+                            </field>
+                            <group>
+                                    <button name="button_reset_taxes"
+                                        string="(update)" class="oe_link oe_edit_only"
+                                        type="object" help="Recompute taxes and total" style="margin-left: 775px;"/>
+                            </group>
+                        </page>
+                        </xpath>
+                    </field>
+                </record>
+
+        <menuitem id="account.menu_finance_legal_statement" name="Financial Reports" parent="account.menu_finance_reports"/>
+
+
+    <record model="ir.ui.view" id="account_voucher_form_change">
+    <field name="name">account voucher form change</field>
+    <field name="model">account.voucher</field>
+        <field name="inherit_id" ref="account_voucher.view_vendor_payment_form"/>
+        <field name="arch" type="xml">
+                <xpath expr="//field[@name='journal_id']" position='after'>
+                     <field name="partner_id" required="1" invisible="context.get('line_type', False)" on_change="onchange_partner_id(partner_id, journal_id, amount, currency_id, type, date, context)" context="{'invoice_currency':currency_id, 'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1}"  string="Supplier"/>
+
+                     <field name='symbol'  style="width:28%%" invisible='1'/>
+                     
+
+                      <field name='total1' style="width:28%%" on_change="onchage_total1(total1,payment_rate)" widget='monetary' options='{"currency_field": "cur_id"}'/>
+
+                     <field name="journal_id1" on_change="onchange_journal1(journal_id1)"/>
+                    
+
+                    <!-- <field name="journal_id"
+                        domain="[('type','in',['bank', 'cash'])]"
+                        widget="selection"
+                        on_change="onchange_journal(journal_id, line_dr_ids, False, partner_id, date, amount, type, company_id, context)"
+                        string="Payment Method"/> -->
+                </xpath>
+
+                <xpath expr="//field[@name='payment_rate']" position="after">
+                         <field name="payment_rate" required="1" colspan="3" on_change="onchange_amount(amount, payment_rate, partner_id, journal_id, currency_id, type, date, payment_rate_currency_id, company_id, context)"/>
+
+                     <field name="payment_rate_currency_id" class="oe_inline" on_change="onchange_payment_rate_currency(currency_id, payment_rate, payment_rate_currency_id, date, amount, company_id, context)" groups="base.group_multi_currency"/>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_rate_currency_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='payment_rate']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//page//field[@name='date_due']" position="after">
+                    <field name="amount_original1"/>
+                </xpath>
+
+                <xpath expr="//page//tree[@string='Credits']//field[@name='date_due']" position="after">
+                    <field name="amount_original1"/>
+                </xpath>
+
+                <xpath expr="//page//tree[@string='Credits']//field[@name='amount_original1']" position="after">
+                    <field name="amount_unreconciled1" invisible='1'/>
+                </xpath>
+                <!--  <xpath expr="//page//field[@name='date_due']" position="after">
+                    <field name="line_dr_ids" attrs="{'invisible': [('type', '=', 'receipt')]}" context="{'journal_id':journal_id, 'type':type, 'partner_id':partner_id}" colspan="4" nolabel="1" height="140" on_change="onchange_line_ids(line_dr_ids, line_cr_ids, amount, currency_id, type, context)">
+                < -->
+                
+                <!-- <xpath expr="//page//field[@name='date_due']" position="after">
+                    <field name="amount_original1"/>
+                </xpath> -->
+               
+                <xpath expr="//field[@name='writeoff_amount']" position="after">
+                        <field name="writeoff_amount1" widget='monetary' options='{"currency_field": "cur_id"}'/>
+                </xpath>
+
+                
+
+                 <xpath expr="//field[@name='writeoff_amount']" position="after">
+                        <field name="sup_cur" invisible='1'/>
+                </xpath>
+
+                <xpath expr="//field[@name='writeoff_amount']" position="after">
+                        <field name="cur_id" invisible='1'/>
+                </xpath>
+
+                <xpath expr="//page//field[@name='amount_original1']" position="after">
+                    <field name="amount_unreconciled1" invisible='1'/>
+                </xpath>
+
+                <xpath expr="//field[@name='partner_id']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='amount']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+               
+                <xpath expr="//field[@name='journal_id']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='writeoff_amount']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//label[@for='line_cr_ids']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <!-- <xpath expr="//field[@name='line_cr_ids" position='attribute'/>
+                    <attribute name="invisible">1</attribute>
+                </xpath> -->
+                <xpath expr="//tree[@string='Credits']" position='attributes'>
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//page//tree//field[@name='amount_original']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                 <xpath expr="//page//tree//field[@name='amount_original']" position="before">
+                        <field name="reconcile" on_change="onchange_reconcile(reconcile, amount, amount_unreconciledde,amount_unreconciled1, context)"/>
+
+                </xpath>
+
+                <xpath expr="//page//tree//field[@name='amount']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//page//tree//field[@name='reconcile']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//page//tree//field[@name='amount']" position="after">
+                        <field name="amount1" sum="Total Allocation" on_change="onchange_amount1(amount1, amount_unreconciled1, context)"/>
+                </xpath>
+
+                 <!-- <xpath expr="//page//tree//field[@name='amount']" position="after">
+                         <field name="amount1" sum="Total Allocation" on_change="onchange_amount(amount, amount_unreconciled, context)"/>
+                </xpath> -->
+
+                <xpath expr="//page//field[@name='payment_rate']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//label[@for='payment_rate']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                 <xpath expr="//page//field[@name='payment_rate_currency_id']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//page//field[@name='currency_help_label']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                <xpath expr="//separator[@string='Currency Options']" position="attributes">
+                        <attribute name="invisible">0</attribute>
+                </xpath>
+
+                    
+            </field>
+        </record>
+
+
+        <menuitem id="menu_payment" sequence="12" name="Payment Method" parent="account.menu_finance_configuration" />
+    
+
+        <record id="payment_new_tree_view" model="ir.ui.view">
+            <field name="name">payment.new.tree</field>
+            <field name="model">payment.new</field>
+            <field name="arch" type="xml">
+                <tree  string="Payment">
+                    <field name="payment_method"/>
+                    <!-- <field name="payment_cash"/> -->
+                    <!-- <field name="payment_id"/> -->
+                </tree>
+            </field>
+        </record>
+
+         <record id="payment_new_form_view" model="ir.ui.view">
+            <field name="name">payment new form</field>
+            <field name="model">payment.new</field>
+            <field name="arch" type="xml">
+                <form string="Product" version="7.0">
+                <group>
+                    <group>
+                    <field name="payment_method" placeholder="Ex:Bank(currency)"/>
+                </group>
+                <!-- <group>
+                    <field name="payment_cash" placeholder="Ex:Cash(USD)"/>
+                </group> -->
+            </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="payment_new_action_view" model="ir.actions.act_window">
+            <field name="name">Payments Methods</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">payment.new</field>
+            <field name="view_id" ref="payment_new_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to Create Payment Methods......
+            </p>
+            </field>
+        </record>
+        <menuitem id="menu_payment_sub_new" action="payment_new_action_view"
+          parent="menu_payment"/>
+
+        
+        
+
+    </data>
+</openerp>

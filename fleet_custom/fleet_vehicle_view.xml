@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields to fleet vechicle object -->
+        <record id="lead_normal_form_view1" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form1</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+		<group>
+	          <group string="Add Vehicles">
+			<group>
+                           <field name='Registration_No' placeholder="Enter Registration No."/>
+			   <field name='Make' placeholder="Enter Make"/>
+			   <field name='Color' placeholder="Enter Color."/>
+			   <field name='Type_Of_Body' placeholder="Enter Type Of Body."/>
+			   <field name='Chassis_No' placeholder="Enter Chassis No."/>
+			   <field name='Engine_No' placeholder="Enter Engine No."/>
+			   <field name='Manufacture' placeholder="Enter Manufacture."/>
+	    		   <field name='Rating' placeholder="Enter Rating."/>
+			   <field name="Capacity" placeholder="Capacity."/>
+	                </group>
+	         </group>
+		</group>
+	   </field>
+        </record>
+
+
+    </data>
+</openerp>

@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<openerp>
+	<data> 
+			
+		<!-- Evernote-Openepr form view -->
+		
+		  <record id="view_openerp_evernote_tree" model="ir.ui.view">
+            <field name="name">openerp.evernote.line.tree</field>
+            <field name="model">openerp.evernote</field>
+            <field name="arch" type="xml">
+                <tree string="Evernote">
+                    <field name="name"/>
+                    <field name="description" />
+                    <field name="date" />
+                </tree>
+            </field>
+        </record>
+		
+		<record id="view_openerp_evernote_form" model="ir.ui.view">
+            <field name="name">openerp.evernote.line.form</field>
+            <field name="model">openerp.evernote</field>
+            <field name="arch" type="xml">
+                <form string="Evernote">
+	                  <field name="url" colspan="4" on_change="onchange_url(url,evernote_id,context)"/>
+                      <field name="name" colspan="4"/>
+                    	<field name="description" colspan="4"/>
+                   	 	<field name="date" />
+                   	 	<field name="evernote_id" invisible="1"/>
+	                </form>
+            </field>
+        </record>
+
+		
+		<record model="ir.ui.view" id="openerp_evernote_product_form_view">
+			<field name="name">product.product.form</field>
+			<field name="model">product.product</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="product.product_normal_form_view" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Information']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="openerp_evernote_purchase_order_form_view">
+			<field name="name">purchase.order.form</field>
+			<field name="model">purchase.order</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="purchase.purchase_order_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Incoming Shipments &amp; Invoices']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="openerp_evernote_res_partner_form_view">
+			<field name="name">res.partner.form</field>
+			<field name="model">res.partner</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='History']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="openerp_evernote_bank_statement_form_view">
+			<field name="name">account.bank.statement.form</field>
+			<field name="model">account.bank.statement</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account.view_bank_statement_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Transactions']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="openerp_evernote_hrtimesheet_sheet_form_view">
+			<field name="name">hr_timesheet.sheet.form</field>
+			<field name="model">hr_timesheet_sheet.sheet</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="hr_timesheet_sheet.hr_timesheet_sheet_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Details']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1"/>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="openerp_evernote_hr_expenses_form_view">
+			<field name="name">hr.expenses.form</field>
+			<field name="model">hr.expense.expense</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="hr_expense.view_expenses_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Accounting']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>
+	
+	<record model="ir.ui.view" id="openerp_evernote_project_project_form_view">
+			<field name="name">project.project.form</field>
+			<field name="model">project.project</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="project.edit_project" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Project Stages']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1" />
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>	
+
+		<record model="ir.ui.view" id="openerp_evernote_stock_picking_in_form_view">
+			<field name="name">stock.picking.in.form</field>
+			<field name="model">stock.picking.in</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="stock.view_picking_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="//notebook/page[@string='Additional Info']" position="after">				
+					<page string="Evernote"> 
+						<group>
+							<field name="evernote_ids" nolabel="1"/>
+						</group>
+					</page>
+				</xpath>
+			</field>
+		</record>	
+
+		<record model="ir.ui.view" id="openerp_evernote_account_bank_statement_line_in_form_view">
+			<field name="name">account.bank.statement.line.form</field>
+			<field name="model">account.bank.statement.line</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="account_bank_statement_extensions.view_bank_statement_line_form" />
+			<field name="arch" type="xml">
+				 <xpath expr="/form/field[@name='note']" position="after">				
+							<field name="evernote_ids" nolabel="1" />
+				</xpath>
+			</field>
+		</record>	
+
+				
+		<record model="ir.ui.view" id="cresco_crm_lead_form_view">
+			<field name="name">project.task.form</field>
+			<field name="model">project.task</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="project.view_task_form2" />
+			<field name="arch" type="xml">
+				<xpath expr="/form/header/button[@string='Cancel Task']"
+					position="after">
+			<!--		<button name="create_note" type="object" 
+						icon="gtk-execute" string="Create Note" /> -->
+					<button name="wizard_call" type="object" 
+						 string="Create Note" />			
+
+				</xpath>
+				<xpath expr="/form/sheet/group/group/field[@name='categ_ids']"
+					position="after">
+					<field name="note_created" />
+				</xpath>
+			</field>
+		</record>		
+
+	</data>
+</openerp>

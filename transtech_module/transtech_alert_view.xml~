@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+    	<menuitem id="menu_alert_details" name="Alerts" parent="transtech_atm_survey" sequence="20"/>
+
+		<record id="view_alert_info_form" model="ir.ui.view">
+			<field name="name">Alerts Information</field>
+			<field name="model">alert.info</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="Alert Details" version="7.0">
+					<header>
+					<button name="status_resolve" type="object" String="Resolve" groups="transtech_module.group_atm_manager, transtech_module.group_atm_user" attrs="{'invisible': [('status','in',('resolved','closed'))]}" class="oe_highlight"/>
+					<button name="status_close" type="object" String="Close" groups="transtech_module.group_atm_manager, transtech_module.group_atm_user" attrs="{'invisible': [('status','in',('assigned','closed'))]}" class="oe_highlight"/>
+					<field name="status" widget="statusbar" statusbar_visible="assigned,resolved,closed"/> 
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name"/>
+								<field name="customer" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="atm_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="category" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="priority" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="country_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="state_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<!--<field name="assign_to"/>-->
+							</group>
+							<group string="Alert Categorization Details">
+								<field name="reason_id" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="reason_disc" attrs="{'readonly':[('status','!=','assigned')]}"/>
+							</group>
+							<group string="Summary &amp; Description">
+								<field name="summary" attrs="{'readonly':[('status','!=','assigned')]}"/>
+								<field name="description" attrs="{'readonly':[('status','!=','assigned')]}"/>
+							</group>
+					</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_alert_info_tree" model="ir.ui.view">
+			<field name="name">Alert Tree</field>
+			<field name="model">alert.info</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Alert Information">
+							<field name="name"/>
+							<field name="customer"/>
+							<field name="atm_id"/>
+							<field name="priority"/>
+							<field name="summary"/>
+							<field name="status"/>
+							<field name="category"/>
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="view_alert_info_action" model="ir.actions.act_window">
+		  	<field name="name">Customer Alerts</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">alert.info</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_alert_info_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new Alerts......
+              		</p>
+               		</field>
+		</record>
+
+	<record model="ir.ui.view" id="view_atm_alerts_filter">
+            <field name="name">view_atm_alerts_filter</field>
+            <field name="model">alert.info</field>
+            <field name="arch" type="xml">
+             <search string="atm alerts search">
+			<filter icon="terp-check" string="Complants"  domain="[('category','=','complaint')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Issue"  domain="[('category','=','issue')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Low Priority Alerts"  domain="[('priority','=','low')]"/>
+			<separator/>
+			<filter icon="terp-check" string="Medium Priority Alerts"  domain="[('priority','=','medium')]"/>
+			<separator/>
+			<filter icon="terp-check" string="High Priority Alerts"  domain="[('priority','=','high')]"/>
+            <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer'}"/>
+			<separator/>
+                       <!-- <filter string="Assigned To" icon="terp-folder" domain="[]" context="{'group_by':'assign_to'}"/>-->
+			<separator/>
+                        <filter string="Category" icon="terp-go-month" domain="[]" context="{'group_by':'category'}"/>
+			<separator/>
+			
+			                   
+			</group>
+            </search>
+            </field>
+            </record>
+
+	<record id="view_alert_info_filter" model="ir.ui.view">
+            <field name="name">alert.info.select</field>
+            <field name="model">alert.info</field>
+            <field name="arch" type="xml">
+                <search string="Search Details">
+			<group string="Search">
+				<field name="summary" filter_domain="[('summary','ilike', self)]" string="Summary"/>
+				<filter string="ATM" domain="[('atm_id','=',1)]" context="{'group_by':'atm_id'}"/>
+			</group>
+			 </search>
+			</field>
+		</record>
+		<menuitem action="view_alert_info_action" id="menu_alert_info" parent="menu_alert_details" groups="group_atm_customer"/>
+</data>
+</openerp>

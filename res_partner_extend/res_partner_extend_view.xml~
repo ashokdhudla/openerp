@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="view_partner_form_extend">
+    		<field name="name">res.partner.form.inherit1</field>
+    		<field name="model">res.partner</field>
+   		<field name="inherit_id" ref="base.view_partner_form"/>
+    		<field name="arch" type="xml">
+			
+		<xpath expr="/form/sheet/group/group/field[@name='website']" position="after">
+                         <field name="salutation" placeholder="Ms./Mr."/>
+			 <field name="first_name" placeholder="First Name"/>
+			 <field name="last_name" placeholder="Last Name"/>
+			 <button string="Add tags" name="add_tags" type="object"/>
+            </xpath>
+
+		<field name="mobile" position="after">
+			<field name="account_owners" placeholder="Account Owner"/>
+			<field name="account_names" placeholder="Account Name"/>
+       		 </field>
+        	<!--<field name="salutation"/>
+		<field name="first_name"/>
+		<field name="last_name"/>
+		<field name="account_owner"/>
+		<field name="account_names"/>-->
+    		</field>
+	</record>
+	
+    </data>
+</openerp>

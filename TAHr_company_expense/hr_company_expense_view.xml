@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields from hr.employee to the screen -->
+        <record id="hr_company_expense_form_view" model="ir.ui.view">
+            <field name="name">hr.company.expense.form</field>
+            <field name="model">hr.expense.expense</field>
+            <field name="inherit_id" ref="hr_expense.view_expenses_form"/>
+            <field name="arch" type="xml">
+                <field name='employee_id' position='before'>
+                	<field name="company_expense" on_change="onchange_company_expense(company_expense)"/>
+            	</field>
+
+            	<field name='name' position='after'>
+                	<field name="state_id"/>
+            	</field>
+            </field>
+        </record>
+    </data>
+</openerp>

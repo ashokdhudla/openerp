@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	 <record id="company_bank_account_form_view" model="ir.ui.view">
+			<field name="name">bank.account.opening.company.form</field>
+			<field name="model">bank.account.opening.company</field>
+			<field name="arch" type="xml">
+				<form string="UBS Bank Account Opening Form" version="7.0">
+				<sheet>
+				<group>
+				  <field name="bank_kyc_name"/>
+				</group>
+				<notebook>
+				   <page string="Basic Data">
+				<div><b>B.1 Contracting partner</b></div>
+				<group>
+				 	<field name="name_of_company"/>
+					<label for="street_one" string="Address"/>
+		                    	<div>
+		               		<field name="street_one" placeholder="Street..." />
+		                       	<field name="street2_one"/>
+		                       	<div class="address_format">
+		                            	<field name="city_one" placeholder="City" style="width: 40%%"/>
+		                            	<field name="state_id_one" class="oe_no_button" placeholder="State" style="width: 37%%"/>
+		                            	<field name="zip_one" placeholder="Postcode" style="width: 20%%"/>
+		                        </div>
+					</div>
+		                       <field name="country_id_one" placeholder="Country of Domicile " class="oe_no_button" />
+                            	       <field name="date_of_foundation"/>
+				</group>			
+				<div><b>B.2 Beneficial owner</b></div>
+				<group>
+				 	<field name="title"/>
+					<field name="first_name"/>
+					<label for="street_two" string="Address"/>
+		                    	<div>
+		               		<field name="street_two" placeholder="Street..." />
+		                       	<field name="street2_two"/>
+		                       	<div class="address_format">
+		                            	<field name="city_two" placeholder="City" style="width: 40%%"/>
+		                            	<field name="state_id_two" class="oe_no_button" placeholder="State" style="width: 37%%"/>
+		                            	<field name="zip_two" placeholder="Postcode" style="width: 20%%"/>
+		                        </div>
+					</div>
+		                       <field name="country_id_two" placeholder="Country of Domicile " class="oe_no_button" />
+					<field name="nationality"/>
+                            	       <field name="date_of_birth"/>
+				</group>
+				<div><p>Relationship of the account holder to the beneficial owner(s) and/or Power of Attorney holder(s).</p></div>	
+				<field name="relationship_account"/>
+				<div><b>B.3 Description for financial intermediary's relationship history with the bank's new client</b></div>
+				 	<field name="desc_of_financial_intermediary"/>
+				</page>
+			<page string="Background information">
+				<div><b>C.1 Personal Background</b></div>
+				
+				 <div><b>Marital status</b></div>
+			<div class="oe_inline">
+				<div style="display:inline;float: left;margin-top: -1%%;width: 39%%;">
+				<group>
+				 <field name="marital_single"/>
+				 <field name="marital_married"/>
+				</group>
+				</div>
+				<div style="display:inline;">
+				<group>
+				 <field name="marital_divorced"/>
+				 <field name="marital_separated"/>
+				</group>
+				</div>
+				<div style="float:right;" >
+				<group>
+				 <field name="marital_widowed"/>
+				 <field name="marital_unknown"/>
+				</group>
+				</div>
+			</div>
+			<div style="margin-left: -39%%;float: left;"><b>Family circumtances</b></div>
+				<group style="margin-top: 4%%;">
+				 <field name="name_of_spouse"/>
+				 <field name="spouse_date"/>
+				</group>
+				<div>
+						<p><b>Children</b></p>
+						<group style="width: 60%%;margin-left: 5%%;">
+							<group>
+							<field name="yes_one"/>
+							</group>
+							<group>
+							<field name="no_one"/>
+							</group>
+						</group>
+						<p><b>If yes,personally known?</b></p>
+						<group style="width: 60%%;margin-left: 5%%;">
+							<group >
+							     <field name="yes_two"/>
+							</group>
+							<group>
+						            <field name="no_two"/>
+							</group>
+						</group>
+					</div>
+				<group>
+				<field name="personal_background" nolabel="1">
+								<tree string="Children Name" editable="bottom">
+									<field name="name_of_children"/>
+									<field name="children_occupation"/>
+									<field name="children_dof"/>
+                                				</tree>
+							</field>
+					</group>
+					<p><b>Information about sibling (if relevant e.g. from a professional/politician point of v‪iew)</b></p>
+					<group>
+					<field name="info_sibling" nolabel="1"/>
+					</group>
+					<field name="info_sibling" placeholder="Note"/>
+				<div><b>C.2 Professional situation</b></div>
+				<div class="oe_inline">
+				<div style="display:inline;float: left;
+
+margin-top: -1%%;width: 39%%;">
+				<group>
+				 <field name="c2_self_employed"/>
+				 <field name="c2_employed"/>
+				</group>
+				</div>
+				<div style="display:inline;">
+				<group>
+				 <field name="c2_retired"/>
+				 <field name="c2_student"/>
+				</group>
+				</div>
+				<div style="float: left;margin-top: -9px;" >
+				<group>
+				 <field name="c2_not_gain_employed"/>
+				 <field name="c2_other"/>
+				</group>
+				</div>
+			</div>
+				<group>
+				 <field name="c2_occupation_desc" nolabel="1" placeholder="What is the client current or previous occupation,function and position ? In which sector does he or she work? Does he or she work in a sensitive sector (SIAP) within the meaning of the 'Delegation CDB Fact Sheet for Financial intermediaries' or should he or she be considered a NTBR pursuant to the above mentioned document?"/>
+				</group>
+				<div><b>C.3 Public function</b></div>
+				<group style="width: 60%%;margin-left: 5%%;">
+							<group >
+							     <field name="c3_public_fun_Y"/>
+							</group>
+							<group>
+						            <field name="c3_public_fun_N"/>
+							</group>
+						</group>
+				<p><b>If yes,background</b></p>
+					<group>
+					 <field name="c3_politics"/>
+					  <field name="c3_church"/>
+					 <field name="c3_armed_forces"/>
+					  <field name="c3_aristrocracy"/>
+					   <field name="c3_other"/>
+					</group>
+				<p><b>Please provide details</b></p>
+					<group>
+						  <field name="c3_details"/>
+					</group>
+				<div><b>C.4 Other key information about the beneficial owner</b></div>
+					<p style="margin-left:2%%;line-height: 0em;">(e.g positions on Board(s) of Directors, relationships to persons holding public functions)</p>
+					<group>
+						<field name="c4_other_keyinfo"/>
+					</group>
+				</page>
+			<page string="Financial Background">
+				<div><p><b>D.1 Composition of the assets</b></p>
+						<p style="margin-left:2%%;line-height: 0em;">( e.g. securities, bank deposits, real estate, collections, stakes, life insurance, loans, mortgagegs etc.)</p></div>
+				<group style="margin-left: 3%%;width: 69%%;">
+					<field name="d1_assets_value"/>
+				</group>
+				<p><b>Asset categories (in percentage or in absolute terms)</b></p>
+						<group style="margin-left: 3%%;width: 69%%;">
+							<field name="d1_bank_deposits"/>
+							<field name="d1_securities"/>
+							<field name="d1_stakes"/>
+							<field name="d1_collections"/>
+							<field name="d1_life_insurance"/>
+							<field name="d1_realestate"/>
+							<field name="d1_asset_other"/>	
+							<field name="d1_assets_details"/>		
+						</group>
+						<group>
+						 <field name="d1_ubs_assets"/>
+						 <field name="d1_assests_deposited_6to9mnths"/>
+						  <field name="d1_majorstakes"/>
+						 <field name="d1_income_situation"/>
+						 <field name="d1_income_sources"/>
+						 <field name="d1_total_currentdebts"/>
+						</group>
+					<p><b>Asset categories (in percentage or in absolute terms)</b></p>
+						<group style="margin-left: 3%%;width: 69%%;">
+						<field name="d1_loans"/>
+						 <field name="d1_mortgages"/>
+						  <field name="d1_other"/>
+						 <field name="d1_other_details"/>
+						</group>
+					<div><p><b>D.2 Method of acquisition of the assets</b></p></div>
+					<p style="margin-left:2%%;"><b>How did the beneficial owner acquire his or her assets (must be comphreshible to third parties)</b></p>
+					<group>
+						<field name="d2_assets_acquire_desc" nolabel="1"/>
+					</group>
+				<p><b>From the business/type of business do the assets being transferred to UBS orginate</b></p>
+					<div class="oe_inline">
+				<div style="display:inline;float: left;
+margin-top: -1%%;width: 39%%;">
+				<group>
+				 <field name="d2_gift_inheritance"/>
+				 <field name="d2_company_sale"/>
+				</group>
+				</div>
+				<div style="display:inline;">
+				<group>
+				 <field name="d2_income_salary"/>
+				 <field name="d2_sale_proceeds"/>
+				</group>
+				</div>
+				<div style="float:right;margin-top:auto;" >
+				<group>
+				 <field name="d2_sale_realestate"/>
+				 <field name="d2_asset_source_other"/>
+				</group>
+				</div>
+			</div>
+				<p><b>In each case please provide details (include documents if relevant)</b></p>
+				<group>
+					<field name="d2_details_assets" nolabel="1"/>
+				</group>
+			<div><p><b>D.3 Method by which the assets will be  delivered to UBS</b></p>
+			<p style="margin-left:2%%;line-height: 0em;">( e.g. bank transfer, delivery of securities, cash deposit or other)</p></div>
+				<group>
+				 <field name="d2_bank_transfer"/>
+				 <field name="d2_security_delivery"/>
+				 <field name="d2_cash_deposit"/>
+				 <field name="d2_partial_delivery"/>
+				 <field name="d2_deliver_asset_other"/>
+				</group>
+				<group>
+					<field name="d2_details_assets_delivery"/>
+				</group>
+				<div><p><b>Where will the assets be transferred from ?</b></p></div>
+				<group>
+					<field name="d2_name"/>
+					<field name="d2_location"/>
+					<field name="d2_country"/>
+				</group>
+				</page>
+				<page string="Declaration">
+				<div><p><b>Declaration regarding the cross-border mailing of this form</b></p></div>
+				<p>The financial intermediary hereby confirms that all persons named in this form accept that the completed from shall be sent by mail or transmitted by an electronic communication channel (agreed with UBS in advance) to UBS AG in Switzerland. The financial intermediary declares that he or she has notified the persons affected of the selected communication channel and of any risks that such transmission may entail.</p>
+				 <group>
+					<field name="f_place"/>
+					<field name="f_date"/>
+					<field name="f_sign"/>
+					</group>
+				</page>
+				</notebook>
+				</sheet>
+			    </form>
+		      </field>
+	     </record>
+	    <!--Action For KYC Form-->
+	<record id="action_bank_opening_company" model="ir.actions.act_window">
+            <field name="name">Company Bank Account</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">bank.account.opening.company</field>
+	    <field name="view_type">form</field>
+	   <!-- <field name="view_id" ref="suisse_asset_client_tree"/>-->
+            <field name="view_mode">tree,form</field>
+	    <field name="context">{}</field>
+	     <!--<field name="domain">[('state','in',('draft','sent','confirmed'))]</field>-->
+	   <!-- <field name="search_view_id" ref="view_suisse_asset_filter"/>-->
+	    <field name="help" type="html">
+           <p class="oe_view_nocontent_create">
+                Click create to fill all forms related to Bank account for company client.<br/>
+                 This form must be completed by financial intermediaries when accounts are opened for clients.
+              </p><p>
+              <h3> Instructions</h3>
+              </p>
+		<p>
+		<b>Indicators of domiciliary companies</b>
+		</p>
+		<p>The benficial owner of both Swiss and Non-swiss companies must always be established and all information relating to this person must be recorded.</p>
+		<p><b> A company - </b> regardless of its purpose, function, legal form or domicile - is deemed to be a domiciliary comapny if evidence of at least one of the following exists:</p>
+		<p>1. The contracting party is domiciled in a tax haven</p>
+		<p>2. The contracting party does not have its own business premises ( e.g c/o address, domiciled at the offices of a lawyer, notary, fiduciary agent or with a bank etc.)</p>
+		<p>3. The contracting party does not have own staff.</p>
+            </field>
+        </record>
+	
+		
+		<menuitem action="action_bank_opening_company" id="suisse_bank_account_company" parent="bank_account_opening"
+            sequence="2"/>
+
+   </data>
+</openerp>

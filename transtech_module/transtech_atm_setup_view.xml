@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<!-- Top menu item -->
+	<menuitem id="menu_customer_atm" name="Customer/ATM Setup" parent="transtech_atm_survey" sequence="5"/>
+
+       
+		 <record id="view_atm_info_form" model="ir.ui.view">
+			<field name="name">ATM Details</field>
+			<field name="model">atm.info</field>
+			<field name="type">form</field>
+			 <field name="arch" type="xml">
+				<form string="ATM Details" version="7.0">
+					<header>
+						<button name="%(action_atm_view_wizard)d" string="Move ATM"
+                            type="action" class="oe_highlight" groups="transtech_module.group_atm_manager,transtech_module.group_atm_customer"/>
+                    </header>
+					<sheet>
+						<group>
+							<field name="atm_code"/>
+							<field name="name"/>
+							<field name="atm_id"/>
+							<field name="date"/>
+						</group>
+						<notebook>
+							<page string="Basic Info">
+								<group>
+									<field name="atm_type"/>
+									<field name="customer" on_change="onchange_customer(customer)"/>
+									<field name="country"/>
+									<field name="state_id"/>
+									<field name="sla_start"/>
+									<field name="sla_end"/>
+									<field name="no_of_visits"/>
+									<field name="comments"/>
+								</group>
+							</page>
+							<page string="Mapping">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tbody>
+										<tr>
+											<td>
+										<group>
+											<field name="longitude"/>
+											<field name="latitude"/>
+											 <!-- <field name="id" widget="location_map" nolabel="1"></field> -->
+										</group>
+									</td>
+											<td style="padding-left: 15px; padding-top: 15px" width="100%%">
+									<field name="id" widget="location_map" nolabel="1"></field>
+								</td>
+								</tr>
+								</tbody>
+							</table>
+			
+								<button name="geo_localize" string="View Map" type="object" icon="gtk-zoom-in"/>
+								<group>
+									<field name="no_tasks" groups="transtech_module.group_atm_manager"/>
+								</group>
+							</page>
+							<page string="ATM Old Locations">
+                                	<field name="child_ids">
+                                		<tree string="ATM Moves">
+		                                    <field name="name"/>
+		                                    <field name="longitude"/>
+		                                    <field name="latitude"/>
+		                                    <field name="date"/>
+                                		</tree>
+                                		<form string="Contact" version="7.0">
+                                    		<sheet>
+                                    			<group>
+	                                    			<field name="name"/>
+				                                    <field name="longitude"/>
+				                                    <field name="latitude"/>
+				                                    <field name="date"/>
+			                                	</group>
+			                                </sheet>
+			                            </form>
+                                	</field>
+                            </page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="view_atm_info_tree" model="ir.ui.view">
+			<field name="name">ATM Tree</field>
+			<field name="model">atm.info</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="ATM Information">
+							<field name="atm_code"/>
+							<field name="name"/>
+							<field name="atm_id" string="Bank ATM ID"/>
+							<field name="customer"/>
+							<field name="atm_type"/>
+							<field name="state_id"/>
+							<field name="no_of_visits" string="Required Visit"/>
+							<field name="no_tasks" string="Visit Done" groups="transtech_module.group_atm_manager"/>
+				</tree>
+			</field>
+		</record>
+
+		 <record model="ir.ui.view" id="view_atm_info_filter">
+            <field name="name">view_atm_filter</field>
+            <field name="model">atm.info</field>
+            <field name="arch" type="xml">
+            <search string="atm info search">
+				<field name="name"
+                       filter_domain="['|','|',('name','ilike',self),('atm_id','ilike',self),('customer','ilike',self)]" string="ATM Info"/>
+				<filter string="ATM Only" icon="terp-check" domain="[('atm_type','=','atm_only')]"/>
+				<filter string="ATM and Cash Deposit" icon="terp-check" domain="[('atm_type','=','atm_cash_deposit')]"/>
+				<filter string="Drive Through" icon="terp-check" domain="[('atm_type','=','drive_through')]"/>
+				<separator/>
+	              <group expand="0" string="Group By...">
+	                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer'}"/>
+	                       <filter string="ATM Type" icon="terp-folder-green" domain="[]" context="{'group_by':'atm_type'}"/>
+	                        <filter string="Branch" icon="terp-folder-green" domain="[]" context="{'group_by':'name'}"/>
+				<filter string="Location"  domain="[]" context="{'group_by':'state_id'}"/>
+				</group>
+            </search>
+            </field>
+            </record>
+
+
+		<record id="view_atm_info_action" model="ir.actions.act_window">
+		  	<field name="name">ATM Details</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">atm.info</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_atm_info_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	click to add new ATM details......
+              		</p>
+               		</field>
+		</record>
+
+		<menuitem action="view_atm_info_action" id="menu_atm_setup_info" parent="menu_customer_atm" sequence="2"/>
+
+</data>
+</openerp>

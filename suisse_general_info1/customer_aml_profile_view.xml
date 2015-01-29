@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data> 
+			
+		<!--AML Profile Form View-->
+		 <record id="customer_aml_profile_form" model="ir.ui.view">
+			<field name="name">customer.aml.profile.form</field>
+			<field name="model">customer.aml.profile</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Customer AML Profile" version="7.0">
+				<sheet>
+				<group>
+					<field name="customerno"/>
+					<field name="form_filled_name"/>
+					<field name="AML_date"/>
+				</group>
+					<notebook>
+						<page string="Customer Profile">
+					<group>
+							<div><b><p>For Individuals</p></b></div>
+						<group style="margin-top: 8%%;float: left;margin-left: -60%%;">
+							<field name="individual_name_firstname"/>
+							<field name="individual_date_of_birth"/>
+							<label for="street_individual" string="Residential Address"/>
+                           			<div>
+                                			<field name="street_individual" placeholder="Street..." />
+                                			<field name="street2_individual"/>
+                               			 <div class="address_format">
+                                    			<field name="city_individual" placeholder="City" style="width: 40%%"/>
+                                   			 <field name="state_id_individual" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}'/>
+                                    			<field name="zip_individual" placeholder="Postcode" style="width: 20%%"/>
+                                		</div>
+                               				 <field name="country_id_individual" placeholder="Country" class="oe_no_button" options='{"no_open": True}'/>
+                           			 </div>
+							<field name="party_nationality"/>
+							<field name="individual_phno" placehoder="e.g +9139474343"/>
+							<field name="individual_email" placeholder="youremail@email.com"/>
+						</group>
+							<div><b><p>For Legal Person</p></b></div>
+						<group style="margin-top: 8%%;float: left;margin-left: -60%%;">
+								<field name="company_name"/>
+								<field name="established_date"/>
+								<label for="street_legalperson" string="Home Address"/>
+                            			<div>
+                               		 		<field name="street_legalperson" placeholder="Street..." />
+                                    			 <field name="street2_legalperson"/>
+                               			<div class="address_format">
+                                    			<field name="city_legalperson" placeholder="City" style="width: 40%%"/>
+                                    			<field name="state_id_legalperson" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}'/>
+                                    			<field name="zip_legalperson" placeholder="Postcode" style="width: 20%%"/>
+                                		</div>
+                               				 <field name="country_id_legalperson" placeholder="Country" class="oe_no_button" options='{"no_open": True}'/>
+                            			</div>
+							<field name="purpose"/>
+							<field name="legalperson_phno" placehoder="e.g +9139474343"/>
+							<field name="legalperson_email" placehoder="youremail@email.com"/>
+							</group>
+						<div><p><b>Is a party to the beneficial owner the same?</b></p></div>
+						<div>
+							<group style="float: left;margin-left:-60%%;margin-top: 8%%;">
+								<field name="is_party_to_benefiacialownerY"/>
+								<field name="is_party_to_benefiacialownerN"/>
+							</group>
+						</div>
+						
+						<div><b><p>Beneficial owner information</p></b></div>
+						<group style="float: left;margin-left:-60%%;margin-top: 8%%;">
+							<field name="beneficialowner_name"/>
+							<field name="beneficialowner_dob"/>
+							<label for="street_beneficialowner" string="Home Address"/>
+                            <div>
+                                
+                                <field name="street_beneficialowner" placeholder="Street..." />
+                                <field name="street2_beneficialowner"/>
+                                <div class="address_format">
+                                    <field name="city_beneficialowner" placeholder="City" style="width: 40%%"/>
+                                    <field name="state_id_beneficialowner" class="oe_no_button" placeholder="State" style="width: 37%%" options='{"no_open": True}'/>
+                                    <field name="zip_beneficialowner" placeholder="Postcode" style="width: 20%%"/>
+                                </div>
+                                <field name="country_id_beneficialowner" placeholder="Country" class="oe_no_button" options='{"no_open": True}'/>
+                            </div>
+							<field name="beneficialowner_nationality"/>
+							</group>
+							<div><b><p>Contract to the financial intermediary (FI)</p></b></div>
+							<group style="float: left;margin-top: 8%%;margin-left: -60%%;">
+							<field name="financial_intermediary" nolabel="1" placeholder="The financial intemediary is required to identify the nature of business relation and the purpose desired by the contractor relationship"/>
+							</group>
+							<div><b><p>Business activities of the beneficical owner</p></b></div>
+							<group style="float: left;margin-left:-60%%;margin-top: 8%%;">
+							<field name="beneficialowner_occupation"/>
+							<field name="business_activities"/>
+							</group>
+						</group>
+						</page>
+						<page string="Customer Profile (continue)">
+						<div><b><p>Financial circumtances of the beneficial owner</p></b></div>
+						<div>
+						<p><b>(a) About Income (or net profit) pa:</b></p>
+						<group style="float: left; margin-left: 5%%;">
+							<field name="income_lt300000CHF"/>
+							<field name="income_300000-1millionCHF"/>
+							<field name="income_gt1millionCHF"/>
+						</group>
+						</div>
+						<div>
+						<p><b>(b) About net assets at opening:</b></p>
+							<group style="float: left; margin-left: 5%%;">
+								<field name="netasset_lt1millionCHF"/>
+								<field name="netasset_1-5millionCHF"/>
+								<field name="netasset_gt5millionCHF"/>
+							</group>
+						</div>
+						<div>
+						<p><b>(c) Planned transaction volumes* p.a:</b></p>
+							<group style="float: left; margin-left: 5%%;">
+								<field name="planned_transactions_lt500'000CHF"/>
+								<field name="planned_transactions_500'000-2millionCHF"/>
+								<field name="planned_transactions_gt2millionCHF"/>
+								<field name="planned_transactions_unknown"/>
+							</group>
+						</div>
+						
+							<field name="remarks" placeholder="Remarks:"/>
+							<div>
+						<p><b>Amount , Source of funds</b></p></div>
+							<group>
+							<field name="funds_info" nolabel="1" placeholder="information of the type,amount,currency and origin of the initial assets over which th FI has available expertise."/>
+							</group>
+						<div>
+						<p><b>AML contractor business relationship with increased risk(tick appropriate)</b></p></div>
+							<group style="float: left; margin-left: 5%%;">
+							<field name="is_PEP"/>
+							<field name="geo_criterion"/>
+							<field name="new_unknown"/>
+							<field name="your_criteria"/>
+							<field name="possible_explanations" nolabel="1" placeholder="Possible explanations:"/>
+							</group>
+							<group style="float: left; margin-left: 5%%;">
+							<field name="none"/>
+							</group>
+						
+						<div>
+						<p><b>For more information of relevance</b></p></div>
+						<group>
+							<field name="relevance_info" nolabel="1" placeholder="Ratio of the beneficial owner to the assignee.- is intended not copied documents (financial statement, balance sheet) - every family situation - other dossiers of relevance."/>
+						</group>
+						<div>
+						<p><b>Relation to the Party, respectively. the beneficial owner</b></p></div>
+							<group>
+							<field name="reasons_to_hire" nolabel="1" placeholder="What are the reasons party, respectively. the beneficial owner in person to / us to hire me ?."/>
+							</group>
+							<div>
+						<p><b>Further comments</b></p></div>
+							<group>
+							<field name="further_comments" nolabel="1" placeholder="Further comments"/>
+							</group>
+							<group>
+							<field name="date1"/>
+							<field name="comments" placeholder="Comments"/>
+							<field name="sign1"/>
+							<field name="date2"/>
+							<field name="additional_comments" placeholder="Additional Comments"/>
+							<field name="sign2"/>
+						</group>
+						</page>
+					</notebook>
+				</sheet>
+				</form>
+			</field>
+		</record>
+
+	<!--AMl Profile Tree View-->
+	<record id="customer_aml_profile_tree" model="ir.ui.view">
+            <field name="name">customer.aml.profile.tree</field>
+            <field name="model">customer.aml.profile</field>
+            <field name="arch" type="xml">
+                <tree string="Form Details" >
+                    <field name="customerno"/>
+		    <field name="form_filled_name"/>
+		    <field name="AML_date"/>
+                </tree>
+            </field>
+        </record>
+	<!--AMl Profile Action-->
+	<record id="customer_aml_profile_action" model="ir.actions.act_window">
+            <field name="name">Opening AML FIle/Customer Profile</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">customer.aml.profile</field>
+            <field name="view_type">form</field>
+	    <field name="view_mode">tree,form</field>
+	     <field name="context">{}</field>
+		 <field name="help" type="html">
+           <p class="oe_view_nocontent_create">
+                Click create to fill all forms related to AML-File/Customer Profile.
+              </p><p>
+                 The Purpose of implementation and compliance with the AML take care of each customer to create a AML file(including customer profile)<b>(Article 31 SR-order)</b> the financial intermediaries.
+              </p>
+		<p>
+		The FI has to identified the following important information about the beneficial owner advice(minimum content customer profile)
+		</p>
+		<p><b>1.</b> Type of business / purpose. </p>
+		<p><b>2.</b> Financial ratios. </p>
+		<p><b>3.</b> Description of business activity. </p>
+		<p><b>4.</b> The origin of the assets contributed. </p>		
+            </field>
+        </record>
+		
+	   <menuitem action="customer_aml_profile_action" id="menu_client_aml_profile" parent="suisse_asset_management_general_info"
+            sequence="2"/>
+
+		</data>
+	</openerp>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<menuitem id="id_mycompany_config" name="Company Config" parent="mycompany_mainmenuid"/>
+		<record id="mycompanyconfig_tree_view" model="ir.ui.view">
+			<field name="name">mycompany config</field>
+			<field name="model">company.info</field>
+			<field name="arch" type="xml">
+				<tree string="Company Name">
+					<field name="company_id"/>
+					<field name="companyname"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- my company form view -->
+		<record id="mycompanyconfig_form_view" model="ir.ui.view">
+			<field name="name">myccompany form config</field>
+			<field name="model">company.info</field>
+			<field name="arch" type="xml">
+				<form string="My company config" version="7.0">
+					<sheet>
+						<group>
+							<field name="company_id"/>
+							<field name="companyname"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+	
+
+<!-- Action for my company -->
+		<record id="action_mycompany_config" model="ir.actions.act_window">
+			<field name="name">company config</field>
+			<field name="res_model">company.info</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="id_mycompany_configmenu" name="company Name" parent="id_mycompany_config" action="action_mycompany_config"/> 
+
+		<record id="mycompanylocation_tree_view" model="ir.ui.view">
+			<field name="name">mycompany location config</field>
+			<field name="model">company.location</field>
+			<field name="arch" type="xml">
+				<tree string="Company location">
+					<field name="location_id"/>
+					<field name="company_location"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- my company location form view -->
+		<record id="mycompanylocationconfig_form_view" model="ir.ui.view">
+			<field name="name">myccompany location form config</field>
+			<field name="model">company.location</field>
+			<field name="arch" type="xml">
+				<form string="My company location config" version="7.0">
+					<sheet>
+						<group>
+							<field name="location_id"/>
+							<field name="company_location"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+	
+
+<!-- Action for my company -->
+		<record id="action_mycompany_location_config" model="ir.actions.act_window">
+			<field name="name">company location config</field>
+			<field name="res_model">company.location</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="id_mycompany_location_configmenu" name="Company Location" parent="id_mycompany_config" action="action_mycompany_location_config"/> 
+
+
+
+</data>
+</openerp>

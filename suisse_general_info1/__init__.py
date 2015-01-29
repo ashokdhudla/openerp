@@ -1,0 +1,9 @@
+import suisse_client_general_information
+import client_investment_risk_profile
+import customer_aml_profile
+import individual_bank_opening_form
+import company_bank_acc_opening
+import suisse_asset_capital
+import suisse_document_checklist
+import identity_verification
+import SCAMC_agrmnt

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+	<record id="view_atm_site_inspection_form" model="ir.ui.view">
+		<field name="name">ATM Site Inspection</field>
+		<field name="model">transtech.site.inspection</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		<form string="Site Inspection" version="7.0">
+			
+			<sheet>
+				<group>
+					<group>
+						<field name="name"/>
+						<field name="site_type" />
+						<field name="surveyor" />
+						<field name="date_assigned" />
+						<field name="date_of_visit" />
+						<field name='customer' />
+						<field name="site_address" />
+						<field name="site_lat" />
+						<field name="site_long" />
+						<field name="contact_person" />
+						<!-- <field name="status" /> -->
+						<field name="contact_mobile"/>
+						<field name="job_description"/>
+						<field name="atm_brand"/>
+					</group>
+					<group >
+						<field name="access_for_truck" />
+						<field name="access_for_truck_crane" />
+						<field name="hole_inside_height"/>
+					</group>
+					<group>
+							<field name="inside_outside" />
+							<field name="hole_height" />
+							<field name="hole_height_outside" />
+					</group>
+				</group>
+			</sheet>
+		
+		</form>
+		</field>
+	</record>
+	<record id="view_atm_site_inspection_tree" model="ir.ui.view">
+		<field name="name">ATM Site Inspection Tree</field>
+		<field name="model">transtech.site.inspection</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+		<tree string="ATM Surveys tree">
+			<field name="name" />
+			<field name="site_type" />
+			<field name="surveyor"/>
+			<field name="date_assigned"/>
+			<field name="date_of_visit"/>
+			<field name="customer"/>
+			<field name="site_address" />
+			<field name="site_lat" />
+			<field name="site_long"/>
+			<field name="contact_person"/>
+			<field name="contact_mobile"/>
+			
+		
+		</tree>
+		</field>
+	</record>
+       <!-- <record model="ir.ui.view" id="view_atm_surverys_filter">
+            <field name="name">view_atm_surverys_filter</field>
+            <field name="model">atm.surverys.management</field>
+            <field name="arch" type="xml">
+                <search string="atm surverys search">
+                       <filter icon="terp-go-today" string="Today" name="today" domain="[('visit_time','&gt;=',current_date),('visit_time','&lt;=',current_date)]" />
+			<separator/>
+			<filter icon="terp-check" string="Assigned"  domain="[('status','=','assigned')]"/>
+			<filter icon="terp-check" string="Progress"  domain="[('status','=','progress')]"/>
+			<filter icon="terp-check" string="Pending"  domain="[('status','=','pending')]"/>
+			<filter icon="terp-check" string="Done"  domain="[('status','=','done')]"/>
+                        
+                     <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter string="Surveyor Name" icon="terp-folder-green" domain="[]" context="{'group_by':'surveyor'}"/>
+                        <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'visit_time'}"/>
+			<filter string="Location"  domain="[]" context="{'group_by':'state'}"/>
+			<filter string="Status"  domain="[]" context="{'group_by':'status'}"/>                    
+			</group>
+            </search>
+            </field>
+          </record>-->
+
+	<record id="view_atm_site_inspection" model="ir.actions.act_window">
+		  	   <field name="name">Site Inspection Form </field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">transtech.site.inspection</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_atm_site_inspection_tree"/>
+			   <field name="view_mode">form,tree</field>
+			   <field name="help" type="html">
+              				<p class="oe_view_nocontent_create">
+                				Click to create details for your Site Inspection...
+              				</p>
+               			</field>
+	</record>
+
+    <menuitem action="view_atm_site_inspection" id="menu_for_atm_site_inspection" parent="menu_for_survey_details_pic" sequence="3" groups="group_atm_manager"/>
+
+
+
+
+	
+	</data>
+</openerp>	

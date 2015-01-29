@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="report_booking_yachts" model="booking.yachts" name="booking.yachts" rml="ry_booking/report/yacht_bookings.rml" string="Yacht Bookings" usage="default"/>
+
+    </data>
+</openerp>

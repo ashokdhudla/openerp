@@ -1,0 +1,1 @@
+import stamp_prize_form

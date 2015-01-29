@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data> 
+              <!--Document Checklist form view-->
+		 <record id="identity_form" model="ir.ui.view">
+			<field name="name">verify_identity</field>
+			<field name="model">verify.identity</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="identity" version="7.0">
+			<sheet>
+			<group>
+				<field name="ac_no" style="width:60%%;"/>
+				<field name="company_name" style="width:50%%;"/>
+				<field name="complete_addr" placeholder="Specify full address"/>
+			</group>
+			<h2>The undersigned hereby declares:</h2>
+			<p>(mark with a cross where appropriate)</p>
+			<group>
+			<p style="margin-left:3%%;">that the contracting partner is the beneficial owner of the assets concerned</p><field name="contracting_partneris_beneficial_owner" style="margin-top:-5%%;"/>
+			<p style="margin-left:-464%%;">that the beneficial owner of the assets concerned is(are) the following person(s) or company</p>	<field name="beneficial_owner_assets_concerned" style="margin-left: -482%%; margin-top:-25%%;"/>
+			</group>
+			<group>
+				<field name="fullname" style="width:60%%;"/>
+				<field name="address_domicile" placeholder="address" style="width:60%%;"/>
+				<field name="country" style="width:50%%;"/>
+			</group>
+			<p>* for natural persons:name,firstname,date of birth,address and country,nationality</p>
+			<p>** for juristic persons:firm,actual statement of commercial register, date of setting up,domicile and domicile country</p>
+			<p><b>The contracting partner undertakes to inform the Trust COmpany Immediately of any changes.</b></p>
+			<p><b>If a bank account/securities deposit is to be opened for the domiciliary company, the contracting partner understands and agrees that the beneficial owner's identity will be disclosed to the financial establishment</b></p>
+			<group>
+				<field name="place" style="width:50%%;"/>
+				<field name="date"/>
+				<field name="sign" style="width:40%%;"/>
+			</group>
+			<p>It is a criminal offence to deliberately provide false information of this form(Aet.251 of the Swiss Penal Code,document forgery;under penalty of imprisonment or a fine).</p>
+			</sheet>
+			</form>
+			</field>
+		</record>
+		<record id="suisse_identity_action" model="ir.actions.act_window">
+            <field name="name">Verify Identity</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">verify.identity</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			 <field name="view_id" ref="identity_form"/>
+        </record>
+		<menuitem action="suisse_identity_action" id="menu_identity_verification_form"  sequence="1" parent="suisse_asset_management_general_info" />
+	</data>
+</openerp>

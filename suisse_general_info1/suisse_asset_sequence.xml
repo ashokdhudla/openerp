@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Sequences for suisse.asset.capital.form --> 
+        <record id="seq_type_suisse_asset_kyc" model="ir.sequence.type">
+            <field name="name">Suisse Asset Capital</field>
+            <field name="code">suisse.capital.client.form</field>
+        </record>
+        <record id="seq_suisse_asset_kyc" model="ir.sequence">
+            <field name="name">Suisse Asset Capital</field>
+            <field name="code">suisse.capital.client.form</field>
+            <field name="prefix">SA</field>
+            <field name="padding">3</field>
+            <!--<field name="company_id" eval="False"/>-->
+        </record>
+    </data>
+</openerp>

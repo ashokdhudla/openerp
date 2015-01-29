@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<document filename="test.pdf">
+  <template pageSize="(595.0,842.0)" title="Test" author="Martin Simon" allowSplitting="20">
+    <pageTemplate id="first">
+      <frame id="first" x1="57.0" y1="57.0" width="481" height="728"/>
+    </pageTemplate>
+  </template>
+  <stylesheet>
+    <blockTableStyle id="Standard_Outline">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table1">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table2">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table3">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <blockTableStyle id="Table4">
+      <blockAlignment value="LEFT"/>
+      <blockValign value="TOP"/>
+    </blockTableStyle>
+    <initialize>
+      <paraStyle name="all" alignment="justify"/>
+    </initialize>
+    <paraStyle name="P1" fontName="Helvetica"/>
+    <paraStyle name="P2" fontName="Helvetica" fontSize="12.0" leading="15"/>
+    <paraStyle name="P3" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" fontSize="10.0" leading="13" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="Standard" fontName="Helvetica"/>
+
+    <paraStyle name="Heading" fontName="Helvetica" fontSize="14.0" leading="17" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="Text body" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="List" fontName="Helvetica" spaceBefore="0.0" spaceAfter="6.0"/>
+    <paraStyle name="Caption" fontName="Helvetica" fontSize="12.0" leading="15" spaceBefore="6.0" spaceAfter="6.0"/>
+    <paraStyle name="Index" fontName="Helvetica"/>
+    <paraStyle name="Table Contents" fontName="Helvetica"/>
+    <paraStyle name="terp_header" fontName="Helvetica-Bold" fontSize="12.0" leading="15" alignment="LEFT" spaceBefore="12.0" spaceAfter="6.0"/>
+    <paraStyle name="terp_default_8" rightIndent="0.0" leftIndent="0.0" fontName="Helvetica" fontSize="8.0" leading="10" alignment="LEFT" spaceBefore="0.0" spaceAfter="0.0"/>
+    <paraStyle name="Table Heading" fontName="Helvetica" alignment="CENTER"/>
+    <images/>
+  </stylesheet>
+  <story>
+    <para style="P3">[[ repeatIn(objects,'o') ]]</para>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <para style="P2" alignment="center" fontSize="12"><b>[[o.yatch_name]]</b></para>
+    <para style="P2">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="241.0,241.0" style="Table1">
+      <tr>
+        <td>
+          <para style="Table Contents"><b>License No </b>: [[o.license_no]] </para>
+          <illustration width="3cm" height="1cm">
+            <checkBox x="0" y="0" boxWidth="0.5cm" boxHeight="1cm" boxStrokeColor="chartreuse" boxFillColor="lemonchiffon" checked="1"/>
+          </illustration>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Captain Name </b>: [[ (o.cap_name) or removeParentNode('para') ]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="Table Contents"><b>Max No of Passengers </b>: [[(o.max_no_pass) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Captain No </b> : [[ (o.cap_no) or removeParentNode('para')]]</para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="Standard">
+      <font color="white"> </font>
+      <checkBox x="3cm" y="0cm"
+            boxWidth="0.75cm" boxHeight="1cm"
+            checked="1"/>
+    </para>
+    <blockTable colWidths="241.0,241.0" style="Table2">
+      <tr>
+        <td>
+          <para style="Table Contents"><b>Length </b>: [[(o.length) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Captain Email </b>: [[ (o.cap_email) or removeParentNode('para')]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="Table Contents"><b>No of Crew on Board </b>:[[(o.no_of_crew_board) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents">
+            <font color="white"> </font>
+          </para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="241.0,241.0" style="Table3">
+      <tr>
+        <td>
+          <para style="Table Contents"><b>Parking Location </b>: [[(o.park_loc) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Parking No </b>: [[ (o.park_no) or removeParentNode('para')]]</para>
+        </td>
+      </tr>
+    </blockTable>
+    <para style="Standard">
+      <font color="white"> </font>
+    </para>
+    <para style="P1" fontSize="12"><b>Servicing Details </b></para>
+    <para style="P1">
+      <font color="white"> </font>
+    </para>
+    <blockTable colWidths="241.0,241.0" style="Table4">
+      <tr>
+        <td>
+          <para style="Table Contents"><b>Manufacture Date </b>: [[ (o.manfac_year) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Lase Service Date </b>: [[ (o.last_ser_date) or removeParentNode('para')]]</para>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <para style="Table Contents"><b>Serviced (in days) </b>: [[ (o.ser_in_days) or removeParentNode('para')]]</para>
+        </td>
+        <td>
+          <para style="Table Contents"><b>Next Service Date </b>: [[ (o.next_ser_time) or removeParentNode('para')]]</para>
+        </td>
+      </tr>
+    </blockTable>
+   <para style="P1">
+      <font color="white"> </font>
+    </para>
+  </story>
+</document>

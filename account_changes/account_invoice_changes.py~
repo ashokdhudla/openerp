@@ -1,0 +1,963 @@
+import time
+from lxml import etree
+import openerp.addons.decimal_precision as dp
+import openerp.exceptions
+from openerp import tools
+from openerp import netsvc
+from openerp import pooler
+from openerp.osv import fields, osv, orm
+from openerp.tools.translate import _
+
+class invoice_modification(osv.osv):
+	"""
+	Product additional fields.
+	"""
+	_inherit = 'account.invoice'
+
+
+	def _amount_all(self, cr, uid, ids, name, args, context=None):
+			print ids
+			val1 = val2 = 0.0
+			res = {}
+			for invoice in self.browse(cr, uid, ids, context=context):
+				res[invoice.id] = {
+					'amount_untaxed': 0.0,
+					'amount_tax': 0.0,
+					'amount_total': 0.0,
+					'total_balance': 0.0,
+					'prev_balance':0.0,
+				}
+				p_ids = self.search(cr,uid,[('partner_id','=',invoice.partner_id.id)])
+				for i in self.browse(cr,uid,p_ids):
+					val1 += i.residual
+				p_obj = self.pool.get('res.partner').browse(cr,uid,invoice.partner_id.id)
+				if p_obj.supplier == True:
+					for line in invoice.invoice_line:
+						res[invoice.id]['amount_untaxed'] += line.price_subtotal
+					for line in invoice.tax_line:
+						res[invoice.id]['amount_tax'] += line.amount
+					res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
+
+					for line in invoice.product_line:
+						res[invoice.id]['amount_untaxed'] += line.price_subtotal
+					for line in invoice.tax_line:
+						res[invoice.id]['amount_tax'] += line.amount
+					
+					res[invoice.id]['amount_total'] = res[invoice.id]['amount_untaxed']
+				if p_obj.supplier == False:
+					for line in invoice.invoice_line:
+						res[invoice.id]['amount_untaxed'] += line.price_subtotal_new
+					# for line in invoice.tax_line:
+					# 	res[invoice.id]['amount_tax'] += line.amount
+					# res[invoice.id]['amount_total'] = res[invoice.id]['amount_tax'] + res[invoice.id]['amount_untaxed']
+					
+						res[invoice.id]['amount_total'] += line.price_subtotal_new
+						res[invoice.id]['prev_balance'] = val1
+						res[invoice.id]['total_balance'] = val1+res[invoice.id]['amount_total']
+			print res
+			return res
+
+
+	def _amount_residual(self, cr, uid, ids, name, args, context=None):
+		"""Function of the field residual. It computes the residual amount (balance) for each invoice"""
+		if context is None:
+			context = {}
+		ctx = context.copy()
+		result = {}
+		currency_obj = self.pool.get('res.currency')
+		for invoice in self.browse(cr, uid, ids, context=context):
+			nb_inv_in_partial_rec = max_invoice_id = 0
+			result[invoice.id] = 0.0
+			if invoice.move_id:
+				for aml in invoice.move_id.line_id:
+					if aml.account_id.type in ('receivable','payable'):
+						if aml.currency_id and aml.currency_id.id == invoice.currency_id.id:
+							result[invoice.id] += aml.amount_residual_currency
+							
+						else:
+							ctx['date'] = aml.date
+							print aml.company_id.currency_id.id
+							print invoice.currency_id.id
+							print aml.amount_residual
+							result[invoice.id] += currency_obj.compute(cr, uid, aml.company_id.currency_id.id, invoice.currency_id.id, aml.amount_residual, context=ctx)
+							print result[invoice.id]
+						if aml.reconcile_partial_id.line_partial_ids:
+							#we check if the invoice is partially reconciled and if there are other invoices
+							#involved in this partial reconciliation (and we sum these invoices)
+							for line in aml.reconcile_partial_id.line_partial_ids:
+								if line.invoice:
+									nb_inv_in_partial_rec += 1
+									#store the max invoice id as for this invoice we will make a balance instead of a simple division
+									max_invoice_id = max(max_invoice_id, line.invoice.id)
+			if nb_inv_in_partial_rec:
+				#if there are several invoices in a partial reconciliation, we split the residual by the number
+				#of invoice to have a sum of residual amounts that matches the partner balance
+				new_value = currency_obj.round(cr, uid, invoice.currency_id, result[invoice.id] / nb_inv_in_partial_rec)
+				if invoice.id == max_invoice_id:
+					#if it's the last the invoice of the bunch of invoices partially reconciled together, we make a
+					#balance to avoid rounding errors
+					result[invoice.id] = result[invoice.id] - ((nb_inv_in_partial_rec - 1) * new_value)
+				else:
+					result[invoice.id] = new_value
+
+			#prevent the residual amount on the invoice to be less than 0
+			result[invoice.id] = max(result[invoice.id], 0.0)
+		# print result            
+		return result
+
+	def _get_invoice_line(self, cr, uid, ids, context=None):
+		result = {}
+		for line in self.pool.get('account.invoice.line').browse(cr, uid, ids, context=context):
+			result[line.invoice_id.id] = True
+		return result.keys()
+
+	def _get_invoice_tax(self, cr, uid, ids, context=None):
+		result = {}
+		for tax in self.pool.get('account.invoice.tax').browse(cr, uid, ids, context=context):
+			result[tax.invoice_id.id] = True
+		return result.keys()
+
+	def _compute_lines(self, cr, uid, ids, name, args, context=None):
+		result = {}
+		for invoice in self.browse(cr, uid, ids, context=context):
+			src = []
+			lines = []
+			if invoice.move_id:
+				for m in invoice.move_id.line_id:
+					temp_lines = []
+					if m.reconcile_id:
+						temp_lines = map(lambda x: x.id, m.reconcile_id.line_id)
+					elif m.reconcile_partial_id:
+						temp_lines = map(lambda x: x.id, m.reconcile_partial_id.line_partial_ids)
+					lines += [x for x in temp_lines if x not in lines]
+					src.append(m.id)
+
+			lines = filter(lambda x: x not in src, lines)
+			result[invoice.id] = lines
+		return result
+
+	def _get_lines(self, cr, uid, ids, name, arg, context=None):
+		res = {}
+		for invoice in self.browse(cr, uid, ids, context=context):
+			id = invoice.id
+			res[id] = []
+			if not invoice.move_id:
+				continue
+			data_lines = [x for x in invoice.move_id.line_id if x.account_id.id == invoice.account_id.id]
+			partial_ids = []
+			for line in data_lines:
+				ids_line = []
+				if line.reconcile_id:
+					ids_line = line.reconcile_id.line_id
+				elif line.reconcile_partial_id:
+					ids_line = line.reconcile_partial_id.line_partial_ids
+				l = map(lambda x: x.id, ids_line)
+				partial_ids.append(line.id)
+				res[id] =[x for x in l if x <> line.id and x not in partial_ids]
+		return res
+
+	def _get_invoice_from_line(self, cr, uid, ids, context=None):
+		move = {}
+		for line in self.pool.get('account.move.line').browse(cr, uid, ids, context=context):
+			if line.reconcile_partial_id:
+				for line2 in line.reconcile_partial_id.line_partial_ids:
+					move[line2.move_id.id] = True
+			if line.reconcile_id:
+				for line2 in line.reconcile_id.line_id:
+					move[line2.move_id.id] = True
+		invoice_ids = []
+		if move:
+			invoice_ids = self.pool.get('account.invoice').search(cr, uid, [('move_id','in',move.keys())], context=context)
+		return invoice_ids
+
+	def _get_invoice_from_reconcile(self, cr, uid, ids, context=None):
+		move = {}
+		for r in self.pool.get('account.move.reconcile').browse(cr, uid, ids, context=context):
+			for line in r.line_partial_ids:
+				move[line.move_id.id] = True
+			for line in r.line_id:
+				move[line.move_id.id] = True
+
+		invoice_ids = []
+		if move:
+			invoice_ids = self.pool.get('account.invoice').search(cr, uid, [('move_id','in',move.keys())], context=context)
+		print invoice_ids
+		return invoice_ids
+
+	_columns={
+		'prod_type':fields.many2many('product.category','invoice_order_product_rel','charge_id','id','Type of Product'),
+		'job_no':fields.char('Job Number',size=30),
+		'job_date':fields.date('Job Date'),
+		'master_no':fields.char('Master Number', size=30),
+		'house_no':fields.char('House Number', size=30),
+		'no_pack':fields.integer('Number Of Packs'),
+		'weight':fields.integer("Wieght(Kgs)"),
+		'vol':fields.integer('volume(CBM)'),
+		'port_origin':fields.char('Port Of Origin',size=64),
+		'destin':fields.char('Destination',size=64),
+		'vissle':fields.char('Vessel',size=30),
+		'voyage_no':fields.char('Voyage Number', size=20),
+		'ship_ref':fields.char('Shipper Ref.NO',size=30),
+		'eta':fields.date('ETA'),
+		'etd':fields.date('ETD'),
+		'charge_line':fields.one2many('account.invoice.line','charge_id','Charge Lines'),
+		'product_line':fields.one2many('account.invoice.line','pr_id','Product Lines'),
+		'container_no':fields.char('Container No'),
+		'seal_no':fields.char('Seal No'),
+		'amount_untaxed': fields.function(_amount_all, digits_compute=dp.get_precision('Account'), string='Subtotal', track_visibility='always',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['product_line','invoice_line'], 20),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 20),
+			},
+			multi='all'),
+		'amount_tax': fields.function(_amount_all, digits_compute=dp.get_precision('Account'), string='Tax',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['product_line','invoice_line'], 20),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 20),
+			},
+			multi='all'),
+		'amount_total': fields.function(_amount_all, digits_compute=dp.get_precision('Account'), string='Total',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['product_line'], 20),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 20),
+			},
+			multi='all'),
+
+		'residual': fields.function(_amount_residual, digits_compute=dp.get_precision('Account'), string='Balance',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['invoice_line','move_id','product_line'], 50),
+				'account.invoice.tax': (_get_invoice_tax, None, 50),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 50),
+				'account.move.line': (_get_invoice_from_line, None, 50),
+				'account.move.reconcile': (_get_invoice_from_reconcile, None, 50),
+			},
+			help="Remaining amount due."),
+		'prev_balance':fields.function(_amount_all, digits_compute=dp.get_precision('Account'), string='Prev Balance', track_visibility='always',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['product_line','invoice_line'], 20),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 20),
+			},
+			multi='all'),
+		'total_balance':fields.function(_amount_all, digits_compute=dp.get_precision('Account'), string='Total Balance', track_visibility='always',
+			store={
+				'account.invoice': (lambda self, cr, uid, ids, c={}: ids, ['product_line','invoice_line'], 20),
+				'account.invoice.line': (_get_invoice_line, ['price_unit','invoice_line_tax_id','quantity','discount','invoice_id','pr_id'], 20),
+			},
+			multi='all'),
+		
+	}
+	def create(self,cr,uid,vals,context=None):
+
+		return super(invoice_modification,self).create(cr,uid,vals,context=context)
+
+	def button_reset_taxes(self, cr, uid, ids, context=None):
+		if context is None:
+			context = {}
+		ctx = context.copy()
+		ait_obj = self.pool.get('account.invoice.tax')
+		for id in ids:
+			cr.execute("DELETE FROM account_invoice_tax WHERE invoice_id=%s AND manual is False", (id,))
+			partner = self.browse(cr, uid, id, context=ctx).partner_id
+			if partner.lang:
+				ctx.update({'lang': partner.lang})
+			for taxe in ait_obj.compute(cr, uid, id, context=ctx).values():
+				ait_obj.create(cr, uid, taxe)
+		# Update the stored value (fields.function), so we write to trigger recompute
+		self.pool.get('account.invoice').write(cr, uid, ids, {'invoice_line':[]}, context=ctx)
+		return True
+
+	def _prepare_order_line_move(self, cr, uid, order, order_line, picking_id, context=None):
+		return {
+			'name': order_line.name or '',
+			'product_id': order_line.product_id.id,
+			'product_qty': order_line.product_qty,
+			'product_uos_qty': order_line.product_qty,
+			'product_uom': order_line.product_uom.id,
+			'product_uos': order_line.product_uom.id,
+			'date': self.date_to_datetime(cr, uid, order.date_order, context),
+			'date_expected': self.date_to_datetime(cr, uid, order_line.date_planned, context),
+			'location_id': order.partner_id.property_stock_supplier.id,
+			'location_dest_id': order.location_id.id,
+			# 'picking_id': picking_id,
+			'partner_id': order.dest_address_id.id or order.partner_id.id,
+			'move_dest_id': order_line.move_dest_id.id,
+			'state': 'draft',
+			'type':'in',
+			'purchase_line_id': order_line.id,
+			'company_id': order.company_id.id,
+			'price_unit': order_line.price_unit
+		}
+
+	def action_move_create(self, cr, uid, ids, context=None):
+		"""Creates invoice related analytics and financial move lines"""
+		print "hello validate function"
+		todo_moves = []
+		stock_move = self.pool.get('stock.move')
+		ait_obj = self.pool.get('account.invoice.tax')
+		cur_obj = self.pool.get('res.currency')
+		period_obj = self.pool.get('account.period')
+		payment_term_obj = self.pool.get('account.payment.term')
+		journal_obj = self.pool.get('account.journal')
+		move_obj = self.pool.get('account.move')
+		a_obj = self.pool.get('account.invoice').browse(cr,uid,ids[0])
+		invline_id = self.pool.get('account.invoice.line').search(cr,uid,[('pr_id','=',ids[0])])
+		invoice_line_info = self.pool.get('account.invoice.line').browse(cr,uid,invline_id,context=None)
+		for line_product_ids in invoice_line_info:
+			print "line_product_ids",line_product_ids
+			product_obj = self.pool.get('product.product').browse(cr,uid,line_product_ids.prod_id.id,context=None)
+			loc_src_id=self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Physical Locations / Celina Trading LLc. / Stock")])
+			loc_supplier_id=self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Partner Locations / Suppliers")])
+			print "company id",line_product_ids.company_id.id
+			inventry_obj = self.pool.get('stock.inventory')
+			inventry_line_obj = self.pool.get('stock.inventory.line')
+			prod_obj_pool = self.pool.get('product.product')
+			#pick_id1 = self.pool.get('stock.picking').create(cr,uid,{'type':'in','state':'draft','move_type':'direct','partner_id':a_obj.partner_id.id})
+			invoice_line_data={
+					'name': line_product_ids.prod_id.name,
+					'product_id': line_product_ids.prod_id.id,
+					'product_qty': line_product_ids.quantity,
+					'product_uos_qty': line_product_ids.quantity,
+					'product_uom': product_obj.uom_id.id,
+					'product_uos': product_obj.uom_id.id,
+					'location_id': loc_supplier_id[0],
+					'location_dest_id': loc_src_id[0],
+					'move_dest_id': '',
+					'state': 'assigned',
+					#'picking_id':pick_id1,
+					'type':'in',
+					'company_id': 1,
+					'price_unit': line_product_ids.price_unit,
+					
+				}
+			move = stock_move.create(cr , uid, invoice_line_data, context=context)
+			# todo_moves.append(move)
+			# print todo_moves
+			# stock_move.action_confirm(cr, uid, todo_moves)
+			wf_service = netsvc.LocalService("workflow")
+			
+
+			# search_ids = self.pool.get("stock.inventory.line").search(cr, uid,[('product_id','=',line_product_ids.prod_id.id)])
+			# if search_ids:
+			# 	last_id = max(search_ids)
+			# 	obj = self.pool.get("stock.inventory.line").browse(cr,uid,last_id,context=context)
+			# 	line_data ={
+			# 		'product_qty' : obj.product_qty + line_product_ids.quantity,#data.new_quantity,
+			# 		'location_id' : loc_src_id[0],#data.location_id.id,
+			# 		'product_id' : line_product_ids.prod_id.id,
+			# 		'product_uom' : product_obj.uom_id.id,
+			# 	}
+				
+			# else:
+			# 	line_data ={
+			# 		'product_qty' : line_product_ids.quantity,#data.new_quantity,
+			# 		'location_id' : loc_src_id[0],#data.location_id.id,
+			# 		'product_id' : line_product_ids.prod_id.id,
+			# 		'product_uom' : product_obj.uom_id.id,
+					
+			# 	}
+
+				
+		c=0
+		loc_id= self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Partner Locations / Suppliers")])
+		loc_src_id=self.pool.get('stock.location').search(cr,uid,[('complete_name','=',"Physical Locations / Celina Trading LLc. / Stock")])
+		if invline_id:
+			if a_obj.origin != False:
+				pick_id = self.pool.get('stock.picking').search(cr,uid,[('origin','=',a_obj.origin)])[0]
+			if a_obj.origin == False:
+				pick_id = self.pool.get('stock.picking').create(cr,uid,{'container_no':a_obj.container_no,'seal_no':a_obj.seal_no,'type':'in','state':'draft','move_type':'direct','partner_id':a_obj.partner_id.id})
+			line_obj = self.pool.get('account.invoice.line').browse(cr,uid,invline_id)
+			for i in line_obj:
+				if i.is_inventory==False:
+					c += i.weight
+				while(c)>0:
+					pro_id = self.pool.get('stock.move')._default_product(cr,uid,ids,context=None)
+					self.pool.get('product.product').write(cr,uid,pro_id,{'inv_weight':(i.quantity/i.weight),'price_unit':i.price_unit,'standard_price':(i.total_amount/i.weight),
+					'list_price':(i.total_amount/i.weight)})
+					pr_obj = self.pool.get('product.product').browse(cr,uid,pro_id)
+					pr_obj1 = self.pool.get('product.product').browse(cr,uid,i.prod_id.id)
+					res1 = self.pool.get('stock.move').create(cr,uid,{'broad_category':pr_obj1.name,'enbar':pr_obj.ean13,'name':pr_obj.name_template,'origin': False, 'product_uos_qty': 1, 'partner_id': a_obj.partner_id.id, 'product_id': pro_id, 'product_uom': 1, 'location_id': loc_id[0], 'company_id': 1, 'prodlot_id': False, 'location_dest_id': loc_src_id[0], 'tracking_id': False, 'product_qty': (i.quantity/i.weight), 'product_uos': False, 'type': 'in', 'picking_id': pick_id})
+					c=c-1
+		if context is None:
+			context = {}
+		for inv in self.browse(cr, uid, ids, context=context):
+			if not inv.journal_id.sequence_id:
+				raise osv.except_osv(_('Error!'), _('Please define sequence on the journal related to this invoice.'))
+			if not inv.invoice_line and not inv.product_line:
+				raise osv.except_osv(_('No Invoice Lines!'), _('Please create some invoice lines.'))
+			if inv.move_id:
+				continue
+
+			ctx = context.copy()
+			ctx.update({'lang': inv.partner_id.lang})
+			if not inv.date_invoice:
+				self.write(cr, uid, [inv.id], {'date_invoice': fields.date.context_today(self,cr,uid,context=context)}, context=ctx)
+			company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
+			# create the analytical lines
+			# one move line per invoice line
+			iml = self._get_analytic_lines(cr, uid, inv.id, context=ctx)
+			# check if taxes are all computed
+			compute_taxes = ait_obj.compute(cr, uid, inv.id, context=ctx)
+			self.check_tax_lines(cr, uid, inv, compute_taxes, ait_obj)
+
+			# I disabled the check_total feature
+			group_check_total_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'account', 'group_supplier_inv_check_total')[1]
+			group_check_total = self.pool.get('res.groups').browse(cr, uid, group_check_total_id, context=context)
+			if group_check_total and uid in [x.id for x in group_check_total.users]:
+				if (inv.type in ('in_invoice', 'in_refund') and abs(inv.check_total - inv.amount_total) >= (inv.currency_id.rounding/2.0)):
+					raise osv.except_osv(_('Bad Total!'), _('Please verify the price of the invoice!\nThe encoded total does not match the computed total.'))
+
+			if inv.payment_term:
+				total_fixed = total_percent = 0
+				for line in inv.payment_term.line_ids:
+					if line.value == 'fixed':
+						total_fixed += line.value_amount
+					if line.value == 'procent':
+						total_percent += line.value_amount
+				total_fixed = (total_fixed * 100) / (inv.amount_total or 1.0)
+				if (total_fixed + total_percent) > 100:
+					raise osv.except_osv(_('Error!'), _("Cannot create the invoice.\nThe related payment term is probably misconfigured as it gives a computed amount greater than the total invoiced amount. In order to avoid rounding issues, the latest line of your payment term must be of type 'balance'."))
+
+			# one move line per tax line
+			iml += ait_obj.move_line_get(cr, uid, inv.id)
+
+			entry_type = ''
+			if inv.type in ('in_invoice', 'in_refund'):
+				ref = inv.reference
+				entry_type = 'journal_pur_voucher'
+				if inv.type == 'in_refund':
+					entry_type = 'cont_voucher'
+			else:
+				ref = self._convert_ref(cr, uid, inv.number)
+				entry_type = 'journal_sale_vou'
+				if inv.type == 'out_refund':
+					entry_type = 'cont_voucher'
+
+			diff_currency_p = inv.currency_id.id <> company_currency
+			# create one move line for the total and possibly adjust the other lines amount
+			total = 0
+			total_currency = 0
+			total, total_currency, iml = self.compute_invoice_totals(cr, uid, inv, company_currency, ref, iml, context=ctx)
+			acc_id = inv.account_id.id
+
+			name = inv['name'] or inv['supplier_invoice_number'] or '/'
+			totlines = False
+			if inv.payment_term:
+				totlines = payment_term_obj.compute(cr,
+						uid, inv.payment_term.id, total, inv.date_invoice or False, context=ctx)
+			if totlines:
+				res_amount_currency = total_currency
+				i = 0
+				ctx.update({'date': inv.date_invoice})
+				for t in totlines:
+					if inv.currency_id.id != company_currency:
+						amount_currency = cur_obj.compute(cr, uid, company_currency, inv.currency_id.id, t[1], context=ctx)
+					else:
+						amount_currency = False
+
+					# last line add the diff
+					res_amount_currency -= amount_currency or 0
+					i += 1
+					if i == len(totlines):
+						amount_currency += res_amount_currency
+
+					iml.append({
+						'type': 'dest',
+						'name': name,
+						'price': t[1],
+						'account_id': acc_id,
+						'date_maturity': t[0],
+						'amount_currency': diff_currency_p \
+								and amount_currency or False,
+						'currency_id': diff_currency_p \
+								and inv.currency_id.id or False,
+						'ref': ref,
+					})
+			else:
+				iml.append({
+					'type': 'dest',
+					'name': name,
+					'price': total,
+					'account_id': acc_id,
+					'date_maturity': inv.date_due or False,
+					'amount_currency': diff_currency_p \
+							and total_currency or False,
+					'currency_id': diff_currency_p \
+							and inv.currency_id.id or False,
+					'ref': ref
+			})
+
+			date = inv.date_invoice or time.strftime('%Y-%m-%d')
+
+			part = self.pool.get("res.partner")._find_accounting_partner(inv.partner_id)
+
+			line = map(lambda x:(0,0,self.line_get_convert(cr, uid, x, part.id, date, context=ctx)),iml)
+
+			line = self.group_lines(cr, uid, iml, line, inv)
+
+			journal_id = inv.journal_id.id
+			journal = journal_obj.browse(cr, uid, journal_id, context=ctx)
+			if journal.centralisation:
+				raise osv.except_osv(_('User Error!'),
+						_('You cannot create an invoice on a centralized journal. Uncheck the centralized counterpart box in the related journal from the configuration menu.'))
+
+			line = self.finalize_invoice_move_lines(cr, uid, inv, line)
+
+			move = {
+				'ref': inv.reference and inv.reference or inv.name,
+				'line_id': line,
+				'journal_id': journal_id,
+				'date': date,
+				'narration': inv.comment,
+				'company_id': inv.company_id.id,
+			}
+			period_id = inv.period_id and inv.period_id.id or False
+			ctx.update(company_id=inv.company_id.id,
+					   account_period_prefer_normal=True)
+			if not period_id:
+				period_ids = period_obj.find(cr, uid, inv.date_invoice, context=ctx)
+				period_id = period_ids and period_ids[0] or False
+			if period_id:
+				move['period_id'] = period_id
+				for i in line:
+					i[2]['period_id'] = period_id
+
+			ctx.update(invoice=inv)
+			move_id = move_obj.create(cr, uid, move, context=ctx)
+			new_move_name = move_obj.browse(cr, uid, move_id, context=ctx).name
+			# make the invoice point to that move
+			self.write(cr, uid, [inv.id], {'move_id': move_id,'period_id':period_id, 'move_name':new_move_name}, context=ctx)
+			# Pass invoice in context in method post: used if you want to get the same
+			# account move reference when creating the same invoice after a cancelled one:
+			move_obj.post(cr, uid, [move_id], context=ctx)
+		self._log_event(cr, uid, ids)
+		return True
+
+
+
+
+invoice_modification()
+
+
+class new_supplier_invoice_line(osv.osv):
+
+	_inherit="account.invoice.line"
+
+	def serial_inc(self,cr,uid,ids,field_name, arg, context=None):
+		res={}
+		counter=0
+		for i in self.browse(cr,uid,ids,context=None):
+			res[i.id]={
+					'serial_no_invoice':1
+				}
+			counter+=1
+			res[i.id]['serial_no_invoice'] = counter
+		return res
+
+	
+
+	def _amount_line_product(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+		res = {}
+		tax_obj = self.pool.get('account.tax')
+		cur_obj = self.pool.get('res.currency')
+		for line in self.browse(cr, uid, ids):
+			price = line.price_unit * (1-(line.discount or 0.0)/100.0)
+			taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
+			res[line.id] = taxes['total']
+			if line.invoice_id:
+				cur = line.invoice_id.currency_id
+				res[line.id] = cur_obj.round(cr, uid, cur, res[line.id])
+		return res
+
+
+	def _amount_line_new(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+		tax_obj = self.pool.get('account.tax')
+		cur_obj = self.pool.get('res.currency')
+		res = {}
+		for line in self.browse(cr, uid, ids, context=None):
+			# res[line.id]['total_weight']= line.quantity * line.t_weight
+			price = line.unit_price * (line.quantity * line.t_weight)
+			taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
+			res[line.id] = price
+			if line.invoice_id:
+				cur = line.invoice_id.currency_id
+				res[line.id] = cur_obj.round(cr, uid, cur, res[line.id])
+		return res
+
+	def _amount_line(self, cr, uid, ids, prop, unknow_none, unknow_dict):
+		res = {}
+		tax_obj = self.pool.get('account.tax')
+		cur_obj = self.pool.get('res.currency')
+		for line in self.browse(cr, uid, ids):
+			price = line.unit_price * (line.quantity * line.t_weight)
+			# print price
+			taxes = tax_obj.compute_all(cr, uid, line.invoice_line_tax_id, price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
+			res[line.id] = price
+			if line.invoice_id:
+				cur = line.invoice_id.currency_id
+				res[line.id] = cur_obj.round(cr, uid, cur, res[line.id])
+		return res
+	
+
+
+
+	_columns={
+	'serial_no_invoice':fields.function(serial_inc,string='Sr.No',type="integer",multi="sums" ,readonly=True),
+	'name': fields.text('Description', required=True),
+	'account_id': fields.many2one('account.account', 'Account', required=True, domain=[('type','<>','view'), ('type', '<>', 'closed')], help="The income or expense account related to the selected product."),
+	'charge_id': fields.many2one('account.invoice', 'Invoice Reference', ondelete='cascade', select=True),
+	'pr_id': fields.many2one('account.invoice', 'Invoice Reference', ondelete='cascade', select=True),
+	'ch_id': fields.many2one('product.product', 'Charge Details', ondelete='set null', select=True,domain=[('is_charge','=','True')]),
+	'weight':fields.float('Weight(in Kgs.)'),
+	'price_subtotal_new': fields.function(_amount_line_new, string='Total Amount', type="float",
+			digits_compute= dp.get_precision('Account'), store=True),
+	'total_amount': fields.function(_amount_line_product, string='Total Amount', type="float",
+			digits_compute= dp.get_precision('Account'), store=True),
+	'prod_id': fields.many2one('product.product', 'Product Name', ondelete='set null', select=True,domain=[('is_raw_material','=','True')]),
+	't_weight':fields.float("KG in Bales"),
+	'quantity': fields.float('Quantity', digits_compute= dp.get_precision('Product Unit of Measure'), required=True),
+	'unit_price': fields.float('Price/KG', required=True),
+	'total_weight' : fields.float('Total Weight'),
+	'is_inventory':fields.boolean('Is for Inventory??'),
+	}
+	_defaults = {
+		'serial_no_invoice':1,
+		'unit_price':0.0,
+		'is_inventory':True,
+	}
+
+	def move_line_get(self, cr, uid, invoice_id, context=None):
+		res = []
+		tax_obj = self.pool.get('account.tax')
+		cur_obj = self.pool.get('res.currency')
+		if context is None:
+			context = {}
+		inv = self.pool.get('account.invoice').browse(cr, uid, invoice_id, context=context)
+		company_currency = self.pool['res.company'].browse(cr, uid, inv.company_id.id).currency_id.id
+		if inv.invoice_line:
+			for line in inv.invoice_line:
+				mres = self.move_line_get_item(cr, uid, line, context)
+				if not mres:
+					continue
+				res.append(mres)
+				tax_code_found= False
+				for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id,
+						(line.price_unit * (1.0 - (line['discount'] or 0.0) / 100.0)),
+						line.quantity, line.product_id,
+						inv.partner_id)['taxes']:
+
+					if inv.type in ('out_invoice', 'in_invoice'):
+						tax_code_id = tax['base_code_id']
+						tax_amount = line.price_subtotal * tax['base_sign']
+					else:
+						tax_code_id = tax['ref_base_code_id']
+						tax_amount = line.price_subtotal * tax['ref_base_sign']
+
+					if tax_code_found:
+						if not tax_code_id:
+							continue
+						res.append(self.move_line_get_item(cr, uid, line, context))
+						res[-1]['price'] = 0.0
+						res[-1]['account_analytic_id'] = False
+					elif not tax_code_id:
+						continue
+					tax_code_found = True
+
+					res[-1]['tax_code_id'] = tax_code_id
+					res[-1]['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, tax_amount, context={'date': inv.date_invoice})
+		if inv.product_line:
+			for line in inv.product_line:
+				mres = self.move_line_get_item(cr, uid, line, context)
+				if not mres:
+					continue
+				res.append(mres)
+				tax_code_found= False
+				for tax in tax_obj.compute_all(cr, uid, line.invoice_line_tax_id,
+						(line.price_unit * (1.0 - (line['discount'] or 0.0) / 100.0)),
+						line.quantity, line.product_id,
+						inv.partner_id)['taxes']:
+
+					if inv.type in ('out_invoice', 'in_invoice'):
+						tax_code_id = tax['base_code_id']
+						tax_amount = line.price_subtotal * tax['base_sign']
+					else:
+						tax_code_id = tax['ref_base_code_id']
+						tax_amount = line.price_subtotal * tax['ref_base_sign']
+
+					if tax_code_found:
+						if not tax_code_id:
+							continue
+						res.append(self.move_line_get_item(cr, uid, line, context))
+						res[-1]['price'] = 0.0
+						res[-1]['account_analytic_id'] = False
+					elif not tax_code_id:
+						continue
+					tax_code_found = True
+
+					res[-1]['tax_code_id'] = tax_code_id
+					res[-1]['tax_amount'] = cur_obj.compute(cr, uid, inv.currency_id.id, company_currency, tax_amount, context={'date': inv.date_invoice})
+		return res
+
+	def change_total_weight(self, cr, uid, ids,t_weight,quantity,context=None):
+		total = t_weight * quantity
+		print total
+		return {'value': {'total_weight': t_weight * quantity}}
+		
+	def move_line_get_item(self, cr, uid, line, context=None):
+		if line.invoice_id:
+			p_obj = self.pool.get('res.partner').browse(cr,uid,line.invoice_id.partner_id.id)
+		else:
+			p_obj = self.pool.get('res.partner').browse(cr,uid,line.pr_id.partner_id.id)
+		if p_obj.supplier==True:
+			return {
+				'type':'src',
+				'name': line.name.split('\n')[0][:64],
+				'price_unit':line.price_unit,
+				'quantity':line.quantity,
+				'price':line.price_subtotal,
+				'account_id':line.account_id.id,
+				'product_id':line.product_id.id,
+				'uos_id':line.uos_id.id,
+				'account_analytic_id':line.account_analytic_id.id,
+				'taxes':line.invoice_line_tax_id,
+			}
+
+		if p_obj.supplier==False:
+
+			return {
+				'type':'src',
+				'name': line.name.split('\n')[0][:64],
+				'price_unit':line.unit_price,
+				'quantity':line.quantity,
+				'price':line.price_subtotal_new,
+				'account_id':line.account_id.id,
+				'product_id':line.product_id.id,
+				'uos_id':line.uos_id.id,
+				'account_analytic_id':line.account_analytic_id.id,
+				'taxes':line.invoice_line_tax_id,
+			}
+
+	def onchange_prod_id(self,cr,uid,ids,prod_id,context=None):
+		result = {'value':{}}
+		res = self.pool.get('product.product').browse(cr,uid,prod_id,context=None)
+		result['value'].update({'name':res.name_template})
+		return result
+
+	def onchange_charge_id(self,cr,uid,ids,ch_id,context=None):
+		result = {'value':{}}
+		res = self.pool.get('product.product').browse(cr,uid,ch_id,context=None)
+		result['value'].update({'name':res.name_template})
+		return result
+
+new_supplier_invoice_line()
+
+
+
+class copy_debit_credit(osv.osv):
+
+	_inherit = "account.account"
+
+
+	def __compute(self, cr, uid, ids, field_names, arg=None, context=None,
+				  query='', query_params=()):
+		""" compute the balance, debit and/or credit for the provided
+		account ids
+		Arguments:
+		`ids`: account ids
+		`field_names`: the fields to compute (a list of any of
+					   'balance', 'debit' and 'credit')
+		`arg`: unused fields.function stuff
+		`query`: additional query filter (as a string)
+		`query_params`: parameters for the provided query string
+						(__compute will handle their escaping) as a
+						tuple
+		"""
+		mapping = {
+			'balance': "COALESCE(SUM(l.debit),0) - COALESCE(SUM(l.credit), 0) as balance",
+			'debit': "COALESCE(SUM(l.debit), 0) as debit",
+			'credit': "COALESCE(SUM(l.credit), 0) as credit",
+			# by convention, foreign_balance is 0 when the account has no secondary currency, because the amounts may be in different currencies
+			'foreign_balance': "(SELECT CASE WHEN currency_id IS NULL THEN 0 ELSE COALESCE(SUM(l.amount_currency), 0) END FROM account_account WHERE id IN (l.account_id)) as foreign_balance",
+		}
+		#get all the necessary accounts
+		children_and_consolidated = self._get_children_and_consol(cr, uid, ids, context=context)
+		#compute for each account the balance/debit/credit from the move lines
+		accounts = {}
+		res = {}
+		null_result = dict((fn, 0.0) for fn in field_names)
+		if children_and_consolidated:
+			aml_query = self.pool.get('account.move.line')._query_get(cr, uid, context=context)
+
+			wheres = [""]
+			if query.strip():
+				wheres.append(query.strip())
+			if aml_query.strip():
+				wheres.append(aml_query.strip())
+			filters = " AND ".join(wheres)
+			# IN might not work ideally in case there are too many
+			# children_and_consolidated, in that case join on a
+			# values() e.g.:
+			# SELECT l.account_id as id FROM account_move_line l
+			# INNER JOIN (VALUES (id1), (id2), (id3), ...) AS tmp (id)
+			# ON l.account_id = tmp.id
+			# or make _get_children_and_consol return a query and join on that
+			request = ("SELECT l.account_id as id, " +\
+					   ', '.join(mapping.values()) +
+					   " FROM account_move_line l" \
+					   " WHERE l.account_id IN %s " \
+							+ filters +
+					   " GROUP BY l.account_id")
+			params = (tuple(children_and_consolidated),) + query_params
+			cr.execute(request, params)
+
+			for row in cr.dictfetchall():
+				accounts[row['id']] = row
+
+			# consolidate accounts with direct children
+			children_and_consolidated.reverse()
+			brs = list(self.browse(cr, uid, children_and_consolidated, context=context))
+			sums = {}
+			currency_obj = self.pool.get('res.currency')
+			while brs:
+				current = brs.pop(0)
+#                can_compute = True
+#                for child in current.child_id:
+#                    if child.id not in sums:
+#                        can_compute = False
+#                        try:
+#                            brs.insert(0, brs.pop(brs.index(child)))
+#                        except ValueError:
+#                            brs.insert(0, child)
+#                if can_compute:
+				for fn in field_names:
+					sums.setdefault(current.id, {})[fn] = accounts.get(current.id, {}).get(fn, 0.0)
+					for child in current.child_id:
+						if child.company_id.currency_id.id == current.company_id.currency_id.id:
+							sums[current.id][fn] += sums[child.id][fn]
+						else:
+							sums[current.id][fn] += currency_obj.compute(cr, uid, child.company_id.currency_id.id, current.company_id.currency_id.id, sums[child.id][fn], context=context)
+
+				# as we have to relay on values computed before this is calculated separately than previous fields
+				if current.currency_id and current.exchange_rate and \
+							('adjusted_balance' in field_names or 'unrealized_gain_loss' in field_names):
+					# Computing Adjusted Balance and Unrealized Gains and losses
+					# Adjusted Balance = Foreign Balance / Exchange Rate
+					# Unrealized Gains and losses = Adjusted Balance - Balance
+					adj_bal = sums[current.id].get('foreign_balance', 0.0) / current.exchange_rate
+					sums[current.id].update({'adjusted_balance': adj_bal, 'unrealized_gain_loss': adj_bal - sums[current.id].get('balance', 0.0)})
+
+			for id in ids:
+				res[id] = sums.get(id, null_result)
+		else:
+			for id in ids:
+				res[id] = null_result
+		return res
+
+	
+	def _set_credit_debit(self, cr, uid, account_id, name, value, arg, context=None):
+		if context.get('config_invisible', True):
+			return True
+
+		account = self.browse(cr, uid, account_id, context=context)
+		diff = value - getattr(account,name)
+		# print diff
+		if not diff:
+			return True
+
+		journal_obj = self.pool.get('account.journal')
+		jids = journal_obj.search(cr, uid, [('type','=','situation'),('centralisation','=',1),('company_id','=',account.company_id.id)], context=context)
+		if not jids:
+			raise osv.except_osv(_('Error!'),_("You need an Opening journal with centralisation checked to set the initial balance."))
+
+		period_obj = self.pool.get('account.period')
+		pids = period_obj.search(cr, uid, [('special','=',True),('company_id','=',account.company_id.id)], context=context)
+		if not pids:
+			raise osv.except_osv(_('Error!'),_("There is no opening/closing period defined, please create one to set the initial balance."))
+
+		move_obj = self.pool.get('account.move.line')
+		move_id = move_obj.search(cr, uid, [
+			('journal_id','=',jids[0]),
+			('period_id','=',pids[0]),
+			('account_id','=', account_id),
+			(name,'>', 0.0),
+			('name','=', _('Opening Balance'))
+		], context=context)
+		if move_id:
+			move = move_obj.browse(cr, uid, move_id[0], context=context)
+			move_obj.write(cr, uid, move_id[0], {
+				name: diff+getattr(move,name)
+			}, context=context)
+		else:
+			if diff<0.0:
+				raise osv.except_osv(_('Error!'),_("Unable to adapt the initial balance (negative value)."))
+			nameinv = (name=='credit' and 'debit') or 'credit'
+			move_id = move_obj.create(cr, uid, {
+				'name': _('Opening Balance'),
+				'account_id': account_id,
+				'journal_id': jids[0],
+				'period_id': pids[0],
+				name: diff,
+				nameinv: 0.0
+			}, context=context)
+		return True
+
+
+	_columns = {
+		'balance': fields.function(__compute, digits_compute=dp.get_precision('Account'), string='Balance', multi='balance'),
+		'credit': fields.function(__compute, fnct_inv=_set_credit_debit, digits_compute=dp.get_precision('Account'), string='Credit', multi='balance'),
+		'debit': fields.function(__compute, fnct_inv=_set_credit_debit, digits_compute=dp.get_precision('Account'), string='Debit', multi='balance'),
+	}
+
+
+copy_debit_credit()
+
+
+
+class product_changes(osv.osv):
+
+	_inherit='product.template'
+
+	_columns = {
+		'is_bale':fields.boolean('Is Bale'),
+		'is_raw_material':fields.boolean('Is Raw Material'),
+		'is_charge':fields.boolean('Is Charge'),
+		'purchase_ok': fields.boolean('Can be Purchased', help="Specify if the product can be selected in a purchase order line."),
+		'price_unit':fields.float('Product Price',digits_compute=dp.get_precision('Account')),
+		'inv_weight':fields.float('Invoice Weight'),
+		}
+
+	# def create(self,cr,uid,vals,context=None):
+	# 	if context != None:
+	# 		if 'search_default_filter_is_charge' in context:
+	# 			vals.update({'is_charge':True})
+
+	# 	return super(product_changes,self).create(cr,uid,vals,context=context)
+
+product_changes()
+
+
+class product_type(osv.osv):
+
+	_name="product.type"
+
+	_columns={
+		'name':fields.char('Name'),
+	}
+
+product_type()
+
+
+class product_charge(osv.osv):
+	"""
+	Product additional fields.
+	"""
+	_inherit = 'product.product'
+
+	# _columns = {
+	#     'is_raw_material':fields.boolean('Is Raw Material'),
+	#  	}
+
+	# _defaults={
+	# 'is_raw_material':1,
+	# }
+
+product_charge()

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <report auto="False" id="report_transtech_tasks"  model="atm.surverys.management" name="atm.surverys.management"
+                rml="transtech_module/report/transtech_survey_task_report.rml" string="All Survey task"
+                usage="default"/>
+
+	
+
+
+    </data>
+</openerp>
+

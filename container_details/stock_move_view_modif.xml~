@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+<delete id="stock.menu_action_pdct_in" model="ir.ui.menu"/>
+	<delete id="stock.menu_action_pdct_out" model="ir.ui.menu"/>
+	
+	<delete id="stock.menu_stock_products_moves" model="ir.ui.menu"/>
+
+
+<record id="view_stock_move_incoming_modif" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.picking.in</field>
+            <field name="inherit_id" ref="stock.view_picking_in_form"/>
+           <field name="arch" type="xml">
+	<data>               
+	<xpath expr="//field[@name='move_lines']" position='before'>
+	   
+			<field name="sl_no"/>
+			
+		</xpath>
+	<xpath expr="//field[@name='move_lines']" position='after'>
+	   
+			<field name="weight"/>
+			
+		</xpath>
+	</data>
+	</field>
+        </record>
+
+
+
+
+
+ 
+<!--<record id="view_stock_move_incoming_modif" model="ir.ui.view">
+            <field name="name">stock.pi.out.form</field>
+            <field name="model">stock.move</field>
+            <field name="inherit_id" ref="stock.view_move_picking_tree"/>
+           <field name="arch" type="xml">
+	<data>               
+	<xpath expr="//form[@string='Scrap Products']" position='attributes'>
+	   
+			
+			<attribute name="Scrap">false</attribute>
+		</xpath>
+	</data>
+	</field>
+        </record>-->
+
+ </data>
+</openerp>
+
+
+ 

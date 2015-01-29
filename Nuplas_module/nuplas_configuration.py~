@@ -1,0 +1,162 @@
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+import datetime
+from datetime import date
+from dateutil.relativedelta import relativedelta
+import time
+
+class customer_setup(osv.osv):
+
+	_inherit="res.partner"
+
+	_columns={
+	'reference':fields.char('Reference'),
+	}
+	
+customer_setup()
+
+class product_setup(osv.osv):
+
+	_inherit="product.product"
+
+product_setup()
+
+class packaging_board(osv.osv):
+
+	_name = 'packaging.board'
+
+	def serial_inc(self,cr,uid,ids,field_name, arg, context=None):
+		res={}
+		counter=0
+		for i in self.browse(cr,uid,ids,context=None):
+			res[i.id]={
+					'sl_no':1
+				}
+			counter+=1
+			res[i.id]['sl_no'] = counter
+		return res
+
+	# def copy(self, cr, uid, id, default=None, context=None):
+	# 	if not default:
+	# 		default = {}
+	# 	default.update({
+ #            'name': self.pool.get('ir.sequence').get(cr, uid, 'packaging.board'),
+ #        })
+	# 	return super(packaging_board, self).copy(cr, uid, id, default, context=context)
+
+	_columns = {
+		# 'name':fields.char("Packaging ID",size=200,readonly=True),
+		'sl_no':fields.function(serial_inc,string='Sl.No',type="integer",multi="sums" ,readonly=True),
+		'customer':fields.many2one('res.partner',"Customer",domain="[('customer','=',True)]"),
+		'product':fields.many2one('product.product',"Product"),
+		'cst':fields.char('Work Order'),
+		'ref':fields.char('REF'),
+		'color':fields.char('Color'),
+		'gauge':fields.float('Gauge'),
+		'date':fields.datetime('Date'),
+		'width':fields.float('Width'),
+		'manufacture_date':fields.date('MFG'),
+		'expiry_date':fields.date('Exp'),
+		'roll_no':fields.char('Jumbo Roll No.'),
+		'gross_weight':fields.float('Gross Weight'),
+		'tr_weight':fields.float('Tare Weight'),
+		'net_weight':fields.float('Net Weight'),
+		#'size':fields.integer('Size'),
+		'pallet_no':fields.integer('Pallet No.'),
+		'for_sample':fields.boolean('For Sample??'),
+		'active': fields.boolean('Active', help="If unchecked, it will allow you to hide the Packaging record without removing it."),
+	}
+
+	_defaults = {
+        'active': 1,
+    }
+	_order = "sl_no desc"
+	def create(self, cr, uid, vals, context=None):
+
+		if vals['for_sample']==True:
+			vals.update({'active':False})
+		# if vals.get('name','/')== '/':
+		# 	vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'packaging.board') or '/'
+		return super(packaging_board, self).create(cr, uid, vals, context=context)
+
+	def write(self,cr,uid,ids,vals,context=None):
+		if 'for_sample' in vals:
+			if vals['for_sample']==True:
+				vals.update({'active':False})
+		return super(packaging_board, self).write(cr, uid, ids, vals, context=context)
+
+	def onchange_weight(self,cr,uid,ids,tr_weight,net_weight,context=None):
+		res={}
+		res.update({'gross_weight':tr_weight+net_weight})
+		return {'value':res}
+
+	def onchange_customer(self,cr,uid,ids,customer,context=None):
+		res={}
+		cust_obj = self.pool.get('res.partner').browse(cr,uid,customer)
+		res.update({'ref':cust_obj.reference})
+		w_id = self.pool.get('work.order').search(cr,uid,[('customer_id','=',customer)])
+		if w_id:
+			w_obj = self.pool.get('work.order').browse(cr,uid,w_id[0])
+			res.update({'roll_no':w_obj.mother_roll_no,
+				'gauge':w_obj.gauge,
+				'net_weight':w_obj.net_weight,
+				'color':w_obj.color,
+				'date':w_obj.date,
+				'cst':w_obj.work_order,
+				'width':w_obj.width,
+				'tr_weight':w_obj.tare_weight,
+				})
+			return {'value':res}
+		else:
+			res.update({'roll_no':'',
+					'gauge':'',
+					'net_weight':'',
+					'color':'',
+					'date':'',
+					'cst':'',
+					})
+		return {'value':res}
+
+		
+
+packaging_board()
+
+
+class work_order(osv.osv):
+
+	_name = 'work.order'
+
+	def _get_packagings(self, cr, uid, ids, name, args, context=None):
+		res = {}
+		cntr_obj=self.browse(cr,uid,ids)
+		for i in cntr_obj:
+			pkg_ids = self.pool.get('packaging.board').search(cr,uid,[('customer','=',i.customer_id.id),('cst','=',i.work_order)])
+			res[i.id] = pkg_ids
+		return res
+
+	_columns={
+	'customer_id':fields.many2one('res.partner','Customer',domain="[('customer','=',True)]"),
+	'mother_roll_no':fields.char('Jumbo Roll No.'),
+	'color':fields.char('Color'),
+	'gauge':fields.float('Gauge'),
+	'width':fields.float('Width'),
+	'net_weight':fields.float('Net Weight'),
+	'tare_weight':fields.float('Tare Weight'),
+	'meters':fields.float('Meters'),
+	'date':fields.datetime('Date'),
+	'shift':fields.selection([('day', 'Day'), ('night', 'Night')], 'Shift'),
+	'work_order':fields.char('Work Order'),
+	'year_in_num':fields.integer("Expiry Year in number"),
+	'expiry_date':fields.date("Expiry Date"),
+	'packaging_ids':fields.function(_get_packagings, relation='packaging.board', type="many2many", string='Packagings',readonly=True),
+	}
+
+	_sql_constraints = [('work_order','unique(work_order)', 'Work Order already exists...!')]
+
+	def onchange_expiry(self,cr,uid,ids,year_in_num,context= None):
+		res={}
+		today = str(datetime.datetime.now()).split(' ')[0]
+		return res
+		
+
+work_order()

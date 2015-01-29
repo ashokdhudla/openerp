@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="addimages_wizard_id">
+			<field name="name">Add Image wizard</field>
+			<field name="model">add.image</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Add Image wizard" version="7.0">
+					<!-- <p class="oe_grey">
+                        This is the Add Images wizard. If you want to go to next wizard fill the details below and click on Next button.</p>
+
+                        <p class="oe_grey">If you want to quit click on Cancel.
+                    </p> -->
+					<group>
+						<field name="image" widget="image" class="oe_avatar oe_left"/>
+					</group>
+					<footer>
+		            	<!-- <button name="connect_anotherobj" string="Next" type="object" class="oe_highlight"/> -->
+		            	<button string="Cancel" special="cancel" icon="gtk-cancel"/>
+		            	<button string="Save" name="save" type="object" class="oe_highlight"/>
+		          	</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_view_addimage_wizard" model="ir.actions.act_window">
+            <field name="name">Add Image view</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">add.image</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="addimages_wizard_id"/>
+            <field name="target">new</field>
+        </record>
+
+        <!-- <record model="ir.ui.view" id="test2_wizard">
+		    <field name="name">test2 wizard</field>
+		    <field name="model">test2.wizard</field>
+		    <field name="type">form</field>
+		    <field name="arch" type="xml">
+		      <form string="my_test2_wizard" version="7.0">
+		         <p class="oe_grey">
+		                        This is the test2 wizard. Fill the details and click on Save or click on Cancel to quit.</p>
+		          <group>
+		            <group>
+		            <field name="department" style="width:60%%"/>                
+		            <field name="strength" style="width:60%%"/> 
+		            <field name="deptaddress" style="width:40%%"/> 
+		           </group>
+		          </group>            
+		          <footer>
+		            <button name="save_details" string="Save " type="object" class="oe_highlight"/>
+		            <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+		          </footer> 
+		        </form>
+		      </field>
+		 </record> -->
+		 <!-- <record id="test3_wizard_id" models="ir.ui.view">
+		 	<field name="name">Test3 wizard</field>
+		 	<field name="model">test3.wizard</field>
+		 	<field name="type">form</field>
+		 	<field name="arch" type="xml">
+		 		<form string="test_3_wizard" version="7.0">
+		 			<group>
+		 				<field name="name1"/>
+		 				<field name="name2"/>
+		 			</group>
+		 		</form>
+		 	</field>
+		 </record> -->
+	</data>
+</openerp>

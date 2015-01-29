@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields from hr.employee to the screen -->
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">hr.employee.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <field name='coach_id' position='after'>
+                <field name="emp_code"/>
+		<field name="ref_no"/>
+		<field name="personal_no"/>
+		<field name="labour_card_id_no"/>
+		<field name="labour_card_issued_date"/>
+		<field name="labour_card_expiry_date"/>
+			</field>
+		<field name='work_phone' position='before'>
+		<field name="landline_code"/>
+		</field>
+		<field name='mobile_phone' position='before'>
+		<field name="mobile_code"/>
+		</field>
+
+		<field name='work_location' position='after'>
+		<field name="preferred_name"/>
+		<field name="driving_license_id"/>
+		<field name="emirates_id"/>
+		<!--<field name="joining_date"/>-->
+		
+		</field>
+		<field name='passport_id' position='after'>
+		<field name="visa_type"/>
+		<field name="visa_no"/>
+		<field name="visa_upload"/>
+		<field name="passport_upload"/>
+		
+			</field>
+            </field>
+        </record>
+    </data>
+</openerp>

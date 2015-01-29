@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<record model="ir.ui.view" id="view_quatation_form_extend">
+    		<field name="name">quotation.form.inherit</field>
+    		<field name="model">sale.order</field>
+   		<field name="inherit_id" ref="sale.view_order_form"/>
+    		<field name="arch" type="xml">
+    		<field name="partner_id" position="before">
+			<field name="quotation_name"/>
+				</field>
+               
+    		</field>
+	</record>
+	
+    </data>
+</openerp>

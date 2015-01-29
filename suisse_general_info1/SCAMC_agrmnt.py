@@ -1,0 +1,48 @@
+from openerp.osv import osv,fields
+class asset_agreement_form(osv.Model):
+	_name="asset.mgmt.agreement"
+	_columns={
+	'asset_mgmt_field1':fields.char('Field1'),
+	'asset_mgmt_field2':fields.char('Field2'),
+	'asset_mgmt_field3':fields.char('Field3'),
+	'bank_name1':fields.char('Bank Name'),
+	'account_no':fields.char('No. of account'),
+	'bank_name2':fields.char('Bank Name'),
+	'account_no2':fields.char('No. of account'),
+	'bank_name3':fields.char('Bank Name'),
+	'account_no3':fields.char('No. of account'),
+	'currency_CHF':fields.boolean('CHF'),
+	'currency_USD':fields.boolean('USD'),
+	'currency_GBP':fields.boolean('EUR'),
+	'currency_others':fields.char('Others'),
+	'inv_strategy_income':fields.boolean('Income'),
+	'inv_strategy_conservative':fields.boolean('Conservative'),
+	'inv_strategy_balanced':fields.boolean('Balanced'),
+	'inv_strategy_growth':fields.boolean('Growth'),
+	'gen_instructions':fields.text('General instructions'),
+	'SCAMC_fee1':fields.float('Fee1'),
+	'SCAMC_min_CHF1':fields.float('CHF'),
+	'SCAMC_fee2':fields.float('Fee2'),
+	'SCAMC_min_CHF2':fields.float('CHF'),
+	'plus_vat':fields.float('VAT'),
+	'ticket_fee':fields.float('Ticket fee'),
+	'address':fields.text('Address'),
+	'SCAMC_name1':fields.char('Name'),
+	'SCAMC_sign1':fields.char('Sign2'),
+	'SCAMC_place1':fields.char('Place'),
+	'SCAMC_date1':fields.date('Date'),
+	'SCAMC_name2':fields.char('Name'),
+	'SCAMC_sign2':fields.char('Sign2'),
+	'SCAMC_place2':fields.char('Place'),
+	'SCAMC_date2':fields.date('Date'),
+	'client_name1':fields.char('Name'),
+	'client_sign1':fields.char('Sign1'),
+	'client_place1':fields.char('Place'),
+	'client_date1':fields.date('Date'),
+	'client_name2':fields.char('Name'),
+	'client_sign2':fields.char('Sign2'),
+	'client_place2':fields.char('Place'),
+	'client_date2':fields.date('Date')
+	}
+	
+asset_agreement_form()

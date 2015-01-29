@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+    <!-- Sequences for TransTech  ATM Reason Code --> 
+        <record id="seq_type_reason_code" model="ir.sequence.type">
+            <field name="name">Reason Code type</field>
+            <field name="code">reason.code</field>
+        </record>
+
+        <record id="seq_reason_code" model="ir.sequence">
+            <field name="name">Reason Code</field>
+            <field name="code">reason.code</field>
+            <field name="prefix"></field>
+            <field name="padding">3</field>
+        </record>
+<!-- Sequences for TransTech  ATM Reason Code --> 		
+		<record id="seq_type_remark_category" model="ir.sequence.type">
+            <field name="name">Remark Category type</field>
+            <field name="code">remarks.category</field>
+        </record>
+
+        <record id="seq_remark_category" model="ir.sequence">
+            <field name="name">Remark Category</field>
+            <field name="code">remarks.category</field>
+            <field name="prefix"></field>
+            <field name="padding">3</field>
+        </record>
+<!-- Sequences for TransTech  ATM Customer --> 		
+		<record id="seq_type_customer_info" model="ir.sequence.type">
+            <field name="name">Customer Info type</field>
+            <field name="code">customer.info</field>
+        </record>
+
+        <record id="seq_customer_info" model="ir.sequence">
+            <field name="name">Customer Info</field>
+            <field name="code">customer.info</field>
+            <field name="prefix">CUS1</field>
+            <field name="padding">3</field>
+         </record>
+<!-- Sequences for TransTech  ATM Code --> 		
+	<record id="seq_type_atm_info" model="ir.sequence.type">
+            <field name="name">ATM Info type</field>
+            <field name="code">atm.info</field>
+        </record>
+
+        <record id="seq_atm_info" model="ir.sequence">
+            <field name="name">ATM Info</field>
+            <field name="code">atm.info</field>
+            <field name="prefix">ATM</field>
+            <field name="padding">4</field>
+        </record>
+<!-- Sequences for TransTech  Surveyor Task --> 		
+	<record id="seq_type_survey_info" model="ir.sequence.type">
+            <field name="name">Surveys Task Info type</field>
+            <field name="code">atm.surverys.management</field>
+        </record>
+
+        <record id="seq_survey_info" model="ir.sequence">
+            <field name="name">Survey Task Info</field>
+            <field name="code">atm.surverys.management</field>
+            <field name="prefix">TASK</field>
+            <field name="padding">5</field>
+        </record>
+<!-- Sequences for TransTech  Alerts --> 		
+	<record id="seq_type_alerts_info" model="ir.sequence.type">
+            <field name="name">Alerts Info type</field>
+            <field name="code">alert.info</field>
+        </record>
+
+        <record id="seq_alerts_info" model="ir.sequence">
+            <field name="name">Alert Info</field>
+            <field name="code">alert.info</field>
+            <field name="prefix">Alert</field>
+            <field name="padding">5</field>
+        </record>
+
+     <!-- Sequences for TransTech  Users -->        
+    <record id="seq_type_trans_users_info" model="ir.sequence.type">
+            <field name="name">Trans Users Info type</field>
+            <field name="code">res.users</field>
+        </record>
+
+        <record id="seq_trans_users" model="ir.sequence">
+            <field name="name">Trans Users</field>
+            <field name="code">res.users</field>
+            <field name="prefix">USER</field>
+            <field name="padding">4</field>
+        </record>
+
+     <!-- Sequences for TransTech  Surveys Details -->        
+    <record id="seq_type_trans_surveys_details" model="ir.sequence.type">
+            <field name="name">Survey details info</field>
+            <field name="code">survey.info</field>
+        </record>
+
+        <record id="seq_surveys_details" model="ir.sequence">
+            <field name="name">Surveys Details info</field>
+            <field name="code">survey.info</field>
+            <field name="prefix">SURVEY</field>
+            <field name="padding">5</field>
+        </record>
+	<!--Sequences for TransTech  Site Inspection -->
+	<record id="seq_type_site_inspection" model="ir.sequence.type">
+            <field name="name">Site Inspection Type</field>
+            <field name="code">transtech.site.inspection</field>
+        </record>
+
+        <record id="seq_site_inspection" model="ir.sequence">
+            <field name="name">Site Inspection info</field>
+            <field name="code">transtech.site.inspection</field>
+            <field name="prefix">INSPECT</field>
+            <field name="padding">3</field> 
+        </record>
+	 <!-- Sequences for TransTech Internal Alerts --> 
+	<record id="seq_type_internal_alerts" model="ir.sequence.type">
+            <field name="name">Internal Alerts Type</field>
+            <field name="code">internal.alerts</field>
+        </record>
+
+        <record id="seq_internal_alerts" model="ir.sequence">
+            <field name="name">Internal Alerts info</field>
+            <field name="code">internal.alerts</field>
+            <field name="prefix">INALERT</field>
+            <field name="padding">3</field>
+        </record>
+
+
+    </data>
+</openerp>

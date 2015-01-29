@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields to vehicle fuel object -->
+        <record id="lead_normal_form_view2" model="ir.ui.view">
+            <field name="name">fleet.vehicle.fuel.form1</field>
+            <field name="model">fleet.vehicle.log.fuel</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form"/>
+            <field name="arch" type="xml">
+		<field name='vehicle_id' position='after'>
+                   <field name='Start_Date' placeholder="Enter Start Date."/>
+		   <field name='End_Date' placeholder="Enter End Date."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Start_Millage' placeholder="Enter Start Millage."/>
+		   <field name='Petrol_purchase_in_Litres'/>
+		   <field name='diesel_purchase_in_Litres'/>
+	           <field name='Driver_Name'/>
+		</field>
+	   </field>
+        </record>
+    </data>
+</openerp>

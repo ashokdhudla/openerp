@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<menuitem id="prize_mainmenuid" name="StampIt Go Prize"/>
+		<menuitem id="prize_submenuid" name="prize" parent="prize_mainmenuid"/>
+		<!-- stamp it prize Tree View -->
+		<record id="prize_tree_view" model="ir.ui.view">
+			<field name="name">prize.tree.view</field>
+			<field name="model">stamp.prize</field>
+			<field name="arch" type="xml">
+				<tree string="prize">
+					<field name="code_name"/>
+					<field name="type_compition"/>
+					<field name="prize_one"/>
+					<field name="prize_two"/>
+					<field name="prize_three"/>
+					<field name="start_date"/>
+					<field name="end_date"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- stampit prize form view -->
+		<record id="prize_form_view" model="ir.ui.view">
+			<field name="name">prize.form.view</field>
+			<field name="model">stamp.prize</field>
+			<field name="arch" type="xml">
+				<form string="prize Sign-Up Form" version="7.0">
+					<sheet>
+						<group>
+							
+						</group>
+						<group>
+							<field name="code_name" style="width:80%%"/>
+							<field name="type_compition" style="width:80%%"/>
+							<field name="prize_one" style="width:80%%"/>
+							<field name="prize_two" style="width:80%%"/>
+							<field name="prize_three" style="width:80%%"/>
+							<field name="start_date" style="width:80%%"/>
+							<field name="end_date" style="width:80%%"/>
+							<newline/>
+                    		<button name="generate_qrcode" string="Generate Qr Code" type="object" icon="gtk-go-forward" colspan="2"/>
+                    		<newline/>
+                    		<field name="image" widget="image" readonly="1"/>
+						</group>
+						<group>
+							<!-- <field name="point_contact_name" style="width:80%%"/>
+							<field name="store_address" style="width:80%%"/>
+							<field name="store_phone" style="width:80%%"/>
+							<field name="store_emailid" style="width:80%%"/>
+							<field name="stamp_value" style="width:80%%"/> -->
+						</group>
+						<group >
+						</group>
+						<group >
+							<!-- <field name="upload" />
+							<field name="lead_mngnt"  style="width:30%%" />
+							<field name="lead_mngnt_desc" attrs="{'invisible':[('lead_mngnt', '!=', 'yes')]}" /> -->
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- kanbann view -->
+		<record model="ir.ui.view" id="resource_kanban_view">
+		    <field name="name">prize Form</field>
+		    <field name="model">stamp.prize</field>
+		    <field name="type">kanban</field>
+		    <field name="arch" type="xml">
+		        <kanban>
+		            <templates>
+		                <t t-name="kanban-box">
+		                    <div class="oe_resource_vignette">
+		                        <div class="oe_resource_image">
+		                            <a type="edit"><img t-att-src="kanban_image('object.name', 'photo', record.id.value)" class="oe_resource_picture"/></a>
+		                        </div>
+		                        <div class="oe_resource_details">
+		                            <ul>
+		<!--Here you have to write the object's field name which you want to display in kanban view -->
+		                               <li><field name="code_name"/></li>
+		                               <!-- <li><field name="company_city"/></li>
+		                               <li><field name="pincode"/></li> -->
+		                               <!-- <li><field name="available_copy"/> </li> -->                                   
+		                             </ul>
+		                        </div>
+		                    </div>                       
+		                </t>
+		            </templates>
+		        </kanban>
+		    </field>
+		</record>
+
+		<!-- Action for my company -->
+		<record id="action_prize" model="ir.actions.act_window">
+			<field name="name">StampIt Go prize</field>
+			<field name="res_model">stamp.prize</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="prize_childmenuid" name="prize Form" parent="prize_submenuid" action="action_prize"/> 
+
+	<!-- Prize registers users  -->
+		<menuitem id="prize_usersubmenuid" name="Reg Users" parent="prize_mainmenuid"/>
+		<!--  prize users Tree View -->
+		<record id="prizeuser_tree_view" model="ir.ui.view">
+			<field name="name">prizeuser.tree.view</field>
+			<field name="model">prize.regusers</field>
+			<field name="arch" type="xml">
+				<tree string="prize users">
+					<field name="username"/>
+					<field name="createdat"/>
+					<field name="userid"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- prizeusers form view -->
+		<record id="prizeuser_form_view" model="ir.ui.view">
+			<field name="name">prizeuser.form.view</field>
+			<field name="model">prize.regusers</field>
+			<field name="arch" type="xml">
+				<form string="prizeuser Sign-Up Form" version="7.0">
+					<sheet>
+						<group>
+							
+						</group>
+						<group>
+							<field name="username" style="width:80%%"/>
+							<field name="createdat" style="width:80%%"/>
+							<field name="userid" style="width:80%%"/>
+						</group>
+						<group>
+							<!-- <field name="point_contact_name" style="width:80%%"/>
+							<field name="store_address" style="width:80%%"/>
+							<field name="store_phone" style="width:80%%"/>
+							<field name="store_emailid" style="width:80%%"/>
+							<field name="stamp_value" style="width:80%%"/> -->
+						</group>
+						<group >
+						</group>
+						<group >
+							<!-- <field name="upload" />
+							<field name="lead_mngnt"  style="width:30%%" />
+							<field name="lead_mngnt_desc" attrs="{'invisible':[('lead_mngnt', '!=', 'yes')]}" /> -->
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- Action for my company -->
+		<record id="action_prizeuser" model="ir.actions.act_window">
+			<field name="name">prizeuser</field>
+			<field name="res_model">prize.regusers</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,kanban</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="prizeuser_childmenuid" name="prize users" parent="prize_usersubmenuid" action="action_prizeuser"/> 
+
+	</data>
+</openerp>

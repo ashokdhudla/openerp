@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Top menu item -->
+        <menuitem name="Packaging Management"
+            id="package_management_root" />
+
+            <!-- Customers menuitem -->
+         <menuitem id="customer_menu_id" name="Customers" parent="package_management_root" sequence="1"/>
+
+        <menuitem action="base.action_partner_form" id="menu_packaging_customer_view_action"
+            parent="customer_menu_id"/>
+
+
+            <!--Products menuitem -->
+         <menuitem id="sub_menu_id" name="Products" parent="package_management_root" sequence="2"/>
+		
+		<menuitem id="action_menu_id" parent="sub_menu_id" action="product.product_normal_action"/>
+
+			<!-- Packaging menuitem -->
+		<menuitem id="package_management_child" name="Packaging"
+            parent="package_management_root" sequence="4"/>
+
+            <record id="packaging_view_form" model="ir.ui.view">
+			<field name="name">Packaging</field>
+			<field name="model">packaging.board</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Packaging Management" version="7.0">
+					<sheet>
+					<group>
+						<!-- <field name="name" style="width:40%%"/> -->
+						<field name="customer" style="width:60%%" on_change="onchange_customer(customer)"/>
+						<field name="product" style="width:60%%"/>
+					</group>
+						<notebook>
+							<page string='Info'>
+								<group>
+									<group>
+										<field name="cst"/>
+										<field name="ref"/>
+										<field name="color"/>
+										<field name="gauge"/>
+										<field name="width"/>
+										<field name="date"/>
+									</group>
+									<group>
+										<field name="manufacture_date"/>
+										<field name="expiry_date"/>
+										<field name="roll_no"/>
+										<field name="tr_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
+										<field name="net_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
+										<field name="gross_weight"/>
+									</group>
+								</group>
+								<!--<div style="float: right;margin-top: -8%%;margin-right: 140px;">
+								<span>kgs</span>
+								</div>
+
+								<div style="float: right;margin-top: -5%%;margin-right: 140px;">
+								<span>kgs</span>
+								</div>
+
+								<div style="margin-top:-100px;margin-left: 261px;">
+								<span>&#956;</span>
+								</div>
+
+								<div style="float: right;margin-top:-67px;margin-right: 587px;">
+								<span>mm</span>
+								</div>-->
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+			</record>
+		
+
+		<record id="packaging_view_tree" model="ir.ui.view">
+			<field name="name">Packaging Management</field>
+			<field name="model">packaging.board</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Packaging Tree" editable="top">
+							<field name="sl_no"/>
+							<field name="customer" on_change="onchange_customer(customer)"/>
+							<field name="cst"/>
+							<field name="roll_no"/>
+							<field name="gauge"/>
+							<field name="date"/>
+							<field name="width"/>
+							<field name="tr_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
+							<field name="net_weight" sum="Total Net Weight" on_change="onchange_weight(tr_weight,net_weight)"/>
+							<field name="pallet_no"/>
+							<field name="color"/>
+							<field name="gross_weight" sum="Total Gross"/>
+							<field name="for_sample"/>
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="packaging_view_action" model="ir.actions.act_window">
+		  	<field name="name">Packaging</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">packaging.board</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="packaging_view_tree"/>
+			   <field name="view_mode">tree,form</field>
+ 			   <field name="context">{'search_default_date':1 }</field>   
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add Packaging Information.
+              		</p>
+               	</field>
+		</record>
+
+		<record model="ir.ui.view" id="view_packaging_filter">
+            <field name="name">packaging_filter_vew</field>
+            <field name="model">packaging.board</field>
+            <field name="arch" type="xml">
+                <search string="packaging search">
+			<field name="customer" string="Customer" filter_domain="[('customer','ilike',self)]"/>
+			<filter icon="terp-go-today" string="Today" name="date" domain="[('date','&gt;=',current_date),('date','&lt;=',current_date)]" />
+                     <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter string="Work Order" icon="terp-folder-green" domain="[]" context="{'group_by':'cst'}"/>
+                        <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>
+                         <filter string="Jumbo Roll No" icon="terp-go-month" domain="[]" context="{'group_by':'roll_no'}"/>                    
+			</group>
+            </search>
+            </field>
+            </record>
+
+
+		<menuitem action="packaging_view_action" id="menu_packaging_view_action"
+            parent="package_management_child" sequence="2"/>
+
+
+        <record model="ir.ui.view" id="sales_purchase_page_view">
+		    <field name="name">Partner Inherit Form</field>
+		    <field name="model">res.partner</field>
+	        <field name="inherit_id" ref="base.view_partner_form"/>
+	        <field name="arch" type="xml">
+	        	<field name="website" position="after">
+	        		<field name="reference"/>
+	        	</field>
+	         	<xpath expr="/form[@string='Partners']/sheet/notebook/page[@string='Sales &amp; Purchases']" position="attributes">
+	         	<attribute name="invisible">1</attribute>
+	         	</xpath>
+        	</field>
+    	</record>
+
+
+    	<record model="ir.ui.view" id="product_inherited_view">
+		    <field name="name">Product Inherit Form</field>
+		    <field name="model">product.product</field>
+	        <field name="inherit_id" ref="product.product_normal_form_view"/>
+	        <field name="arch" type="xml">
+	        	<field name="sale_ok" position="replace"/>
+	        	<field name="list_price" position="replace"/>
+	         	<xpath expr="/form/sheet/notebook/page[@string='Procurements']" position="attributes">
+	         	<attribute name="invisible">1</attribute>
+	         	</xpath>
+
+	         	<xpath expr="/form/sheet/notebook/page[@string='Inventory']" position="attributes">
+	         	<attribute name="invisible">1</attribute>
+	         	</xpath>
+
+	         	<xpath expr="/form/sheet/notebook/page[@string='Sales']" position="attributes">
+	         	<attribute name="invisible">1</attribute>
+	         	</xpath>
+        	</field>
+    	</record>
+
+
+
+    	<record id="work_order_form" model="ir.ui.view">
+			<field name="name">Work Order</field>
+			<field name="model">work.order</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Work Order" version="7.0">
+					<sheet>
+					<group>
+						<group>
+							<field name="work_order"/>
+							<field name="customer_id" style="width:60%%"/>
+							<field name="color"/>
+							<!--<field name="mother_roll_no" style="width:40%%"/>-->
+							<field name="gauge"/>
+							<field name="year_in_num" on_change="onchange_expiry(year_in_num)"/>
+							<field name="expiry_date"/>
+						</group>
+						<group>
+							<field name="width"/>
+							<field name="tare_weight"/>
+							<field name="meters"/>
+							<field name="date"/>
+							<field name="shift"/>
+						</group>
+					</group>
+					<notebook>
+						<page string="Packagings">
+	                           			 <field name="packaging_ids" readonly="1">
+							<tree string="Pacakging list" editable="bottom" edit="false">
+							 	<field name="sl_no"/>
+								<field name="customer"/>
+	                            				<field name="roll_no"/>
+								<field name="date"/>
+								<field name="gauge"/>
+								<field name="width" string="Size"/>
+								<field name="net_weight" sum="Total Net Weight"/>
+								<field name="pallet_no"/>
+								<field name="color"/>
+								<field name="gross_weight" sum="Total Gross"/>
+					
+							</tree>
+							</field>
+	                    		</page>
+	                </notebook>
+	               <!-- <div style="float: right;margin-top: -350px;margin-right: 124px;">
+								<span>kgs</span>
+								</div>
+					<div style="float: right;margin-top: -366px;margin-right: 124px;">
+								<span>mm</span>
+								</div>
+					<div style="margin-top: -304px;margin-left: 217px;">
+								<span>&#956;</span>
+								</div>-->
+				</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="work_order_tree" model="ir.ui.view">
+			<field name="name">Work Order Tree</field>
+			<field name="model">work.order</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Work Order Tree">
+							<field name="work_order"/>
+							<field name="customer_id"/>
+							<!--<field name="mother_roll_no"/>-->
+							<field name="date"/>
+							<field name="gauge"/>
+							<field name="tare_weight"/>
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="work_order_action" model="ir.actions.act_window">
+		  	<field name="name">Work Order</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">work.order</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="work_order_tree"/>
+			   <field name="view_mode">tree,form</field>
+ 			  <!-- <field name="context">{'search_default_name_id':'Name' }</field> -->   
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add Work Order Information.
+              		</p>
+               	</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="view_work_order_filter">
+            <field name="name">work_order_filter_vew</field>
+            <field name="model">work.order</field>
+            <field name="arch" type="xml">
+                <search string="work order search">
+			 <field name="work_order" string="Work Order" filter_domain="[('work_order','ilike',self)]"/>
+                     <group expand="0" string="Group By...">
+                        <filter string="Customer" icon="terp-personal" domain="[]" context="{'group_by':'customer_id'}"/>
+                        <filter string="Work Order" icon="terp-folder-green" domain="[]" context="{'group_by':'work_order'}"/>
+                        <filter string="Date" icon="terp-go-month" domain="[]" context="{'group_by':'date'}"/>                    
+			</group>
+            </search>
+            </field>
+            </record>
+
+
+		<menuitem action="work_order_action" id="menu_work_order_action"
+            parent="package_management_child" sequence="1"/>
+
+</data>
+</openerp>

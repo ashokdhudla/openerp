@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+            <record model="ir.ui.view" id="wizard_atm_view_form">
+                <field name="name">ATM Move</field>
+                <field name="model">atm.move</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                  <form string="ATM Locations" version="7.0">
+                                <!-- <p class="oe_grey">
+                                    This is the 1st wizard. If you want to go to next wizard fill the details below and click on Next button.</p>
+
+                                    <p class="oe_grey">If you want to quit click on Cancel.
+                                </p> -->           
+                      <group>
+                        <field name="name" style="width:60%%"/> 
+                        <field name="longitude" style="width:60%%"/>                
+                        <field name="latitude" style="width:60%%"/> 
+                        <field name="date"/>             
+                      </group>
+                      <footer>
+                        <button name="action_save" string="Save" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" icon="gtk-cancel"/>
+                      </footer>
+
+                  </form>
+                </field>
+               </record>
+
+    <record id="action_atm_view_wizard" model="ir.actions.act_window">
+            <field name="name">ATM Moves</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">atm.move</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="wizard_atm_view_form"/>
+            <field name="target">new</field>
+        </record>
+
+
+        <record id="survey_approve_view" model="ir.ui.view">
+            <field name="name">survey.details.confirm.form</field>
+            <field name="model">surveys.approve</field>
+            <field name="arch" type="xml">
+                <form string="Approve Surveys" version="7.0">
+                    <p class="oe_grey">
+                       Click on 'Approve Surveys' button to approve selected Surveys.
+                    </p>
+                    <footer>
+                        <button string="Approve Surveys" name="approve_survey" type="object" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+  </data>
+</openerp>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+           <record model="ir.ui.view" id="tax_remove_id">
+    		<field name="name">tax.remove</field>
+    		<field name="model">account.invoice</field>
+   		<field name="inherit_id" ref="account.invoice_form"/>
+		<field name="arch" type="xml">
+		<field name="invoice_line_tax_id" position="replace"/>
+	</field>
+</record>
+</data>
+</openerp>

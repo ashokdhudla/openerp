@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+		<menuitem id="menuitem_ry_configuration" name="Configuration" parent="menuitem_ry_top" groups="group_ry_manager"/>
+
+		<record id="yachts_booking_config_form_view" model="ir.ui.view">
+            <field name="name">yatch.configuration.form</field>
+            <field name="model">yatch.config</field>
+            <field name="arch" type="xml">
+                <form string="Yatch Config" version="7.0">
+                	<sheet>
+                		 <field name="image_medium" widget="image" class="oe_avatar oe_left"/>
+                        <div class="oe_title">
+                            <div class="oe_edit_only">
+                                <label for="yatch_name" string="Yacht Name"/>
+                            </div>
+                            <h1>
+                                <field name="yatch_name" required="1" placeholder="Yacht Name...."/>
+                            </h1>
+                            <div name="options">
+                                <field name="own_yatch" on_change="onchange_type(own_yatch,third_yatch)"/>
+                                <label for="own_yatch"/>
+                                <field name="third_yatch" on_change="onchange_type1(own_yatch,third_yatch)"/>
+                                <label for="third_yatch"/>
+                            </div>
+                        </div>
+                        <div class="oe_right oe_button_box" name="buttons">
+                        </div>
+                        
+						<group>
+								<field name="party_name" placeholder="Party Name...." attrs="{'invisible': [('third_yatch', '=',False)]}" style="width:60%%"/>
+								<!-- <field name="price_adult"/>
+								<field name="price_children"/> -->
+						</group>
+						<group>
+							<group>
+								<field name="max_no_pass" style="width:60%%"/>
+								<field name="license_no" style="width:60%%"/>
+								<field name="cap_name" style="width:60%%" on_change="onchange_emp(cap_name)"/>
+								<field name="cap_no" style="width:60%%"/>
+								<field name="cap_email" style="width:60%%" required="1"/>
+								<field name="min_dep" style="width:60%%"/>	
+							</group>
+							<group>
+								<field name="length" style="width:60%%"/>
+								<field name="no_crew_board" style="width:60%%"/>
+								<field name="park_loc" style="width:60%%"/>
+								<field name="park_no" style="width:60%%"/>
+								<field name="manfac_year" style="width:60%%"/>
+								<field name="ser_time_prd" style="width:60%%"/>
+								<!-- <field name="last_ser_date" style="width:60%%"/>
+								<field name="ser_in_days" style="width:60%%" on_change="onchange_next_service(last_ser_date,ser_in_days)"/>
+								<field name="next_ser_time" style="width:60%%"/> -->
+							</group>
+						</group>
+						<notebook>
+							<page string="Charges" invisibile="1">
+								<field name="charges_id">
+								<tree string="Charges" editable="bottom">
+									<field name="charge_id" on_change="onchange_charge(charge_id)"/>
+									<field name="price_charge"/>
+									<field name="charge_type"/>
+								</tree>
+								</field>
+							</page>
+							<page string="Description">
+								<field name="desc" placeholder="Description....."/>
+							</page>
+							<page string="Booking History">
+								<field name="booking_ids">
+								<tree string="Yacht Booking Tree">
+									<field name="name"/>
+									<!-- <field name="yacht_id"/> -->
+									<field name="client_id"/>
+									<field name="contact_num"/>
+									<field name="no_guests"/>
+									<field name="cruise_date"/>
+									<field name="state"/>
+								</tree>
+							</field>
+							</page>
+							<!-- <page string="Services History">
+								<field name="services_id">
+								<tree string="Service" editable='bottom'>
+									<field name="sequence"/>
+									<field name="yacht_id" on_change="services_dates(yacht_id)"/>
+									<field name="last_ser_date"/>
+									<field name="next_ser_time"/>
+									<field name="state"/>
+									<button name="service_status_change"
+				                        icon="gtk-apply" type="object"
+				                        class="oe_highlight" help="Move"  attrs="{'invisible': [('state', '=','done')]}"/>
+								</tree>
+							</field>
+							</page> -->
+							</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="yatch_config_tree" model="ir.ui.view">
+            <field name="name">yacht.config.tree</field>
+            <field name="model">yatch.config</field>
+            <field name="arch" type="xml">
+				<tree string="Yacht Config Tree" version="7.0">
+					<field name="yatch_name"/>
+					<field name="own_yatch"/>
+					<field name="third_yatch"/>
+					<!-- <field name="price_adult"/>
+					<field name="price_children"/> -->
+				</tree>
+			</field>
+		</record>
+
+		<record id="yacht_configuration_action_view" model="ir.actions.act_window">
+			<field name="name">Yacht</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">yatch.config</field>
+			<field name="view_id" ref="yatch_config_tree"/>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+      		<p class="oe_view_nocontent_create">
+        		Click to Create Yachts......
+      		</p>
+       		</field>
+		</record> 
+
+<menuitem id="yacht_configuration_action_menu" action="yacht_configuration_action_view" parent="menuitem_ry_configuration"/>
+
+		
+        <!-- yacht chages -->
+			<record id="yachts_chages_form_view" model="ir.ui.view">
+			<field name="name">yatch.charges.form</field>
+			<field name="model">yacht.charges</field>
+			<field name="arch" type="xml">
+				<form string="Yatch Charges" version="7.0">
+					<sheet>
+						<group>
+							<group>
+								<field name="charge_name" style="width:60%%" required="1" placeholder="Weekend (or) Weekday"/>
+								<field name="price_charge"/>
+								<field name="charge_type" style="width:60%%"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+			</record>
+
+			<record id="yatch_charges_tree" model="ir.ui.view">
+			<field name="name">yacht.charges.tree</field>
+			<field name="model">yacht.charges</field>
+			            <field name="arch" type="xml">
+							<tree string="Yacht Charges Tree" version="7.0">
+								<field name="charge_name"/>
+								<field name="price_charge"/>
+								<field name="charge_type"/>
+							</tree>
+						</field>
+					</record>
+
+			<record id="yacht_charges_action_view" model="ir.actions.act_window">
+				<field name="name">Charges</field>
+				<field name="type">ir.actions.act_window</field>
+				<field name="res_model">yacht.charges</field>
+				<field name="view_id" ref="yatch_charges_tree"/>
+				<field name="view_type">form</field>
+				<field name="view_mode">tree,form</field>
+				<field name="help" type="html">
+		      		<p class="oe_view_nocontent_create">
+		        		Click to Create Yachts Charges......
+		      		</p>
+       		</field>
+			</record> 
+
+				<menuitem id="yacht_charges_action_menu" action="yacht_charges_action_view" parent="menuitem_ry_configuration"/>
+
+				<!-- End Yacht Charges -->
+
+			<record model="ir.ui.view" id="view_royal_yacht_captain_conf">
+    		<field name="name">captain.form</field>
+    		<field name="model">hr.employee</field>
+   			<field name="inherit_id" ref="hr.view_employee_form"/>
+    		<field name="arch" type="xml">
+    			<field name='name' position="replace">
+					<field name="name" placeholder="Captain Name..."/>
+				</field>
+    			<field name='coach_id' position="after">
+					<field name="yacht_name"/>
+				</field>
+				<xpath expr="//field[@name='department_id']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath>
+                <!-- <xpath expr="//field[@name='parent_id']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                    </xpath> -->
+                <xpath expr="//field[@name='coach_id']" position="attributes">
+                        <attribute name="invisible">1</attribute>
+                </xpath>
+                
+			</field>
+		</record>
+
+		<delete id="hr.menu_hr_department_tree" model="ir.ui.menu"/>
+
+
+
+		<record model="ir.ui.view" id="view_royal_yacht_hr_job">
+    		<field name="name">hr job inherit</field>
+    		<field name="model">hr.job</field>
+   			<field name="inherit_id" ref="hr.view_hr_job_form"/>
+    		<field name="arch" type="xml">
+				<xpath expr="//field[@name='department_id']" position="attributes">
+	                   <attribute name="invisible">1</attribute>
+	            </xpath>
+                
+			</field>
+		</record>
+
+</data>
+</openerp>

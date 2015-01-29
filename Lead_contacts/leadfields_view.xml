@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+<!-- Adding the fields from res.partner to the screen -->
+        <record id="lead_normal_form_view" model="ir.ui.view">
+            <field name="name">crm.lead.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+            <field name="arch" type="xml">
+                <field name='partner_id' position='before'>
+                    <field name="firstname"/>
+                    <field name="lastname"/>
+				</field>
+				<field name='categ_ids' position='replace'/>
+				<field name='partner_name' position='before'>
+					<field name="lead_type"/>
+					</field>
+            </field>
+        </record>
+    </data>
+</openerp>

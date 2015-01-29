@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report id="work_order_report_view" model="work.order" name="work.order.label" string="Work Label" xml="Nuplas_module/report/work_order_report.xml" xsl="Nuplas_module/report/work_order.xsl"/>
+        <report
+            id="work_order_report_view_id"
+            string="Work Order"
+            model="work.order"
+            name="work.order"
+            rml="Nuplas_module/report/work_order.rml"
+            menu="False"
+            auto="False"/>
+    </data>
+</openerp>

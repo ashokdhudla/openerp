@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_my_company,my.company,model_my_company,group_test_user,1,1,0,0
+access_my_company_manager,my.company,model_my_company,group_test_manager,1,1,1,1
+access_emp_info,emp.info,model_emp_info,group_test_user,1,1,0,0
+access_emp_info_manager,emp.info,model_emp_info,group_test_manager,1,1,1,1
+
+
+

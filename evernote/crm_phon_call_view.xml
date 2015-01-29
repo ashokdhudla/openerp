@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<openerp>
+	<data> 
+		<record model="ir.ui.view" id="eve_crm_phon_call_form_view">
+			<field name="name">eve.crm.phon.call.form</field>
+			<field name="model">crm.opportunity2phonecall</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="crm.opportunity2phonecall_view" />
+			<field name="arch" type="xml">
+				<xpath expr="//footer/button[@name='action_schedule']" position="after">
+						or
+ 						<button name="create_reminder" string="Reminder" class="oe_highlight" type="object" attrs="{'invisible':[('action','!=','schedule')]}" />					
+				</xpath>
+			</field>
+		</record>
+	</data>
+</openerp>

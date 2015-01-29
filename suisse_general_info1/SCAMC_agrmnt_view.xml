@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>   	
+		 <record id="suisse_agreement_form" model="ir.ui.view">
+			<field name="name">Agreement form</field>
+			<field name="model">asset.mgmt.agreement</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="Agreement Document" version="7.0">
+				<sheet>
+				<h3 align="center">Between</h3>
+				<div align="center">
+					<field name="asset_mgmt_field1" style="width: 60%%"/>
+					<field name="asset_mgmt_field2" style="width: 60%%"/>
+					<field name="asset_mgmt_field3" style="width: 60%%"/>
+				</div>
+				<p align="center">(hereafter referred to as THE CLIENT)</p>
+				<p align="center">and Suisse Capital Asset Management Company SA,Zugerstrasse 32, CH-6340 Baar,(hereafter referred to as SCAMC)</p>
+				<h3 align="center">Preamble</h3>
+				<p>THE CLIENT confirms that all of the assets that are the subject of this present agreement do not derive from criminal sources punishable in Switzerland or abroad</p>
+				<notebook>
+				<page string="The Client Entrusts">
+				<div>
+				<p>* An Asset Management mandate for the Assets deposited with:</p>
+				<p>* An Investment Counselling mandate for the Assets deposited with:</p>
+				<group>
+					<field name="bank_name1" style="width: 50%%"/>
+					<field name="account_no" style="width: 40%%"/>
+					<field name="bank_name2" style="width: 50%%"/>
+					<field name="account_no2" style="width: 40%%"/>
+					<field name="bank_name3" style="width: 50%%"/>					
+					<field name="account_no3" style="width: 40%%"/>
+				</group>
+				</div>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Guidelines</b></p>
+					</div>
+				</div>
+				<p style="line-height:110%%;">Under the Asset Management Mandate, THE CLIENT entrusts SCAMC with the discretionary<br/> Management of his assets, within the scope of articles 3 and 4 hereafter.</p>
+				<p>Within the scope of his discretionary mandate, SCAMC is authorised, without being obliged, to undertake all ordinary banking transactions, such as defined under the "Portfolio Management Guidelines" of the Swiss Bankers Association(SBA). All modifications of these Guidelines in respect to the ordinary banking transactions will automatically be applicable to the present agreement.</p>
+				<p>By ordinary banking transactions, in the sense of these Guidelines, we mainly understand fixed time deposits and fiduciary deposits, transactions in precious metals, investments in securities in the monetary and capital markets, such as shares, bonds,notes,certificates of deposits etc.,as well as investments funds, investment companies and other public investment instruments.</p>
+				<p>Furthermore, SCAMC is authorised, without being obliged, to initiate transactions in derivatives and to invest in non-traditional investments, within the limits fixed by the Guidelines of the SBA, regarding the asset management mandate.</p>
+				<p>SCAMC is also authorised to take all necessary administrative steps which are necessary for the good conduct of his mandate. Within this scope, SCAMC will take all the decisions in the CLIENT'S interest.</p>
+				<p>Finally, SCAMC is authorised to pledge THE CLIENT'S assets for guarantee reasons.</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Decision</b></p>
+					</div>
+				</div>
+				<p>Under the investment counselling mandate, SCAMC commits itself to supply THE CLIENT, within the context of his (their) portfolio(s) mentioned under article 1, with investment recommendations.</p>
+				<p>THE CLIENT may not follow these recommendations and remain free to choose the investments. The final decision relating to them falls exclusively to him.</p>
+				</page>
+				<page string="Currency &amp;Investment Strategy">
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Currency</b></p>
+					</div>
+				</div>
+				<p><b>The Client chooses the follwing reference currency:</b></p>
+				<group>
+					<field name="currency_CHF"/>
+					<field name="currency_USD"/>
+					<field name="currency_GBP"/>
+					<field name="currency_others" style="width: 50%%"/>
+				</group>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div>
+						<p style="margin-left: 316px;"><b>Investment Strategy</b></p>
+					</div>
+				</div>
+				<p><b>The Client chooses the follwing investment strategy:</b></p>
+				<group>
+					<field name="inv_strategy_income"/>
+					<field name="inv_strategy_conservative"/>
+					<field name="inv_strategy_balanced"/>
+					<field name="inv_strategy_growth"/>
+				</group>
+				<div style="margin-top:-13%%;">
+				<p style="margin-left: 20%%;">The main objective is income.</p>
+				<p style="margin-left: 20%%;">The main objective is the preservation of capital with low risk.</p>
+				<p style="margin-left: 20%%;">The main objective is capital appreciation with medium risk.</p>
+				<p style="margin-left: 20%%;">The main objective is a more than the average capital appreciation with high risk.</p>
+				</div>
+				<div style="margin-top:3%%;">
+				<group>
+				<field name="gen_instructions" placeholder="General Instructions"/>
+				</group>
+				</div>
+				<p>Within the scope of the selected investment strategy, THE CLIENT accepts the investment policy of SCAMC and the corresponding asset allocation. This investment policy can at any moment be changed and adapted the developments of the economy and of the markets.</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Advisory</b></p>
+					</div>
+				</div>
+				<p>Within the scope of the asset management mandate, SCAMC commits its elf to use the utmost diligence in the selection of the investments and watches over a sufficient diversification of the portfolio.</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Recommendation</b></p>
+					</div>
+				</div>
+				<p>Within the scope of the investment counselling mandate SCAMC commits itself to the utmost necessary diligence in the selection and formulation of the recommendations to THE CLIENT</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Risks</b></p>
+					</div>
+				</div>
+				<p>THE CLIENT confirms having been informed by SCAMC of the inherent risks of investments and/or of envisaged investments. THE CLIENT is also aware of the fact, that looking for higher results implies an increase of risk; that can in some extreme cases-lead to the loss of invested capital</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div>
+						<p style="margin-left: 316px;"><b>Indemnity Telephone/email</b></p>
+					</div>
+				</div>
+				<p>THE CLIENT can at any moment give instructions to SCAMC. For instructions given by telephone or by E-mail, SCAMC has the right, but no obligation, to require a written confirmation before executing them. THE CLIENT bears the full economic risk of the execution of these instructions, even for the one which may have resulted from an error, or if it turns out that the instructions have been transmitted by fraudulence.</p>
+				</page>
+				
+				
+				<page string="Fee Details">
+				<h4>SCAMC will be paid for its services with the following fee:</h4>
+					<div>
+						<field name="SCAMC_fee1"/>
+						<field name="SCAMC_min_CHF1" style="margin-left: 29%%;margin-top: -2%%;"/>
+					</div>
+					<p style="margin-left: 12%%;margin-top: -4%%;">p.a;minimum  <b>CHF</b></p>
+					<p style="margin-left: 41%%;margin-top: -4%%;">p.a(plus VAT if applicable)</p>
+					<div>
+					<p style="margin-top: 4%%;">This remuneration will be each quarter as per the end of March, end of June, end of September and end of December
+					of each year on the average total assets held over each period and debited as a rule during the month following the
+					end of a quarter</p>
+					</div>
+					<div>
+					<field name="SCAMC_fee2" style="margin-top: 2%%;"/>
+					<field name="SCAMC_min_CHF2" style="margin-top: -3%%;margin-left: 29%%;"/>
+					</div>
+					<p style="margin-left: 12%%;margin-top: -5%%;">p.a.; minimum  <b>CHF</b></p>
+					<p style="margin-left: 40%%;margin-top: -3%%;">p.a.(plus VAT if applicable)</p>
+					<div>
+					<p style="margin-top: 4%%;">This remuneration will be each quarter as per the end of March, end of June, end of September and end of December
+					of each year on the average total assets held over each period and debited as a rule during the month following the
+					end of a quarter</p>
+					</div>
+					<div>
+					<field name="plus_vat" style="margin-top: 2%%;"/>
+					</div>
+					<p style="margin-left: 12%%;margin-top: -2%%;">(plus VAT if applicable) of the net increase for each quarter,taking
+					into consideration withdrawals and deposits. This commission is only due if the performance of the quarter is positive
+					and if the total amount of the portfolio is higher than the total amount four quarter.</p>
+					<p><b>*Plus</b> a commission per transaction,</p>
+					<p style="margin-left: 38%%;margin-top: -3%%;">depending on the currency of the transaction.</p>
+					<div>
+					<field name="ticket_fee" style="margin-top: -4%%;margin-left: 26%%;" placeholder="(ticket fee)"/>
+					</div>
+					<p>SCAMC reserves the right to modify the structure of its fees with a 30-day notice to THE CLIENT</p>
+					<p>All advices and other services that are not directly linked to the execution of this agreement will be charged separately to THE CLIENT</p>
+					<p>THE CLIENT has been informed that SCAMC receives commissions from banks and/or other financial intermediaries. THE CLIENT explicitly authorises SCAMC to keep these amounts as payment for the asset management and/or counselling activity, in addition to the fees and commissions mentioned above.</p>
+					<p>THE CLIENT authorises SCAMC to debit its fees directly to THE CLIENT'S bank account.</p>
+					
+					<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div>
+						<p style="margin-left:316px;"><b>Portfolio Statement</b></p>
+					</div>
+				</div>
+				<p style="margin-top:2%%;">SCAMC commits itself to establish, at least once a year at the end of the year, a performance statement of the managed assets or of those that are under investment counselling mandate. In the case where its fees include participation to the net increase of the capital, a statement will have to be established each quarter.</p>
+				
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Disclaimer</b></p>
+					</div>
+				</div>
+				<p style="margin-top:2%%;">No responsibility incurs to SCAMC for any possible losses or missed profits or any other damages of whatever nature it may be, unless they have been caused as a result pf a serious mistake made by SCAMC.</p>
+				
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Confidentiality</b></p>
+					</div>
+				</div>
+				<p style="margin-top:2%%;">SCAMC commits itself to respect strict confidentiality, relative to information or facts concerning THE CLIENT of which it might have knowledge.</p>
+				</page>	
+				
+				<page string="Address &amp;Declaration">
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div>
+						<p style="margin-left: 316px;"><b>Correspondence Address</b></p>
+					</div>
+				</div>
+				<p>All mail and information of SCAMC addressed to THE CLIENT is deemed to have been remitted to him, either as soon as it has been sent to the last address communicated by THE CLIENT to SCAMC, or retained by SCAMC at the disposal of THE CLIENT. The mail addressed to THE CLIENT will be:</p>
+				<p>* Retained by SCAMC</p>
+				<p>* Addressed regularly to the following address:</p>
+				<group>
+						<field name="address" placeholder="address"/>
+					</group>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Termination</b></p>
+					</div>
+				</div>
+				<p>This agreement shall not expire upon THE CLIENT'S death or incapacity to act. It can at any time be terminated, without indication of any reason, by each party in writing.</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div>
+						<p style="margin-left: 350px;"><b>Mail services</b></p>
+					</div>
+				</div>
+				<p>SCAMC keeps at the disposal all of THE CLIENT's correspondence, advices and information during 10 years, starting from the date of issue. Afterwards, SCAMC has the right to destroy these documents.</p>
+				<div style="width:100%%;border-top:3px solid black;border-bottom:3px solid black;">
+				<div style="width:33%%;align:center;">
+						<p style="margin-left: 127%%;"><b>Law</b></p>
+					</div>
+				</div>
+				<p>This present agreement is governed by Swiss Law, under the jurisdiction of Zug, with the reserve of an appeal to the Federal Court.</p>
+				<div>
+				<p><b>Zug,</b></p>
+				<h3>Suisse Capital Management Company SA</h3>
+				<group>
+					<field name="SCAMC_name1" style="width: 30%%"/>
+					<field name="SCAMC_sign1" style="width: 30%%"/>
+					<field name="SCAMC_place1" style="width: 30%%"/>
+					<field name="SCAMC_date1"/>
+					<field name="SCAMC_name2" style="width: 30%%"/>
+					<field name="SCAMC_sign2" style="width: 30%%"/>
+					<field name="SCAMC_place2" style="width: 30%%"/>
+					<field name="SCAMC_date2"/>
+				</group>
+				</div>
+				<div>
+				<group>
+				<h3 style="margin-top: -23%%;margin-left: 46%%;">The Client</h3>
+				</group>
+				<group style="margin-left: 48%%;margin-top: -21%%;">
+					<field name="client_name1" style="width: 30%%"/>
+					<field name="client_sign1" style="width: 30%%"/>
+					<field name="client_place1" style="width: 30%%"/>
+					<field name="client_date1"/>
+					<field name="client_name2" style="width: 30%%"/>
+					<field name="client_sign2" style="width: 30%%"/>
+					<field name="client_place2" style="width: 30%%"/>
+					<field name="client_date2"/>
+				</group>
+				</div>
+				</page>
+				</notebook>
+				</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="suisse_agreement_action" model="ir.actions.act_window">
+            <field name="name">SCAMC Agreement form</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">asset.mgmt.agreement</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			 <field name="view_id" ref="suisse_agreement_form"/>
+        </record>
+		<menuitem action="suisse_agreement_action" id="menu_for_agreement_details"
+           sequence="1" parent="suisse_asset_management_general_info" />
+		</data>
+	</openerp>

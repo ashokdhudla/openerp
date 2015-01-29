@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+     <!-- Selection Wizard for select pdf file for note  -->
+        <record id="view_create_note_form" model="ir.ui.view">
+            <field name="name">view.create.note.form</field>
+            <field name="model">create.note.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Create Note" version="7.0">
+                	<group>
+                	    <field name='notebook' />
+                		<field name="file" />
+                	</group>
+				<footer>
+                	<button name="create_note" type="object" string="Create Note" class='oe_highlight' />
+                	or 
+					<button string="Cancel" class="oe_link" special="cancel"/>                
+				</footer>
+               </form>
+            </field>
+        </record>
+	
+		<record id="action_create_note" model="ir.actions.act_window">
+            <field name="name">action.create.note</field>
+            <field name="res_model">create.note.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>        
+
+     </data>
+</openerp>

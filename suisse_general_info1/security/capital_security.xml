@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record model="ir.module.category" id="base.module_suisse_capital">
+            <field name="name">Suisse User</field>
+            <field name="description">customer-can't edit</field>
+            <field name="sequence">16</field>
+        </record>
+        <record id="base.group_suisse_user" model="res.groups">
+            <field name="name">Suisse_Customer</field>
+            <field name="category_id" ref="base.module_suisse_capital" />
+        </record>
+        <record id="base.group_suisse_manager" model="res.groups">
+            <field name="name">Suisse_Manager</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_suisse_user'))]" />
+            <field name="category_id" ref="base.module_suisse_capital" />
+            <field name="users" eval="[(4, ref('base.user_root'))]" />
+        </record>
+		<record model="res.users" id="base.user_root">
+        <field eval="[(4,ref('base.group_partner_manager'))]" name="groups_id"/>
+    </record>
+    <!--<record model="ir.ui.menu" id="base.menu_base_partner">
+        <field eval="[(4, ref('group_suisse_user'))]" name="groups_id"/>
+    </record>
+    <record model="ir.ui.menu" id="base.menu_base_config">
+        <field eval="[(4, ref('group_suisse_manager'))]" name="groups_id"/>
+    </record>-->
+    </data>
+<data noupdate="1">
+ <record id="suisse_capital_personal_rule" model="ir.rule">
+        <field name="name">Personal Client</field>
+        <field ref="model_suisse_client_general_info" name="model_id"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_suisse_user'))]"/>
+    </record>
+    <record id="suisse_capital_see_all" model="ir.rule">
+        <field name="name">All Clients</field>
+        <field ref="model_suisse_client_general_info" name="model_id"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_suisse_manager'))]"/>
+    </record>
+</data>
+</openerp>

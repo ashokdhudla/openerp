@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<menuitem id="real_estate_mainid" name="Real Estate" sequence="100"/>
+		<menuitem id="real_estate_submenuid" name="Listing Form" parent="real_estate_mainid"/>
+
+		<menuitem id="customer_menu_id" name="Customers" parent="real_estate_mainid" sequence="1"/>
+
+        <menuitem action="base.action_partner_form" id="menu_realestate_customer_view_action"
+            parent="customer_menu_id"/>
+
+		<!-- Tree View for Real estate listings -->
+		<record id="realestate_tree_view" model="ir.ui.view">
+			<field name="name">realestate.tree.view</field>
+			<field name="model">real.estate</field>
+			<field name="arch" type="xml">
+				<tree string="Real estate Tree">
+					<field name="real_ref"/>
+					<field name="listing_type"/>
+					<field name="unit_no"/>
+					<field name="category_name"/>
+					<field name="emirate"/>
+					<field name="location"/>
+					<field name="sub_location"/>
+					<field name="beds"/>
+					<field name="bua"/>
+					<field name="price"/>
+					<field name="agent"/>
+					<field name="date_listed"/>
+					<field name="last_updated"/>
+				</tree>
+			</field> 
+		</record>
+
+		<!-- Real estate form view -->
+		<record id="realestate_form_view" model="ir.ui.view">
+			<field name="name">realestate.form.view</field>
+			<field name="model">real.estate</field>
+			<field name="arch" type="xml">
+				<form string="Real estate form" version="7.0">
+					<sheet>
+							
+							<div class="oe_title">
+								<field name="image" widget="image" class="oe_avatar oe_left"/>
+								<label for="real_ref"/>
+                           		<field name="real_ref" default_focus="1" placeholder="Ref" style="width:35%%"/>
+                       		<!-- 	<label for="listing_type"/>
+                       			 <field name="listing_type" style="width:35%%" string="Listing Type"/>  -->
+							</div>
+							
+					<group>
+						<group>
+							<!-- <field name="sl_no" style="width:70%%"/> -->
+							<!-- <field name="new_field" style="width:70%%"/> -->
+							<field name="unit_no" style="width:50%%"/>
+							<field name="type" style="width:50%%"/>
+							<field name="street_no" style="width:50%%"/>
+							<field name="floor" style="width:50%%"/>
+							<field name="category_name" style="width:50%%" />
+							<field name="emirate" style="width:50%%"/>
+							<field name="location" style="width:50%%"/>
+							<field name="sub_location" style="width:50%%"/>
+							<field name="beds" style="width:50%%" attrs="{'invisible':[('category_name','in',('office','warehouse','retail','com_ful_buil'))]}"/>
+
+							<field name="fitted" style="width:50%%" attrs="{'invisible':[('category_name', 'not in', ('office','warehouse','retail','com_ful_buil'))]}"/>
+							<field name="baths" style="width:50%%"/>
+						</group>
+						<group>
+							<field name="bua" style="width:50%%"/>
+							<field name="plot" style="width:50%%"/>
+							<field name="price" style="width:50%%" on_change="onchange_price_discount(price,commission,commission_price,deposit,deposit_price)"/>
+							<field name="freq" style="width:50%%"/>
+							<field name="cheques" style="width:50%%"/>
+							<field name="parking" style="width:50%%"/>
+							<field name="commission" style="width:50%%" on_change="onchange_price_discount(price,commission,commission_price,deposit,deposit_price)"/>
+							<field name="commission_price" style="width:50%%"/>
+							<field name="deposit" style="width:50%%" on_change="onchange_price_discount(price,commission,commission_price,deposit,deposit_price)"/>
+							<field name="deposit_price" style="width:50%%"/>
+							<field name="owner" style="width:50%%"/>
+						</group>
+					</group>
+					<group>
+						<group>
+							<field name="listing_title" style="width:50%%"/>
+							<field name="desc" style="width:50%%"/>
+							<field name="furnished" style="width:50%%"/>
+							<field name="view" style="width:50%%"/>
+							<!-- <newline/>
+							<button string="Add Images" type="action" name="%(action_view_addimage_wizard)d" class="oe_highlight"/>
+							<newline/> -->
+							<!-- <field name="image" widget="image" class="oe_avatar oe_left"/>
+							<field name="image2" widget="image" class="oe_avatar oe_left"/>
+							<field name="image3" widget="image" class="oe_avatar oe_left"/> -->
+						</group>
+						<group>
+							<!-- <field name="photos" style="width:50%%"/> -->
+							<!-- <field name="portals" style="width:50%%"/>
+							<field name="oth_med" style="width:50%%"/>
+							<field name="featr" style="width:50%%"/> -->
+							<field name="date_listed" style="width:50%%"/>
+							<field name="last_updated" style="width:50%%"/>
+							<field name="viewings" style="width:50%%"/>
+							<field name="leads" style="width:50%%"/>
+							<!-- <field name="add_info" style="width:50%%"/> -->
+							<field name="agent" style="width:50%%"/>
+							<field name="status" style="width:50%%"/>
+							<field name="managed" style="width:50%%"/>
+							<field name="exec" style="width:50%%"/>
+							<field name="invite" style="width:50%%"/>
+						</group>
+					</group>
+					<notebook>
+							<page string="Add Images" >
+							<field name="img_id">
+								<form string="Add Images" version="7.0">
+										<group>
+											<field name="image" widget="image" class="oe_avatar oe_left"/>
+										</group>
+									</form>
+									<tree string="Add Images">
+										<field name="sl_no"/>
+										<field name="image" widget="image"/>
+									</tree>
+							</field>
+							</page>
+
+ 						<!-- Portals page -->
+ 						<page string='Portals'>
+ 							<form string='Select Portals' version="7.0">
+ 								<group>
+ 									<field name='dbzl' style="width:50%%"/>
+ 									<field name='just_rent' style="width:50%%"/>
+ 									<field name='just_prop' style="width:50%%"/>
+ 									<field name='prop_find' style="width:50%%"/>
+ 									<field name='bayut' style="width:50%%"/>
+ 									<field name='gn_prop' style="width:50%%"/>
+ 									<field name='zoopla' style="width:50%%"/>
+ 									<field name='right_move' style="width:50%%"/>
+ 									<field name='own_web' style="width:50%%"/>
+ 								</group>
+ 							</form>
+ 						</page>
+
+ 					<!-- Add other media -->
+ 					<page string='Add other media'>
+ 							<form string='Add other Media' version="7.0">
+ 								<group>
+ 									<field name='youtube_vid_link' style="width:50%%" widget="url"/>
+ 									<field name='360_vir_link' style="width:50%%" widget="url"/>
+ 									<field name='aud_tour_link' style="width:50%%" widget="url"/>
+ 									<field name='vid_tour_link' style="width:50%%" widget="url"/>
+ 									<field name='qr_code_link' style="width:50%%" widget="url"/>
+ 									<field name='pdf_brou' style="width:50%%"/>
+ 									<field name='upload_video' style="width:50%%"/>
+ 								</group>
+ 							</form>
+ 						</page>
+ 						<!-- additional information -->
+ 						<page string='Additional Info'>
+ 							<form string='Additional Information' version="7.0">
+ 								<group>
+ 									<group>
+	 									<field name='prop_sta' style="width:50%%"/>
+	 									<field name='source_listing' style="width:50%%"/>
+	 									<field name='featurd' style="width:50%%"/>
+	 									<field name='dewa_no_ai' style="width:50%%"/>
+	 									<field name='str_ai' style="width:50%%"/>
+	 									<field name='next_avil_ai' style="width:50%%"/>
+	 									<field name='remind_ai' style="width:50%%"/>
+	 									
+	 								</group>
+	 								
+	 							
+	 								<group>
+	 									<field name='key_loc' style="width:50%%"/>
+	 									<field name='prop_tenate' style="width:50%%"/>
+	 									<field name='rent_at_ai' style="width:50%%"/>
+	 									<field name='rented_until' style="width:50%%"/>
+	 									<field name='main_fee' style="width:50%%"/>
+	 									<field name='price/sqft' style="width:50%%"/>
+	 									</group>
+	 									<group string="Notes">
+	 										<field name='new_notes' style="width:50%%"/>
+	 									</group>
+	 									<group string="Documents">
+	 										<field name='doc_name' style="width:50%%"/>
+	 									<field name='doc_file' style="width:50%%"/>
+	 									<field name='doc_text' style="width:50%%"/>
+	 							
+	 								</group>
+
+ 								</group>
+ 								
+ 							</form>
+ 						</page>
+
+ 						<!-- features and amenties-->
+ 						<page string='Features and Amenties'>
+ 							<form string='Features and Amenties' version="7.0">
+ 								<group string="Property Features">
+ 									<group>
+	 									<field name='balcony' style="width:50%%"/>
+	 									<field name='brdband_ready' style="width:50%%"/>
+	 									<field name='carpets' style="width:50%%"/>
+	 									<field name='cov_park' style="width:50%%"/>
+	 									<field name='ful_furnish' style="width:50%%"/>
+	 									<field name='jacuzzi' style="width:50%%"/>
+	 									<field name='marble_floors' style="width:50%%"/>
+	 									<field name='on_mid_flr' style="width:50%%"/>
+	 									<field name='prt_grg' style="width:50%%"/>
+	 									<field name='prop_lndsc_grd' style="width:50%%"/>
+	 									<field name='sld_wd_flrs' style="width:50%%"/>
+	 									<field name='upgrd_intr' style="width:50%%"/>
+	 									
+	 								</group>
+	 								
+	 							
+	 								<group>
+	 									<field name='bm_park' style="width:50%%"/>
+	 									<field name='central_ac' style="width:50%%"/>
+	 									<field name='drvs_ac' style="width:50%%"/>
+	 									<field name='gazebo_otdr_entng_area' style="width:50%%"/>
+	 									<field name='ktn_wht_gds' style="width:50%%"/>
+	 									<field name='on_hgh_flrs' style="width:50%%"/>
+	 									<field name='prt_fur' style="width:50%%"/>
+	 									<field name='prvt_grdn' style="width:50%%"/>
+	 									<field name='sauna' style="width:50%%"/>
+	 									<field name='stm_rm' style="width:50%%"/>
+	 									<field name='vw_grds' style="width:50%%"/>
+	 									<field name='bbq_area' style="width:50%%"/>
+	 									</group>
+
+	 								<group>
+	 									<field name='blt_wrdrobes' style="width:50%%"/>
+	 									<field name='cmnty_vw' style="width:50%%"/>
+	 									<field name='fl_ft_kchn' style="width:50%%"/>
+	 									<field name='gym' style="width:50%%"/>
+	 									<field name='mds_rm' style="width:50%%"/>
+	 									<field name='on_lw_flr' style="width:50%%"/>
+	 									<field name='pts_awd' style="width:50%%"/>
+	 									<field name='prvt_smng_pl' style="width:50%%"/>
+	 									<field name='shrd_smng_pl' style="width:50%%"/>
+	 									<field name='stdy' style="width:50%%"/>
+	 									<field name='vw_grds' style="width:50%%"/>
+	 									<field name='vw_sea_wtr' style="width:50%%"/>
+	 								</group>
+
+	 								<group string="Property Amenties">
+	 									<field name='chndrn_nrsy' style="width:50%%"/>
+	 									<field name='glf_clb_hse' style="width:50%%"/>
+	 									<field name='polo_clb_hse' style="width:50%%"/>
+	 									<field name='pub_trpt' style="width:50%%"/>
+	 									<field name='shps' style="width:50%%"/>
+	 								</group>
+
+	 								<group>
+	 									<field name='chdrn_ply_ara' style="width:50%%"/>
+	 									<field name='mtr_stn' style="width:50%%"/>
+	 									<field name='pub_prk' style="width:50%%"/>
+	 									<field name='squash_crt' style="width:50%%"/>
+	 									<field name='restrnt' style="width:50%%"/>
+	 								</group>
+
+	 								<group>
+	 									<field name='cmnl_grd' style="width:50%%"/>
+	 									<field name='msue' style="width:50%%"/>
+	 									<field name='pub_prkng' style="width:50%%"/>
+	 									<field name='shpg_mall' style="width:50%%"/>
+	 									<field name='tens_crt' style="width:50%%"/>
+	 								</group>
+
+ 								</group>
+ 								
+ 							</form>
+ 						</page>
+
+ 						<page string='Area Information'>
+ 							<form string='Area Information' version="7.0">
+ 								<group>
+ 									<field name='schls_ari' style="width:50%%"/>
+ 									<field name='metrs_ari' style="width:50%%"/>
+ 									<field name='shpg_ml_ari' style="width:50%%"/>
+ 									<field name='msqs_ari' style="width:50%%"/>
+ 									<field name='bechs_ari' style="width:50%%"/>
+ 									<field name='spr_mrts_ari' style="width:50%%"/>
+ 									<field name='park_ari' style="width:50%%"/>
+ 								</group>
+ 							</form>
+ 						</page>
+
+ 						<page string="Mapping">
+								<table border="0" cellpadding="0" cellspacing="0">
+									<tbody>
+										<tr>
+											<td>
+										<group>
+											<field name="longitude"/>
+											<field name="latitude"/>
+										</group>
+									</td>
+											<td style="padding-left: 15px; padding-top: 15px" width="100%%">
+									<field name="id" widget="location_map" nolabel="1"></field>
+								</td>
+								</tr>
+								</tbody>
+							</table>
+			
+								<button name="geo_localize" string="View Map" type="object" icon="gtk-zoom-in"/>
+							</page>
+
+
+					</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="view_atm_filter">
+            <field name="name">listing filter</field>
+            <field name="model">real.estate</field>
+            <field name="arch" type="xml">
+                <search string="atm search">
+
+			<field name="listing_type" string="listing type" filter_domain="[('listing_type','ilike',self)]"/>
+
+			<group expand="0" string="Group By...">
+             	<filter string="Listings type" icon="terp-personal" domain="[]" context="{'group_by':'listing_type'}"/>                 
+			</group>
+
+            </search>
+            </field>
+        </record>
+
+		<record id="action_realestate" model="ir.actions.act_window">
+			<field name="name">Listings Tree View</field>
+			<field name="res_model">real.estate</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- my company menuitem -->
+		<menuitem id="realestate_childmenuid" name="Rentals" parent="real_estate_submenuid" action="action_realestate"/> 
+
+
+	</data>
+</openerp>

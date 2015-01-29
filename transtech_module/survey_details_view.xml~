@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<menuitem id="menu_for_survey_details_pic" name="Survey Details" parent="transtech_atm_survey"/>
+	
+		<record id="view_survey_details_info_tree" model="ir.ui.view">
+			<field name="name">Survey Tree</field>
+			<field name="model">survey.info</field>
+			<field name="type">tree</field>
+			 <field name="arch" type="xml">
+				<tree string="Customer Information">
+							<field name="name"/>
+							<field name="surv_task" groups="transtech_module.group_atm_manager"/>
+							<field name="month"/>
+							<field name="atm_surv"/>
+							<field name="customer_surv"/>
+							<field name="surveyor_surv"/>
+							<field name="visit_tm"/>
+							
+				</tree>
+			</field>
+		</record>
+
+		<record id="form_surveys_info_new_1" model="ir.ui.view">
+			<field name="name">survey.info.details</field>
+			<field name="model">survey.info</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+			<form string="Survey Details New" version="7.0">
+				<sheet>
+					<group>
+						<field name="name" />
+							<field name="surv_task" widget="selection" on_change="onchange_taskid(surv_task)" groups="transtech_module.group_atm_manager"/>
+							<field name="month"/>
+							<field name="remarks_survey"/>
+							<field name="atm_surv"/>
+							<field name="customer_surv"/>
+							<field name="surveyor_surv"/>
+							<field name="visit_tm"/>
+							<field name="cur_longitude" groups="transtech_module.group_atm_manager"/>
+							<field name="cur_latitude" groups="transtech_module.group_atm_manager"/>
+							<field name="nxt_survey_distance" groups="transtech_module.group_atm_manager"/>
+							<field name="nxt_taskid" groups="transtech_module.group_atm_manager"/>
+						</group>
+						<notebook>
+							 <page string="Survey Checklist">
+								<group>
+									<group>
+										<field name="check_list1"/>
+										<field name="check_list2" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list3" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list4" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list5" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+									</group>
+									<group>
+										<field name="check_list6" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list7" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list8" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list9" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list10" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+									</group>
+								</group>
+								<group>
+									<group>
+										<field name="check_list11" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list12" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list13" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list14" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list15" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+									</group>
+									<group>
+										<field name="check_list16" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list17" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list18" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list19" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list20" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+									</group>
+								</group>
+								<group>
+									<group>
+										<field name="check_list21" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list22" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list23" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list24" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list25" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+									</group>
+									<group>
+										<field name="check_list26" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list27" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list28" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										<field name="check_list29" attrs="{'invisible': [('check_list1', '=',True)]}"/>
+										
+									</group>
+								</group>
+							   </page>
+							<page string="Before &amp; After Pictures">
+								<group>
+									<group string="Before Images">
+										<field name="bfr_img_front" widget='image' class="oe_left oe_avatar"  options='{"size": [200, 200,0,0]}' />
+									</group>
+									<group style="margin-top: 48px;">
+										<field name="bfr_img_side" widget='image' class="oe_left oe_avatar" options='{"size": [200, 200]}' />
+									</group>
+									<group>
+										<field name="bfr_img_back" widget='image' class="oe_left oe_avatar" options='{"size": [200, 200]}'/>
+									</group>
+								</group>
+								<group>
+										<group string="After Images">
+											<field name="after_img_front" widget='image' class="oe_left oe_avatar" options='{"size": [200, 200]}' /> 
+										</group>
+										<group style="margin-top: 48px;">
+											<field name="after_img_side" widget='image' class="oe_left oe_avatar" options='{"size": [200, 200]}' />
+										</group>
+										<group>
+											<field name="after_img_back" widget='image' class="oe_left oe_avatar" options='{"size": [200, 200]}'/>				</group>
+									</group>
+							   </page>
+							 
+						</notebook>
+							
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		
+	
+	<record id="view_survey_details_action" model="ir.actions.act_window">
+		  	<field name="name">Survey Details</field>
+			   <field name="type">ir.actions.act_window</field>
+			   <field name="res_model">survey.info</field>
+			   <field name="view_type">form</field>
+			   <field name="view_id" ref="view_survey_details_info_tree"/>
+			   <field name="view_mode">tree,form</field>         
+			   <field name="help" type="html">
+              		<p class="oe_view_nocontent_create">
+                	Click to add new survey details......
+              		</p>
+               		</field>
+		</record>
+
+	<record model="ir.ui.view" id="view_atm_survey_details_filter">
+            <field name="name">view_atm_survey_details_filter</field>
+            <field name="model">survey.info</field>
+            <field name="arch" type="xml">
+                <search string="atm Survey Details search">
+			
+			<filter icon="terp-go-today" string="Today" name="today" domain="[('visit_tm','&gt;=',current_date),('visit_tm','&lt;=',current_date)]" />
+                     <group expand="0" string="Group By...">
+			<filter string="Customer"  domain="[]" context="{'group_by':'customer_surv'}"/>
+			<separator/>
+                        <filter string="Task Id" icon="terp-personal" domain="[]" context="{'group_by':'surv_task'}"/>
+			<separator/>
+                        <filter string="Surveyor" icon="terp-folder-green" domain="[]" context="{'group_by':'surveyor_surv'}"/>
+			<separator/>
+                        <filter string="ATM" icon="terp-go-month" domain="[]" context="{'group_by':'atm_surv'}"/>
+			<separator/>
+			
+			                   
+			</group>
+            </search>
+            </field>
+            </record>
+
+	<menuitem action="view_survey_details_action" id="menu_for_survey_details_info" parent="menu_for_survey_details_pic"/>
+</data>
+</openerp>

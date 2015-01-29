@@ -1,0 +1,10 @@
+import configuration_panel
+import transtech_customer_setup
+import transtech_atm_setup
+import transtech_surveys_management
+import transtech_alert_details
+import transtech_site_inspection_form
+import wizard
+import survey_details
+import report
+import internal_alerts

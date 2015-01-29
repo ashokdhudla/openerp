@@ -1,0 +1,43 @@
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+import datetime
+import time
+from openerp import  tools
+import random
+import smtplib
+class internal_alerts(osv.osv):
+	_name="internal.alerts"	
+	_inherit="alert.info"
+	#_inherits={"res.users":"tuser_id"}
+	_columns={
+		'customer':fields.many2one('customer.info','Customer', required=True),
+		'user':fields.many2one('res.users','Created By', readonly=True),
+		'assign_to':fields.many2one('res.users','Assign To', required=True, domain="[('name_tl','!=',False)]"),
+	}
+	_defaults = {
+        'user': lambda obj, cr, uid, context: uid,
+        
+	}
+	_order = "name desc"
+	
+	def status_resolve(self,cr,uid,ids,context=None):
+		self.write(cr,uid,ids,{'status':'resolved'},context=context)
+		return True
+
+	def status_close(self,cr,uid,ids,context=None):
+		self.write(cr,uid,ids,{'status':'closed'},context=context)
+		return True
+
+	def create(self,cr,uid,vals,context=None):
+		if vals.get('name','/') == '/': 
+			vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'internal.alerts') or '/'
+		
+		return super(internal_alerts, self).create(cr, uid, vals, context=context)
+
+	def unlink(self, cr, uid, ids, context=None):
+        	intr_obj = self.pool.get('internal.alerts').browse(cr,uid,ids[0])
+		if intr_obj.status in ('resolved','closed'):
+			raise osv.except_osv(_('Invalid Action!'), _("You can't delete an Alert which is either in 'Resolved state' or in 'Closed state' "))
+        	
+        	return super(internal_alerts, self).unlink(cr, uid, ids, context=context)
+internal_alerts()
