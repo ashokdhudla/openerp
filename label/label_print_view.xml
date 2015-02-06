@@ -10,6 +10,7 @@
                 <form string="Label">
                     <field name="name"/>
                     <field name="model_id" on_change="onchange_model(model_id)"/>
+                    <field name="customer_id"/>
                     <field name="model_list" invisible="1"/>
                     <notebook colspan="4">
                         <page string="Fields">
@@ -27,7 +28,7 @@
                                         <field name="python_field" attrs="{'invisible': [('python_expression','=',False)], 'required': [('python_expression','=',True)]}"/>
                                     </group>
                                     <newline/>
-                                    <label string="Python experession field must be start with obj. e.g:- obj.M2O_field.field_name" colspan="4"/>
+                                    <!-- <label string="Python experession field must be start with obj. e.g:- obj.M2O_field.field_name" colspan="4"/> -->
                                 </form>
                                 <tree string="Fields">
                                     <field name="sequence"/>

@@ -27,6 +27,9 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="Packaging Management" version="7.0">
+					<header>
+						<button string="Print Report" name="print_report" type="object"/>
+					</header>
 					<sheet>
 				<group>
 					<group>
@@ -37,7 +40,7 @@
 					</group>
 					<group>
 						<field name="for_sample"/>
-						<field name="roll_no"/>
+						<field name="jumbo_roll" on_change="onchange_jumboroll(jumbo_roll)"/>
 					</group>
 				</group>
 						<notebook>
@@ -51,6 +54,8 @@
 										<field name="gauge"/>
 										<field name="width"/>
 										<field name="date"/>
+										<field name='seq'/>
+										<field name="cst_ref" invisible='1'/>
 									</group>
 									<group>
 										<field name="manufacture_date"/>
@@ -59,6 +64,8 @@
 										<field name="tr_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
 										<field name="net_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
 										<field name="gross_weight"/>
+										<field name="country_origin"/>
+										<field name='img' widget='image' class="oe_left oe_avatar"/>
 									</group>
 								</group>
 								<!--<div style="float: right;margin-top: -8%%;margin-right: 140px;">
@@ -91,24 +98,32 @@
 			 <field name="arch" type="xml">
 				<tree string="Packaging Tree" editable="top">
 							<field name="sl_no"/>
-							<field name="cst" on_change="onchange_workorder(cst)"/>
 							<field name="customer" on_change="onchange_customer(customer)"/>
-							<field name="roll_no"/>
+							<field name="cst" on_change="onchange_workorder(cst)"/>
+							<field name="jumbo_roll" on_change="onchange_jumboroll(jumbo_roll)"/>
+							<field name='seq'/>
 							<field name='product'/>
 							<field name="gauge"/>
 							<field name="date"/>
 							<field name="width"/>
-							<field name="tr_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
 							<field name="net_weight" sum="Total Net Weight" on_change="onchange_weight(tr_weight,net_weight)"/>
+							<field name="tr_weight" on_change="onchange_weight(tr_weight,net_weight)"/>
 							<field name="pallet_no"/>
 							<field name="color"/>
 							<field name="gross_weight" sum="Total Gross"/>
 							<field name="for_sample"/>
+
+							<button string="Label Print" type="action" name="%(action_view_label_wizard_print)d" class="oe_highlight"/>
+
+							<button string="Print" name="print_report" type="object" default_focus="1" class="oe_highlight"/>
+
 							<field name="expiry_date" invisible="1"/>
 							<field name="ref" invisible="1"/>
 							<field name="manufacture_date" invisible="1"/>
+							<field name="country_origin" invisible="1"/>
 							<!-- <field name="field_label_id" invisible='1'/> -->
 							<field name="work_order_id" invisible='1'/>
+							<field name="cst_ref" invisible='1'/>
 				</tree>
 			</field>
 		</record>
@@ -309,6 +324,7 @@
 									<field name="width"/>
 									<field name="tare_weight"/>
 									<field name="shift"/>
+									<field name="country_origin"/>
 								</group>
 							</group>
 							</sheet>

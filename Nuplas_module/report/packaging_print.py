@@ -9,4 +9,4 @@ class packaging_print(report_sxw.rml_parse):
             'time': time, 
         })
 
-report_sxw.report_sxw('report.packaging.board', 'packaging.board', 'addons/Nuplas_module/report/packaging_print.rml', parser=packaging_print, header="external")
+report_sxw.report_sxw('report.packaging.board', 'packaging.board', 'addons/Nuplas_module/report/packaging_board_view.rml', parser=packaging_print, header="external")

@@ -11,10 +11,13 @@ their packaging process.
     'website': 'http://www.techanipr.com',
     'depends': ['base','product','label'],
     'data': [
+        'wizard/label_print_wizard_view.xml',
         # 'nuplas_packaging_sequence.xml',
         'security/nuplas_security.xml',
         'security/ir.model.access.csv',
         'nuplas_configuration_view.xml',
+        'label_size_data.xml',
+        'label_report.xml',
         # 'work_order_report_view.xml',
 		
     ],

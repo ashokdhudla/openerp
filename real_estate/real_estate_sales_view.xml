@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- <image x="1.3cm" y="27.7cm" height="40.0" >[[ company.logo or removeParentNode('image') ]]</image> -->
 <openerp>
 	<data>
 		<!-- Tree View for Real estate listings -->
@@ -294,21 +295,21 @@
 		</record>
 
 
-		<!-- <record model="ir.ui.view" id="view_atm_filter">
+		<record model="ir.ui.view" id="view_filter_category_name">
             <field name="name">listing filter</field>
             <field name="model">real.estate</field>
             <field name="arch" type="xml">
-                <search string="atm search">
+                <search string="category type">
 
-			<field name="listing_type" string="listing type" filter_domain="[('listing_type','ilike',self)]"/>
+			<field name="category_name" string="category type" filter_domain="[('category_name','ilike',self)]"/>
 
 			<group expand="0" string="Group By...">
-             	<filter string="Listings type" icon="terp-personal" domain="[]" context="{'group_by':'listing_type'}"/>                 
+             	<filter string="category type" icon="terp-personal" domain="[]" context="{'group_by':'category_name'}"/>                 
 			</group>
 
             </search>
             </field>
-        </record> -->
+        </record>
 
 		<record id="action_realestate_sales" model="ir.actions.act_window">
 			<field name="name">Listings Tree View</field>

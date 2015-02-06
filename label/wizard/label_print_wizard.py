@@ -45,13 +45,16 @@ class label_print_wizard(osv.osv_memory):
     }
     
     def print_report(self, cr, uid, ids, context=None):
+        print "print report"
         if context is None:
             context = {}
         if not context.get('label_print') or not context.get('active_ids'):
             return False
         total_record = len(context.get('active_ids', []))
+        print "total record"
         datas = {}
         for data in self.browse(cr, uid, ids, context):
+            print data
             column = float(210) / float(data.name.width or 1)
             total_record = total_record * data.number_of_copy
             total_row = math.ceil(float(total_record)/ (column or 1))

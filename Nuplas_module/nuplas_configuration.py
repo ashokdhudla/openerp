@@ -50,24 +50,27 @@ class packaging_board(osv.osv):
 		'sl_no':fields.function(serial_inc,string='Sl.No',type="integer",multi="sums" ,readonly=True),
 		'customer':fields.many2one('res.partner',"Customer",domain="[('customer','=',True)]"),
 		'product':fields.many2one('product.product',"Product"),
-		'cst':fields.char('Work Order'),
+		'cst_ref' : fields.char("Cst Ref"),
+		'cst':fields.char('Product/work'),
 		'work_order_id':fields.many2one('work.order','Work Order'),
 		'ref':fields.char('REF'),
 		'color':fields.char('Color'),
-		'color1' : fields.boolean('Color1'),
-		'gauge':fields.float('Gauge'),
+		'gauge':fields.char('Gauge'),
 		'date':fields.datetime('Date'),
-		'width':fields.float('Width'),
+		'width':fields.char('Width'),
 		'manufacture_date':fields.date('MFG'),
 		'expiry_date':fields.date('Exp'),
-		'roll_no':fields.char('Jumbo Roll No.'),
-		'gross_weight':fields.float('Gross Weight'),
+		# 'roll_no':fields.char('Jumbo Roll No.'),
+		'jumbo_roll' : fields.many2one('jumbo.roll','Jumbo roll No'),
+		'seq' : fields.char('Seq'),
+		'gross_weight':fields.char('Gross Weight'),
 		'tr_weight':fields.float('Tare Weight'),
 		'net_weight':fields.float('Net Weight'),
-		#'size':fields.integer('Size'),
 		'pallet_no':fields.integer('Pallet No.'),
 		'for_sample':fields.boolean('For Sample??'),
 		'field_label_id' : fields.many2one('label.printing.field','Field Id'),
+		'country_origin' : fields.char('Country Of origin'),
+		'img' : fields.binary('Logo'),
 		'active': fields.boolean('Active', help="If unchecked, it will allow you to hide the Packaging record without removing it."),
 	}
 
@@ -78,7 +81,26 @@ class packaging_board(osv.osv):
 	_rec_name = 'field_label_id'
 	_order = "date desc"
 	def create(self, cr, uid, vals, context=None):
-
+		print "work orderweeeeeeeeeeeee"
+		if vals['gauge']:
+			guage = vals['gauge']
+			vals.update({'gauge':guage + 'u' })
+		if vals['width']:
+			width = vals['width']
+			vals.update({'width' : width + 'mm'})
+		if vals['tr_weight']:
+			tr_wgt = vals['tr_weight']
+			vals.update({'tr_weight' : tr_wgt })
+		if vals['tr_weight']:
+			net_wgt = vals['net_weight']
+			vals.update({'net_weight' : net_wgt })
+		if vals['gross_weight']:
+			gross_weight = vals['gross_weight']
+			vals.update({'gross_weight': str(gross_weight) + 'Kg' })
+		customer = self.pool.get('res.partner').browse(cr,uid,vals['customer'])
+		if customer:
+			cst_ref = vals['cst'] + ' ' + customer.name
+			vals.update({'cst_ref' : cst_ref})
 		if vals['for_sample']==True:
 			vals.update({'active':False})
 		# if vals.get('name','/')== '/':
@@ -86,20 +108,25 @@ class packaging_board(osv.osv):
 		return super(packaging_board, self).create(cr, uid, vals, context=context)
 
 	def write(self,cr,uid,ids,vals,context=None):
-		print vals
+		# print vals['cst']
+		# print vals['customer']
 		if 'for_sample' in vals:
 			if vals['for_sample']==True:
 				vals.update({'active':False})
 		return super(packaging_board, self).write(cr, uid, ids, vals, context=context)
 
 	def onchange_weight(self,cr,uid,ids,tr_weight,net_weight,context=None):
+		print tr_weight
+		print net_weight
 		res={}
 		res.update({'gross_weight':tr_weight+net_weight})
 		return {'value':res}
 
 	def onchange_customer(self,cr,uid,ids,customer,context=None):
+		print "hellloo its is customerrrrrrrrrrrrrrrrrrrrrrrrrrr"
 		res={}
 		cust_obj = self.pool.get('res.partner').browse(cr,uid,customer)
+		print "image",cust_obj.image
 		res.update({'ref':cust_obj.reference})
 		w_id = self.pool.get('work.order').search(cr,uid,[('customer_id','=',customer)])
 		if w_id:
@@ -108,18 +135,20 @@ class packaging_board(osv.osv):
 			# if label_id:
 			# 	pkg_obj = self.pool.get('label.printing.field').browse(cr,uid,label_id[0],context=None)
 			res.update({'work_order_id' : w_id[0],
-				'gauge':w_obj.gauge,
+				'gauge':str(w_obj.gauge),
 				'net_weight':w_obj.net_weight,
 				'color':w_obj.color,
 				# 'roll_no' : wr_obj.roll_no,
 				# 'date':w_obj.date,
 				'cst':w_obj.work_order,
-				'width':w_obj.width,
+				'width':str(w_obj.width),
 				'tr_weight':w_obj.tare_weight,
 				'ref' : cust_obj.name,
+				'country_origin' : w_obj.country_origin,
 				'expiry_date': w_obj.expiry_date,
 				# 'field_label_id':pkg_obj.id,
-				'manufacture_date' :w_obj.date
+				'manufacture_date' :w_obj.date,
+				'img' : cust_obj.image,
 				})
 			return {'value':res}
 		else:
@@ -140,17 +169,18 @@ class packaging_board(osv.osv):
 			wr_obj = self.pool.get('work.order').browse(cr,uid,wr_id[0])
 			cust_obj = self.pool.get('res.partner').browse(cr,uid,wr_obj.customer_id.id,context=None)
 			res.update({'customer':wr_obj.customer_id.id,
-				'gauge':wr_obj.gauge,
+				'gauge':str(wr_obj.gauge),
 				'net_weight':wr_obj.net_weight,
 				'color':wr_obj.color,
-				'roll_no' : wr_obj.roll_no,
+				# 'roll_no' : wr_obj.roll_no,
 				# 'date':wr_obj.date,
 				'cst':wr_obj.work_order,
-				'width':wr_obj.width,
+				'width':str(wr_obj.width),
 				'tr_weight':wr_obj.tare_weight,
 				'ref':cust_obj.name,
 				'expiry_date': wr_obj.expiry_date,
 				'manufacture_date' :wr_obj.date,
+				'country_origin' : wr_obj.country_origin,
 				'work_order_id' : wr_id[0]
 				})
 			return {'value':res}
@@ -164,8 +194,28 @@ class packaging_board(osv.osv):
 					})
 		return {'value':res}
 
+	def onchange_jumboroll(self,cr,uid,ids,jumbo_roll,context= None):
+		print "hello000000000000000000000000000000000000000000000000"
+		res={}
+		jumbo_id = self.pool.get('packaging.board').search(cr,uid,[('jumbo_roll','=',jumbo_roll)])
+		jumbo_id_count = len(jumbo_id) + 1
+		res.update({'seq' :('0'+str(jumbo_id_count)) })
+		return {'value':res}
 
-		
+
+	def print_report(self, cr, uid, ids, context=None):
+		for i in range(0,5):
+			print "hello000000000000000"
+			'''
+			This function prints the sales order and mark it as sent, so that we can see more easily the next step of the workflow
+			'''
+			assert len(ids) == 1, 'This option should only be used for a single id at a time'
+			datas = {
+					'model': 'packaging.board',
+					'ids': ids,
+					'form': self.read(cr, uid, ids[0], context=context),
+				}
+			return {'type': 'ir.actions.report.xml', 'report_name': 'packaging.board', 'datas': datas, 'nodestroy': True}
 
 packaging_board()
 
@@ -184,11 +234,9 @@ class work_order(osv.osv):
 
 	_columns={
 	'customer_id':fields.many2one('res.partner','Customer',domain="[('customer','=',True)]"),
-	# 'product_id' : fields.many2one('product.product','Product',domain ="[('product','=',True]"),
-	# 'mother_roll_no':fields.char('Jumbo Roll No.'),
 	'color':fields.char('Color'),
-	'gauge':fields.float('Gauge'),
-	'width':fields.float('Width'),
+	'gauge':fields.integer('Gauge'),
+	'width':fields.integer('Width'),
 	'net_weight':fields.float('Net Weight'),
 	'tare_weight':fields.float('Tare Weight'),
 	'meters':fields.float('Meters'),
@@ -212,10 +260,12 @@ class work_order(osv.osv):
 	'order_no' : fields.char('Order NO'),
 	'application': fields.char('Application'),
 	'roll_no' : fields.char('Roll No'),
+	'country_origin' : fields.char('Country Of origin'),
 	}
 	_defaults = {
 		'shift' : 'day',
-		'date' : str(date.today())
+		'date' : str(date.today()),
+		'year_in_num' : 2,
 	}
 
 	# _sql_constraints = [('work_order','unique(work_order)', 'Work Order already exists...!')]
@@ -227,6 +277,7 @@ class work_order(osv.osv):
 		ex_date = str(today+relativedelta(years=+year_in_num))
 		res.update({'expiry_date':ex_date})
 		return {'value':res}
+
 		
 work_order()
 
@@ -248,10 +299,10 @@ class workorder_items(osv.osv):
 	_columns= {
 		'wo_items' : fields.many2one('work.order'),
 		'sl_no':fields.function(serial_inc1,string='Sl.No',type="integer",multi="sums" ,readonly=True),
-		'color_code' : fields.char('Color Code',required=True),
-		'color' : fields.char('Color'),
-		'gauge' : fields.char('Gauge'),
-		'width' : fields.char('Slit Roll Width'),
+		'color_code' : fields.many2one('color.code','Color Code'),
+		'color' : fields.many2one('color.name','Color'),
+		'gauge' : fields.integer('Gauge'),
+		'width' : fields.integer('Slit Roll Width'),
 		'jumbo_up': fields.char('Up'),
 		'jumbo_width':fields.char('Jumbo Width'),
 		'core_id' : fields.char('CoreId'),
@@ -261,6 +312,22 @@ class workorder_items(osv.osv):
 		# 'stamp_no' : fields.char('Stamp No',required=True),
 	}
 workorder_items()
+
+class color_code123(osv.osv):
+	_name = 'color.code'
+	_columns = {
+		'color_code' : fields.char('Color Code',required=True),
+	}
+	_rec_name = 'color_code'
+color_code123()
+
+class color_name(osv.osv):
+	_name = 'color.name'
+	_columns = {
+		'color_name' : fields.char('Color',required=True) 
+	}
+	_rec_name = 'color_name'
+color_name()
 
 class label_printing(osv.osv):
 
@@ -289,3 +356,29 @@ class label_printing(osv.osv):
 	# 	return super(label_printing,self).write(cr,uid,vals,context=None)
 
 label_printing()
+
+class jumbo_roll(osv.osv):
+
+	def serial_123(self,cr,uid,ids,field_name, arg, context=None):
+		res={}
+		counter=0
+		for i in self.browse(cr,uid,ids,context=None):
+			res[i.id]={
+					'sl_no':01
+				}
+			counter+=1
+			res[i.id]['sl_no'] = counter
+		return res
+
+	_name = 'jumbo.roll'
+	_columns = {
+		'jumbo_roll' : fields.char('Jumbo Roll No',required=True),
+		'sl_no':fields.function(serial_123,string='Sl.No',type="integer",multi="sums"),
+	}
+	_rec_name = 'jumbo_roll'
+
+	# def onchange_jumboroll(self,cr,uid,ids,jumbo_roll,context= None):
+	# 	res={}
+	# 	print  jumbo_roll
+	# 	return {'value':res}
+jumbo_roll()

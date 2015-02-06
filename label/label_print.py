@@ -35,7 +35,8 @@ class label_print(osv.osv):
                                                  "of the related document model"),
         'ref_ir_value':fields.many2one('ir.values', 'Sidebar button', readonly=True,
                                        help="Sidebar button to open the sidebar action"),
-        'model_list': fields.char('Model List', size=256)
+        'model_list': fields.char('Model List', size=256),
+        'customer_id' : fields.many2one('res.partner', 'Customer', required=True),
     }
     def onchange_model(self, cr, uid, ids, model_id):
         model_list = ""
